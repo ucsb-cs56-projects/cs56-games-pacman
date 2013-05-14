@@ -75,6 +75,7 @@ public class Board extends JPanel implements ActionListener {
       1,  25, 24, 24, 24, 24, 24, 24, 24, 24, 16, 16, 16, 18, 20,
       9,  8,  8,  8,  8,  8,  8,  8,  8,  8,  25, 24, 24, 24, 28 };
 
+
     final int validspeeds[] = { 1, 2, 3, 4, 6, 8 };
     final int maxspeed = 6;
 

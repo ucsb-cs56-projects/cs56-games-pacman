@@ -3,7 +3,7 @@
   <!-- build.xml for PacMan
        Note: for this lab, you should not need to edit this file -->
 
-
+   <property name="projectPackage" value="edu.ucsb.cs56.projects.games.pacman" />
    <property environment="env"/> <!-- load the environment variables --> 
    <property name="webRoot" value="${env.HOME}/public_html/cs56" />
    <property name="webBaseURL" value="http://www.cs.ucsb.edu/~${env.USER}/cs56" />
@@ -53,7 +53,7 @@
  </target>        
 
   <target name="run" depends="compile" description="run the PacMan program">
-    <java classname="PacMan" classpath="project.class.path" />
+    <java fork="true" classpathref="project.class.path" classname="${projectPackage}.PacMan" />
   </target>
 
 
