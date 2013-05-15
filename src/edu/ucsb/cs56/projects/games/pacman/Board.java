@@ -228,7 +228,7 @@ public class Board extends JPanel implements ActionListener {
 
     /**
        Movement logic for ghost enemies. Ghosts will move one square and then decide whether to change directions or not
-       @param 
+       @param g2d a Graphics2D object
      */
     public void moveGhosts(Graphics2D g2d) {
         short i;
@@ -294,12 +294,19 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-
+    /**
+       Draws the ghost sprite
+       @param g2d a Graphics2D object
+       @param x the x position of the ghost
+       @param y the y position of the ghost
+     */
     public void DrawGhost(Graphics2D g2d, int x, int y) {
         g2d.drawImage(ghost, x, y, this);
     }
 
-
+    /**
+       Handles movement for Pacman
+     */
     public void MovePacMan() {
         int pos;
         short ch;
@@ -345,7 +352,10 @@ public class Board extends JPanel implements ActionListener {
         pacmany = pacmany + pacmanspeed * pacmandy;
     }
 
-
+    /**
+       Calls the appropriate draw method for the direction Pacman is facing
+       @param g2d a Graphics2D object
+     */
     public void DrawPacMan(Graphics2D g2d) {
         if (viewdx == -1)
             DrawPacManLeft(g2d);
@@ -357,6 +367,10 @@ public class Board extends JPanel implements ActionListener {
             DrawPacManDown(g2d);
     }
 
+    /**
+       Draws Pacman facing up
+       @param g2d a Graphics2D object
+     */
     public void DrawPacManUp(Graphics2D g2d) {
         switch (pacmananimpos) {
         case 1:
@@ -374,7 +388,10 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-
+    /**
+       Draws Pacman facing down
+       @param g2d a Graphics2D object
+     */
     public void DrawPacManDown(Graphics2D g2d) {
         switch (pacmananimpos) {
         case 1:
@@ -392,7 +409,10 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-
+    /**
+       Draws Pacman facing left
+       @param g2d a Graphics2D object
+     */
     public void DrawPacManLeft(Graphics2D g2d) {
         switch (pacmananimpos) {
         case 1:
@@ -410,7 +430,10 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-
+    /**
+       Draws Pacman facing right
+       @param g2d a Graphics2D object
+     */
     public void DrawPacManRight(Graphics2D g2d) {
         switch (pacmananimpos) {
         case 1:
@@ -428,7 +451,10 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-
+    /**
+       Draws the maze that serves as a playing field.
+       @param g2d a Graphics2D object
+     */
     public void DrawMaze(Graphics2D g2d) {
         short i = 0;
         int x, y;
@@ -466,6 +492,9 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
+    /**
+       Initialize game variables
+     */
     public void GameInit() {
         pacsleft = 3;
         score = 0;
@@ -474,7 +503,9 @@ public class Board extends JPanel implements ActionListener {
         currentspeed = 3;
     }
 
-
+    /**
+       Initialize level
+     */
     public void LevelInit() {
         int i;
         for (i = 0; i < nrofblocks * nrofblocks; i++)
@@ -483,7 +514,9 @@ public class Board extends JPanel implements ActionListener {
         LevelContinue();
     }
 
-
+    /**
+       Initialize Pacman and ghost position/direction
+     */
     public void LevelContinue() {
         short i;
         int dx = 1;
@@ -511,7 +544,9 @@ public class Board extends JPanel implements ActionListener {
         viewdy = 0;
         dying = false;
     }
-
+    /**
+       Load game sprites from images folder
+     */
     public void GetImages()
     {
 
@@ -532,6 +567,10 @@ public class Board extends JPanel implements ActionListener {
 
     }
 
+    /**
+       Paint graphics onto screen
+       @param g a Graphics object
+     */
     public void paint(Graphics g)
     {
       super.paint(g);
@@ -554,7 +593,16 @@ public class Board extends JPanel implements ActionListener {
       g.dispose();
     }
 
+    /**
+       Class that handles key presses for game controls
+     */
     class TAdapter extends KeyAdapter {
+	/**
+	   Detects when a key is pressed.<p>
+	   In-game: Changes Pacman's direction of movement with the arrow keys. Quit game by pressing the escape key.<p> 
+	   Not in-game: Press the 'S' key to begin the game.
+	   @param e a KeyEvent
+	 */
         public void keyPressed(KeyEvent e) {
 
           int key = e.getKeyCode();
@@ -600,19 +648,25 @@ public class Board extends JPanel implements ActionListener {
             }
           }
       }
-
-          public void keyReleased(KeyEvent e) {
-              int key = e.getKeyCode();
-
-              if (key == Event.LEFT || key == Event.RIGHT || 
-                 key == Event.UP ||  key == Event.DOWN)
-              {
+	/**
+	   Detects when a key is released
+	   @param e a KeyEvent
+	 */
+	public void keyReleased(KeyEvent e) {
+	    int key = e.getKeyCode();
+	    if (key == Event.LEFT || key == Event.RIGHT || 
+                key == Event.UP ||  key == Event.DOWN)
+	    {
                 reqdx=0;
                 reqdy=0;
-              }
-          }
-      }
-
+	    }
+	}
+    }
+    
+    /**
+       Repaint the graphics each frame
+       @param e an ActionEvent
+     */
     public void actionPerformed(ActionEvent e) {
         repaint();  
     }
