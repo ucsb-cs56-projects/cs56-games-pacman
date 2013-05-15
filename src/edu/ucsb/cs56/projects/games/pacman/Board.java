@@ -14,10 +14,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.*;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import javax.imageio.ImageIO;
 
 
 public class Board extends JPanel implements ActionListener {
@@ -50,7 +52,7 @@ public class Board extends JPanel implements ActionListener {
     int[] dx, dy;
     int[] ghostx, ghosty, ghostdx, ghostdy, ghostspeed;
 
-    Image ghost;
+    Image ghost, ghoster;
     Image pacman1, pacman2up, pacman2left, pacman2right, pacman2down;
     Image pacman3up, pacman3down, pacman3left, pacman3right;
     Image pacman4up, pacman4down, pacman4left, pacman4right;
@@ -281,8 +283,7 @@ public class Board extends JPanel implements ActionListener {
             viewdy = pacmandy;
         }
         if (pacmanx % blocksize == 0 && pacmany % blocksize == 0) {
-            pos =
- pacmanx / blocksize + nrofblocks * (int)(pacmany / blocksize);
+            pos = pacmanx / blocksize + nrofblocks * (int)(pacmany / blocksize);
             ch = screendata[pos];
 
             if ((ch & 16) != 0) {
@@ -500,7 +501,7 @@ public class Board extends JPanel implements ActionListener {
       pacman3right = new ImageIcon(Board.class.getResource("../pacpix/right2.png")).getImage();
       pacman4right = new ImageIcon(Board.class.getResource("../pacpix/right3.png")).getImage();*/
 
-      ghost = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/ghost.png")).getImage();
+      /*ghost = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/ghost.png")).getImage();
       pacman1 = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/pacman.png")).getImage();
       pacman2up = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/up1.png")).getImage();
       pacman3up = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/up2.png")).getImage();
@@ -513,7 +514,26 @@ public class Board extends JPanel implements ActionListener {
       pacman4left = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/left3.png")).getImage();
       pacman2right = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/right1.png")).getImage();
       pacman3right = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/right2.png")).getImage();
-      pacman4right = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/right3.png")).getImage();
+      pacman4right = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/right3.png")).getImage();*/
+
+	try {
+	    ghost = ImageIO.read(getClass().getResource("pacpix/ghost.png"));
+	    pacman1 = ImageIO.read(getClass().getResource("pacpix/pacman.png"));
+	    pacman2up = ImageIO.read(getClass().getResource("pacpix/up1.png"));
+	    pacman3up = ImageIO.read(getClass().getResource("pacpix/up2.png"));
+	    pacman4up = ImageIO.read(getClass().getResource("pacpix/up3.png"));
+	    pacman2down = ImageIO.read(getClass().getResource("pacpix/down1.png"));
+	    pacman3down = ImageIO.read(getClass().getResource("pacpix/down2.png")); 
+	    pacman4down = ImageIO.read(getClass().getResource("pacpix/down3.png"));
+	    pacman2left = ImageIO.read(getClass().getResource("pacpix/left1.png"));
+	    pacman3left = ImageIO.read(getClass().getResource("pacpix/left2.png"));
+	    pacman4left = ImageIO.read(getClass().getResource("pacpix/left3.png"));
+	    pacman2right = ImageIO.read(getClass().getResource("pacpix/right1.png"));
+	    pacman3right = ImageIO.read(getClass().getResource("pacpix/right2.png"));
+	    pacman4right = ImageIO.read(getClass().getResource("pacpix/right3.png"));
+	} catch (IOException e) {
+	    e.printStackTrace();
+	  }
 
     }
 
