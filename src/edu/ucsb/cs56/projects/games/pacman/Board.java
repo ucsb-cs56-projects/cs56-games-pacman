@@ -19,6 +19,14 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+/**
+   Playing field for a Pacman arcade game remake that keeps track of all relevant data and handles game logic.<p>
+   The version of the code by Jan Bodnar may be found at http://zetcode.com/tutorials/javagamestutorial/pacman/
+   @author Brian Postma
+   @author Jan Bodnar
+   @author Dario Castellanos
+   @version CS56 S13
+ */
 
 public class Board extends JPanel implements ActionListener {
 
@@ -110,13 +118,17 @@ public class Board extends JPanel implements ActionListener {
         timer = new Timer(40, this);
         timer.start();
     }
-
+    /**
+       Called by the system
+     */
     public void addNotify() {
         super.addNotify();
         GameInit();
     }
 
-
+    /**
+       Animates the Pacman sprite's direction as well as mouth opening and closing
+     */
     public void DoAnim() {
         pacanimcount--;
         if (pacanimcount <= 0) {
@@ -127,7 +139,10 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-
+    /**
+       Main game logic loop
+       @param g2d a Graphics 2D object 
+     */
     public void PlayGame(Graphics2D g2d) {
         if (dying) {
             Death();
@@ -139,7 +154,10 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-
+    /**
+       Draw a message box with the text "Press s to start." in the center of the screen
+       @param g2d a Graphics2D object
+     */
     public void ShowIntroScreen(Graphics2D g2d) {
 
         g2d.setColor(new Color(0, 32, 48));
@@ -156,7 +174,10 @@ public class Board extends JPanel implements ActionListener {
         g2d.drawString(s, (scrsize - metr.stringWidth(s)) / 2, scrsize / 2);
     }
 
-
+    /**
+       Display the current score on the bottom right of the screen
+       @param g a Graphics object
+     */
     public void DrawScore(Graphics2D g) {
         int i;
         String s;
@@ -170,7 +191,9 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-
+    /**
+       Checks if there are any pellets left for Pacman to eat, and restarts the game on a higher difficulty if finished
+     */
     public void CheckMaze() {
         short i = 0;
         boolean finished = true;
@@ -192,6 +215,9 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
+    /**
+       Decrements number of lives left when player touches a ghost and reinitializes player location
+     */
     public void Death() {
 
         pacsleft--;
@@ -200,7 +226,10 @@ public class Board extends JPanel implements ActionListener {
         LevelContinue();
     }
 
-
+    /**
+       Movement logic for ghost enemies. Ghosts will move one square and then decide whether to change directions or not
+       @param 
+     */
     public void moveGhosts(Graphics2D g2d) {
         short i;
         int pos;

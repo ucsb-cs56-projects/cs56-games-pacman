@@ -1,16 +1,18 @@
 package edu.ucsb.cs56.projects.games.pacman;
 
-/**
- A Pacman arcade game
- @author Brian Postma
- @author Dario Castellanos
- @version CS56 S13
- */
-
 import javax.swing.JFrame;
 
 import edu.ucsb.cs56.projects.games.pacman.Board;
 
+
+/**
+   A Pacman arcade game remake<p>
+   The version of the code by Jan Bodnar may be found at http://zetcode.com/tutorials/javagamestutorial/pacman/
+   @author Brian Postma
+   @author Jan Bodnar
+   @author Dario Castellanos
+   @version CS56 S13
+ */
 
 public class PacMan extends JFrame
 {
