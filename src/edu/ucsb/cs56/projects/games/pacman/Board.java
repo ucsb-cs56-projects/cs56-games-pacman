@@ -486,20 +486,20 @@ public class Board extends JPanel implements ActionListener {
     public void GetImages()
     {
 
-      ghost = new ImageIcon(Board.class.getResource("../pacpix/ghost.png")).getImage();
-      pacman1 = new ImageIcon(Board.class.getResource("../pacpix/pacman.png")).getImage();
-      pacman2up = new ImageIcon(Board.class.getResource("../pacpix/up1.png")).getImage();
-      pacman3up = new ImageIcon(Board.class.getResource("../pacpix/up2.png")).getImage();
-      pacman4up = new ImageIcon(Board.class.getResource("../pacpix/up3.png")).getImage();
-      pacman2down = new ImageIcon(Board.class.getResource("../pacpix/down1.png")).getImage();
-      pacman3down = new ImageIcon(Board.class.getResource("../pacpix/down2.png")).getImage(); 
-      pacman4down = new ImageIcon(Board.class.getResource("../pacpix/down3.png")).getImage();
-      pacman2left = new ImageIcon(Board.class.getResource("../pacpix/left1.png")).getImage();
-      pacman3left = new ImageIcon(Board.class.getResource("../pacpix/left2.png")).getImage();
-      pacman4left = new ImageIcon(Board.class.getResource("../pacpix/left3.png")).getImage();
-      pacman2right = new ImageIcon(Board.class.getResource("../pacpix/right1.png")).getImage();
-      pacman3right = new ImageIcon(Board.class.getResource("../pacpix/right2.png")).getImage();
-      pacman4right = new ImageIcon(Board.class.getResource("../pacpix/right3.png")).getImage();
+      ghost = new ImageIcon(Board.class.getResource("../../../../../../images/ghost.png")).getImage();
+      pacman1 = new ImageIcon(Board.class.getResource("../../../../../../images/pacman.png")).getImage();
+      pacman2up = new ImageIcon(Board.class.getResource("../../../../../../images/up1.png")).getImage();
+      pacman3up = new ImageIcon(Board.class.getResource("../../../../../../images/up2.png")).getImage();
+      pacman4up = new ImageIcon(Board.class.getResource("../../../../../../images/up3.png")).getImage();
+      pacman2down = new ImageIcon(Board.class.getResource("../../../../../../images/down1.png")).getImage();
+      pacman3down = new ImageIcon(Board.class.getResource("../../../../../../images/down2.png")).getImage(); 
+      pacman4down = new ImageIcon(Board.class.getResource("../../../../../../images/down3.png")).getImage();
+      pacman2left = new ImageIcon(Board.class.getResource("../../../../../../images/left1.png")).getImage();
+      pacman3left = new ImageIcon(Board.class.getResource("../../../../../../images/left2.png")).getImage();
+      pacman4left = new ImageIcon(Board.class.getResource("../../../../../../images/left3.png")).getImage();
+      pacman2right = new ImageIcon(Board.class.getResource("../../../../../../images/right1.png")).getImage();
+      pacman3right = new ImageIcon(Board.class.getResource("../../../../../../images/right2.png")).getImage();
+      pacman4right = new ImageIcon(Board.class.getResource("../../../../../../images/right3.png")).getImage();
 
     }
 

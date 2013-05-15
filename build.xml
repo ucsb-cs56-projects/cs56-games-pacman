@@ -9,7 +9,7 @@
    <property name="projectName" value="cs56-games-pacman" /> 
    <property name="javadocDest"
 	     value="${webRoot}/S13/FamiliarStranger-/${projectName}/javadoc" /> 
-   <property name="javadocURL" value="${webBaseURL}/${projectName}/javadoc" /> 
+   <property name="javadocURL" value="${webBaseURL}//S13/FamiliarStranger-/${projectName}/javadoc" /> 
    <property name="javadocLink"
 	     value="http://java.sun.com/javase/7/docs/api/" />
    <path id="project.class.path">
@@ -57,7 +57,7 @@
  </target>        
 
   <target name="clean" description="delete unnecessary files and directories">
-    <delete dir="build" failonerror="false" verbose="true" />
+    <delete dir="build/edu" failonerror="false" verbose="true" />
     <mkdir dir="build" />
     <delete dir="javadoc" failonerror="false" verbose="true" />  <!-- the local copy -->
     <mkdir dir="javadoc" />
