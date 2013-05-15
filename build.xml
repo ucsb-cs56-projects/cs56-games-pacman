@@ -1,13 +1,17 @@
-<project default="compile">
+<project name="Pacman" default="compile">
 
+   <!-- build.xml for CS56 S13 Pacman game --> 
 
    <property environment="env"/> <!-- load the environment variables --> 
    <property name="webRoot" value="${env.HOME}/public_html/cs56" />
-   <property name="webBaseURL" value="http://www.cs.ucsb.edu/~${env.USER}/cs56" />
+   <property name="webBaseURL"
+	     value="http://www.cs.ucsb.edu/~${env.USER}/cs56" />
    <property name="projectName" value="cs56-games-pacman" /> 
-   <property name="javadocDest" value="${webRoot}/S13/FamiliarStranger-/${projectName}/javadoc" /> 
+   <property name="javadocDest"
+	     value="${webRoot}/S13/FamiliarStranger-/${projectName}/javadoc" /> 
    <property name="javadocURL" value="${webBaseURL}/${projectName}/javadoc" /> 
-   <property name="javadocLink" value="http://java.sun.com/javase/7/docs/api/" />
+   <property name="javadocLink"
+	     value="http://java.sun.com/javase/7/docs/api/" />
    <path id="project.class.path">
          <pathelement location="build"/>
          <pathelement location="lib/junit-4.8.2.jar"/>
@@ -22,7 +26,7 @@
   </target>
 
   <target name="run" depends="compile" description="run Pacman game">
-    <java classpath="build" classname="Pacman" fork="true"/>
+    <java classpath="build" classname="edu.ucsb.cs56.projects.games.pacman.PacMan" fork="true"/>
   </target>
 
  <target name="javadoc" depends="compile" description="publish javadoc"> 
@@ -51,24 +55,6 @@
    <chmod dir="${javadocDest}" perm="755"  type="file" includes="**/*" /> 
    <echo>Javadoc deployed to ${javadocURL}</echo>
  </target>        
-
-
- <target name="test" depends="compile" description="run junit tests">
-
-   <junit haltonerror="no" haltonfailure="no">
-       <classpath refid="project.class.path" />
-
-       <batchtest fork="yes">
-          <fileset dir="src">
-            <!-- this will pick up every class with a name ending in Test -->
-            <include name="**/*Test.java"/>
-          </fileset>
-       </batchtest>
-
-        <formatter type="plain" usefile="false" /> 
-       
-   </junit>
-  </target>
 
   <target name="clean" description="delete unnecessary files and directories">
     <delete dir="build" failonerror="false" verbose="true" />

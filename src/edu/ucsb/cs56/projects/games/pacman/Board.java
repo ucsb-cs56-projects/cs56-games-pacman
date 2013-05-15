@@ -1,4 +1,4 @@
-package edu.ucsb.projects.games.pacman;
+package edu.ucsb.cs56.projects.games.pacman;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -82,7 +82,9 @@ public class Board extends JPanel implements ActionListener {
     short[] screendata;
     Timer timer;
 
-
+    /**
+       Constructor for Board object
+     */
     public Board() {
 
         GetImages();
