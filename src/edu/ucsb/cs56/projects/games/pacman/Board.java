@@ -42,6 +42,7 @@ public class Board extends JPanel implements ActionListener {
     final int pacmananimcount = 4;
     final int maxghosts = 12;
     final int pacmanspeed = 6;
+    int numBoardsCleared = 0;
 
     int pacanimcount = pacanimdelay;
     int pacanimdir = 1;
@@ -60,7 +61,8 @@ public class Board extends JPanel implements ActionListener {
     int pacmanx, pacmany, pacmandx, pacmandy;
     int reqdx, reqdy, viewdx, viewdy;
 
-    final short leveldata[] =
+    //Real level data
+    final short leveldata1[] =
     { 19, 26, 26, 26, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
       21, 0,  0,  0,  17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
       21, 0,  0,  0,  17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20, 
@@ -76,6 +78,44 @@ public class Board extends JPanel implements ActionListener {
       1,  17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20, 0,  21,
       1,  25, 24, 24, 24, 24, 24, 24, 24, 24, 16, 16, 16, 18, 20,
       9,  8,  8,  8,  8,  8,  8,  8,  8,  8,  25, 24, 24, 24, 28 };
+
+    final short leveldata2[] = 
+    { 19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
+      17, 16, 24, 24, 16, 16, 16, 16, 16, 24, 24, 24, 24, 16, 20,
+      17, 20,  0,  0, 17, 16, 16, 16, 20,  0,  0,  0,  0, 17, 20,
+      17, 20,  0,  0, 17, 16, 16, 16, 20,  0,  0,  0,  0, 17, 20,
+      17, 16, 18, 18, 16, 16, 16, 16, 16, 18, 22,  0,  0, 17, 20,
+      17, 16, 16, 16, 16, 16, 24, 24, 24, 16, 20,  0,  0, 17, 20,
+      17, 16, 16, 16, 16, 20,  0,  0,  0, 17, 16, 18, 18, 16, 20,
+      17, 16, 16, 16, 16, 20,  0,  0,  0, 17, 16, 16, 16, 16, 20,
+      17, 16, 24, 24, 16, 20,  0,  0,  0, 17, 16, 16, 16, 16, 20,
+      17, 20,  0,  0, 17, 16, 18, 18, 18, 16, 16, 16, 16, 16, 20,
+      17, 20,  0,  0, 25, 24, 16, 16, 16, 16, 16, 24, 24, 16, 20,
+      17, 20,  0,  0,  0,  0, 17,  0, 16, 16, 20,  0,  0, 17, 20,
+      17, 20,  0,  0,  0,  0, 17, 16, 16, 16, 20,  0,  0, 17, 20,
+      17, 16, 18, 18, 18, 18, 16, 16, 16, 16, 16, 18, 18, 16, 20,
+      25, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 28 };
+
+
+    final short leveldata3[] =
+    { 19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
+      17, 16, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 16, 20,
+      17, 20,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 17, 20,
+      17, 16, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 16, 20,
+      17, 16, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 16, 20,
+      17, 20,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 17, 20,
+      17, 16, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 16, 20,
+      17, 16, 24, 24, 24, 24, 24, 16, 24, 24, 24, 24, 24, 16, 20,
+      17, 20,  0,  0,  0,  0,  0, 21,  0,  0,  0,  0,  0, 17, 20,
+      17, 20,  0, 19, 18, 18, 18, 16, 18, 18, 18, 22,  0, 17, 20,
+      17, 20,  0, 17, 16, 16, 16, 16, 16, 16, 16, 20,  0, 17, 20,
+      17, 20,  0, 25, 24, 24, 24, 24, 24, 24, 24, 28,  0, 17, 20,
+      17, 20,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 17, 20,
+      17, 16, 18, 18, 18, 18, 22,  0, 19, 18, 18, 18, 18, 16, 20,
+      25, 24, 24, 24, 24, 24, 28,  0, 25, 24, 24, 24, 24, 24, 28};
+
+    
+
 
 
     final int validspeeds[] = { 1, 2, 3, 4, 6, 8 };
@@ -184,6 +224,7 @@ public class Board extends JPanel implements ActionListener {
 
         if (finished) {
             score += 50;
+            this.numBoardsCleared++;
 
             if (nrofghosts < maxghosts)
                 nrofghosts++;
@@ -197,7 +238,10 @@ public class Board extends JPanel implements ActionListener {
 
         pacsleft--;
         if (pacsleft == 0)
+        {
             ingame = false;
+            numBoardsCleared = 0;
+        }
         LevelContinue();
     }
 
@@ -209,8 +253,7 @@ public class Board extends JPanel implements ActionListener {
 
         for (i = 0; i < nrofghosts; i++) {
             if (ghostx[i] % blocksize == 0 && ghosty[i] % blocksize == 0) {
-                pos =
- ghostx[i] / blocksize + nrofblocks * (int)(ghosty[i] / blocksize);
+                pos = ghostx[i] / blocksize + nrofblocks * (int)(ghosty[i] / blocksize);
 
                 count = 0;
                 if ((screendata[pos] & 1) == 0 && ghostdx[i] != 1) {
@@ -449,7 +492,14 @@ public class Board extends JPanel implements ActionListener {
     public void LevelInit() {
         int i;
         for (i = 0; i < nrofblocks * nrofblocks; i++)
-            screendata[i] = leveldata[i];
+        {
+            if (numBoardsCleared%3 == 0)
+                screendata[i] = leveldata3[i];
+            else if (numBoardsCleared%3 == 1)
+                screendata[i] = leveldata2[i];
+            else if (numBoardsCleared%3 == 2)
+                screendata[i] = leveldata3[i];
+        }
 
         LevelContinue();
     }
@@ -485,56 +535,27 @@ public class Board extends JPanel implements ActionListener {
 
     public void GetImages()
     {
-
-      /*ghost = new ImageIcon(Board.class.getResource("../pacpix/ghost.png")).getImage();
-      pacman1 = new ImageIcon(Board.class.getResource("../pacpix/pacman.png")).getImage();
-      pacman2up = new ImageIcon(Board.class.getResource("../pacpix/up1.png")).getImage();
-      pacman3up = new ImageIcon(Board.class.getResource("../pacpix/up2.png")).getImage();
-      pacman4up = new ImageIcon(Board.class.getResource("../pacpix/up3.png")).getImage();
-      pacman2down = new ImageIcon(Board.class.getResource("../pacpix/down1.png")).getImage();
-      pacman3down = new ImageIcon(Board.class.getResource("../pacpix/down2.png")).getImage(); 
-      pacman4down = new ImageIcon(Board.class.getResource("../pacpix/down3.png")).getImage();
-      pacman2left = new ImageIcon(Board.class.getResource("../pacpix/left1.png")).getImage();
-      pacman3left = new ImageIcon(Board.class.getResource("../pacpix/left2.png")).getImage();
-      pacman4left = new ImageIcon(Board.class.getResource("../pacpix/left3.png")).getImage();
-      pacman2right = new ImageIcon(Board.class.getResource("../pacpix/right1.png")).getImage();
-      pacman3right = new ImageIcon(Board.class.getResource("../pacpix/right2.png")).getImage();
-      pacman4right = new ImageIcon(Board.class.getResource("../pacpix/right3.png")).getImage();*/
-
-      /*ghost = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/ghost.png")).getImage();
-      pacman1 = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/pacman.png")).getImage();
-      pacman2up = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/up1.png")).getImage();
-      pacman3up = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/up2.png")).getImage();
-      pacman4up = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/up3.png")).getImage();
-      pacman2down = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/down1.png")).getImage();
-      pacman3down = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/down2.png")).getImage(); 
-      pacman4down = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/down3.png")).getImage();
-      pacman2left = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/left1.png")).getImage();
-      pacman3left = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/left2.png")).getImage();
-      pacman4left = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/left3.png")).getImage();
-      pacman2right = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/right1.png")).getImage();
-      pacman3right = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/right2.png")).getImage();
-      pacman4right = new ImageIcon(Board.class.getResource("../../../../../../../pacpix/right3.png")).getImage();*/
-
-	try {
-	    ghost = ImageIO.read(getClass().getResource("pacpix/ghost.png"));
-	    pacman1 = ImageIO.read(getClass().getResource("pacpix/pacman.png"));
-	    pacman2up = ImageIO.read(getClass().getResource("pacpix/up1.png"));
-	    pacman3up = ImageIO.read(getClass().getResource("pacpix/up2.png"));
-	    pacman4up = ImageIO.read(getClass().getResource("pacpix/up3.png"));
-	    pacman2down = ImageIO.read(getClass().getResource("pacpix/down1.png"));
-	    pacman3down = ImageIO.read(getClass().getResource("pacpix/down2.png")); 
-	    pacman4down = ImageIO.read(getClass().getResource("pacpix/down3.png"));
-	    pacman2left = ImageIO.read(getClass().getResource("pacpix/left1.png"));
-	    pacman3left = ImageIO.read(getClass().getResource("pacpix/left2.png"));
-	    pacman4left = ImageIO.read(getClass().getResource("pacpix/left3.png"));
-	    pacman2right = ImageIO.read(getClass().getResource("pacpix/right1.png"));
-	    pacman3right = ImageIO.read(getClass().getResource("pacpix/right2.png"));
-	    pacman4right = ImageIO.read(getClass().getResource("pacpix/right3.png"));
-	} catch (IOException e) {
-	    e.printStackTrace();
-	  }
-
+	    try 
+        {
+	        ghost = ImageIO.read(getClass().getResource("pacpix/ghost.png"));
+	        pacman1 = ImageIO.read(getClass().getResource("pacpix/pacman.png"));
+	        pacman2up = ImageIO.read(getClass().getResource("pacpix/up1.png"));
+	        pacman3up = ImageIO.read(getClass().getResource("pacpix/up2.png"));
+	        pacman4up = ImageIO.read(getClass().getResource("pacpix/up3.png"));
+	        pacman2down = ImageIO.read(getClass().getResource("pacpix/down1.png"));
+	        pacman3down = ImageIO.read(getClass().getResource("pacpix/down2.png")); 
+	        pacman4down = ImageIO.read(getClass().getResource("pacpix/down3.png"));
+	        pacman2left = ImageIO.read(getClass().getResource("pacpix/left1.png"));
+	        pacman3left = ImageIO.read(getClass().getResource("pacpix/left2.png"));
+	        pacman4left = ImageIO.read(getClass().getResource("pacpix/left3.png"));
+	        pacman2right = ImageIO.read(getClass().getResource("pacpix/right1.png"));
+	        pacman3right = ImageIO.read(getClass().getResource("pacpix/right2.png"));
+	        pacman4right = ImageIO.read(getClass().getResource("pacpix/right3.png"));
+	    } 
+        catch (IOException e) 
+        {
+	        e.printStackTrace();
+	    }
     }
 
     public void paint(Graphics g)
