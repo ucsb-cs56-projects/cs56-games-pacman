@@ -3,15 +3,19 @@
    <!-- build.xml for CS56 S13 Pacman game --> 
 
    <property environment="env"/> <!-- load the environment variables --> 
+   <property name="projectPackage" value="edu.ucsb.cs56.projects.games.pacman" />
    <property name="webRoot" value="${env.HOME}/public_html/cs56" />
    <property name="webBaseURL"
 	     value="http://www.cs.ucsb.edu/~${env.USER}/cs56" />
    <property name="projectName" value="cs56-games-pacman" /> 
-   <property name="javadocDest"
+ <!--  <property name="javadocDest"
 	     value="${webRoot}/S13/FamiliarStranger-/${projectName}/javadoc" /> 
    <property name="javadocURL" value="${webBaseURL}/S13/FamiliarStranger-/${projectName}/javadoc" /> 
    <property name="javadocLink"
-	     value="http://java.sun.com/javase/7/docs/api/" />
+	     value="http://java.sun.com/javase/7/docs/api/" /> -->
+   <property name="javadocDest" value="${webRoot}/${projectName}/javadoc" /> 
+   <property name="javadocURL" value="${webBaseURL}/${projectName}/javadoc" /> 
+   <property name="javadocLink" value="http://java.sun.com/javase/7/docs/api/" />
    <path id="project.class.path">
          <pathelement location="build"/>
          <pathelement location="lib/junit-4.8.2.jar"/>
@@ -26,7 +30,7 @@
   </target>
 
   <target name="run" depends="compile" description="run Pacman game">
-    <java classpath="build" classname="edu.ucsb.cs56.projects.games.pacman.PacMan" fork="true"/>
+    <java classpath="build" classname="${projectPackage}.PacMan" fork="true"/>
   </target>
 
  <target name="javadoc" depends="compile" description="publish javadoc"> 
@@ -49,8 +53,7 @@
    <!-- Note: this only does the chmod command on the javadoc
 	subdirectory and its contents.  You MIGHT have to MANUALLY do the
 	chmod on the parent directories.  However, you should only need to do
-	that once. 
-     -->
+	that once. -->
    <chmod dir="${javadocDest}" perm="755"  type="dir" includes="**" /> 
    <chmod dir="${javadocDest}" perm="755"  type="file" includes="**/*" /> 
    <echo>Javadoc deployed to ${javadocURL}</echo>

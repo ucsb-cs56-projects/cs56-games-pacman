@@ -14,10 +14,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.*;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import javax.imageio.ImageIO;
 
 /**
    Playing field for a Pacman arcade game remake that keeps track of all relevant data and handles game logic.<p>
@@ -25,6 +27,7 @@ import javax.swing.Timer;
    @author Brian Postma
    @author Jan Bodnar
    @author Dario Castellanos
+   @author Brandon Newman
    @version CS56 S13
  */
 
@@ -48,6 +51,7 @@ public class Board extends JPanel implements ActionListener {
     final int pacmananimcount = 4;
     final int maxghosts = 12;
     final int pacmanspeed = 6;
+    int numBoardsCleared = 0;
 
     int pacanimcount = pacanimdelay;
     int pacanimdir = 1;
@@ -58,7 +62,7 @@ public class Board extends JPanel implements ActionListener {
     int[] dx, dy;
     int[] ghostx, ghosty, ghostdx, ghostdy, ghostspeed;
 
-    Image ghost;
+    Image ghost, ghoster;
     Image pacman1, pacman2up, pacman2left, pacman2right, pacman2down;
     Image pacman3up, pacman3down, pacman3left, pacman3right;
     Image pacman4up, pacman4down, pacman4left, pacman4right;
@@ -66,7 +70,8 @@ public class Board extends JPanel implements ActionListener {
     int pacmanx, pacmany, pacmandx, pacmandy;
     int reqdx, reqdy, viewdx, viewdy;
 
-    final short leveldata[] =
+    //Real level data
+    final short leveldata1[] =
     { 19, 26, 26, 26, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
       21, 0,  0,  0,  17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
       21, 0,  0,  0,  17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20, 
@@ -82,6 +87,78 @@ public class Board extends JPanel implements ActionListener {
       1,  17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20, 0,  21,
       1,  25, 24, 24, 24, 24, 24, 24, 24, 24, 16, 16, 16, 18, 20,
       9,  8,  8,  8,  8,  8,  8,  8,  8,  8,  25, 24, 24, 24, 28 };
+
+    final short leveldata2[] = 
+    {  0,  0, 19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,  0,  0,
+       0, 19, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 22,  0,
+      19, 16, 16, 16, 16, 16, 24, 24, 24, 16, 16, 16, 16, 16, 22,
+      17, 16, 16, 16, 16, 20,  0,  0,  0, 17, 16, 16, 16, 16, 20,
+      17, 16, 16, 16, 16, 20,  0,  0,  0, 17, 16, 16, 16, 16, 20,
+      17, 16, 16, 24, 24, 28,  0,  0,  0, 25, 24, 24, 16, 16, 20,
+      17, 16, 20,  0,  0,  0,  0,  0,  0,  0,  0,  0, 17, 16, 20,
+      17, 16, 20,  0,  0,  0,  0,  0,  0,  0,  0,  0, 17, 16, 20,
+      17, 16, 20,  0,  0,  0,  0,  0,  0,  0,  0,  0, 17, 16, 20,
+      17, 16, 16, 18, 18, 22,  0,  0,  0, 19, 18, 18, 16, 16, 20,
+      17, 16, 16, 16, 16, 20,  0, 23,  0, 17, 16, 16, 16, 16, 20,
+      17, 16, 16, 16, 16, 20,  0, 21,  0, 17, 16, 16, 16, 16, 20,
+      25, 16, 16, 16, 16, 16, 18, 16, 18, 16, 16, 16, 16, 16, 28,
+       0, 25, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 28,  0,
+       0,  0, 25, 24, 24, 24, 24, 24, 24, 24, 24, 24, 28,  0,  0 };
+
+
+    final short leveldata3[] = 
+    { 19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
+      17, 16, 24, 24, 16, 16, 16, 16, 16, 24, 24, 24, 24, 16, 20,
+      17, 20,  0,  0, 17, 16, 16, 16, 20,  0,  0,  0,  0, 17, 20,
+      17, 20,  0,  0, 17, 16, 16, 16, 20,  0,  0,  0,  0, 17, 20,
+      17, 16, 18, 18, 16, 16, 16, 16, 16, 18, 22,  0,  0, 17, 20,
+      17, 16, 16, 16, 16, 16, 24, 24, 24, 16, 20,  0,  0, 17, 20,
+      17, 16, 16, 16, 16, 20,  0,  0,  0, 17, 16, 18, 18, 16, 20,
+      17, 16, 16, 16, 16, 20,  0,  0,  0, 17, 16, 16, 16, 16, 20,
+      17, 16, 24, 24, 16, 20,  0,  0,  0, 17, 16, 16, 16, 16, 20,
+      17, 20,  0,  0, 17, 16, 18, 18, 18, 16, 16, 16, 16, 16, 20,
+      17, 20,  0,  0, 25, 24, 16, 16, 16, 16, 16, 24, 24, 16, 20,
+      17, 20,  0,  0,  0,  0, 17,  0, 16, 16, 20,  0,  0, 17, 20,
+      17, 20,  0,  0,  0,  0, 17, 16, 16, 16, 20,  0,  0, 17, 20,
+      17, 16, 18, 18, 18, 18, 16, 16, 16, 16, 16, 18, 18, 16, 20,
+      25, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 28 };
+
+
+    final short leveldata4[] =
+    { 19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
+      17, 16, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 16, 20,
+      17, 20,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 17, 20,
+      17, 16, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 16, 20,
+      17, 16, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 16, 20,
+      17, 20,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 17, 20,
+      17, 16, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 16, 20,
+      17, 16, 24, 24, 24, 24, 24, 16, 24, 24, 24, 24, 24, 16, 20,
+      17, 20,  0,  0,  0,  0,  0, 21,  0,  0,  0,  0,  0, 17, 20,
+      17, 20,  0, 19, 18, 18, 18, 16, 18, 18, 18, 22,  0, 17, 20,
+      17, 20,  0, 17, 16, 16, 16, 16, 16, 16, 16, 20,  0, 17, 20,
+      17, 20,  0, 25, 24, 24, 24, 24, 24, 24, 24, 28,  0, 17, 20,
+      17, 20,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 17, 20,
+      17, 16, 18, 18, 18, 18, 22,  0, 19, 18, 18, 18, 18, 16, 20,
+      25, 24, 24, 24, 24, 24, 28,  0, 25, 24, 24, 24, 24, 24, 28};
+
+      final short leveldata5[] =
+      {   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+          0,  0, 19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,  0,
+          0,  0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,  0,
+          0,  0, 17, 16, 16, 16, 24, 24, 24, 24, 24, 24, 16, 20,  0,
+          0,  0, 17, 16, 16, 20,  0,  0,  0,  0,  0,  0, 17, 20,  0,
+          0,  0, 17, 16, 16, 20,  0,  0,  0,  0,  0,  0, 25, 28,  0,
+          0,  0, 17, 16, 16, 16, 18, 18, 18, 18, 22,  0,  0,  0,  0,
+          0,  0, 17, 16, 16, 16, 16, 16, 16, 16, 20,  0,  0,  0,  0,
+          0,  0, 25, 24, 16, 16, 16, 16, 16, 16, 16, 18, 18, 18, 22,
+          0,  0,  0,  0, 17, 16, 16, 16, 16, 16, 24, 16, 16, 16, 20,
+          0,  0,  0,  0, 17, 16, 16, 16, 16, 20,  0, 17, 16, 16, 20,
+         19, 18, 18, 26, 16, 24, 24,  0, 24, 28,  0, 17, 16, 16, 20,
+         17, 16, 20,  0, 21,  0,  0, 21,  0,  0,  0, 17, 16, 16, 20,
+         17, 16, 20,  0, 21,  0, 19, 16, 22,  0,  0, 25, 24, 24, 28,
+         25, 24, 28,  0, 29,  0, 25, 24, 28,  0,  0,  0,  0,  0,  0 };
+
+
 
     final int validspeeds[] = { 1, 2, 3, 4, 6, 8 };
     final int maxspeed = 6;
@@ -118,6 +195,7 @@ public class Board extends JPanel implements ActionListener {
         timer = new Timer(40, this);
         timer.start();
     }
+
     /**
        Called by the system
      */
@@ -192,7 +270,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     /**
-       Checks if there are any pellets left for Pacman to eat, and restarts the game on a higher difficulty if finished
+       Checks if there are any pellets left for Pacman to eat, and restarts the game on the next board in a  higher difficulty if finished
      */
     public void CheckMaze() {
         short i = 0;
@@ -206,6 +284,7 @@ public class Board extends JPanel implements ActionListener {
 
         if (finished) {
             score += 50;
+            this.numBoardsCleared++;
 
             if (nrofghosts < maxghosts)
                 nrofghosts++;
@@ -216,13 +295,17 @@ public class Board extends JPanel implements ActionListener {
     }
 
     /**
-       Decrements number of lives left when player touches a ghost and reinitializes player location
+       Decrements number of lives left when player touches a ghost and reinitializes player location.
+       End the game if remaining lives reaches 0.
      */
     public void Death() {
 
         pacsleft--;
         if (pacsleft == 0)
+        {
             ingame = false;
+            numBoardsCleared = 0;
+        }
         LevelContinue();
     }
 
@@ -237,8 +320,7 @@ public class Board extends JPanel implements ActionListener {
 
         for (i = 0; i < nrofghosts; i++) {
             if (ghostx[i] % blocksize == 0 && ghosty[i] % blocksize == 0) {
-                pos =
- ghostx[i] / blocksize + nrofblocks * (int)(ghosty[i] / blocksize);
+                pos = ghostx[i] / blocksize + nrofblocks * (int)(ghosty[i] / blocksize);
 
                 count = 0;
                 if ((screendata[pos] & 1) == 0 && ghostdx[i] != 1) {
@@ -318,8 +400,7 @@ public class Board extends JPanel implements ActionListener {
             viewdy = pacmandy;
         }
         if (pacmanx % blocksize == 0 && pacmany % blocksize == 0) {
-            pos =
- pacmanx / blocksize + nrofblocks * (int)(pacmany / blocksize);
+            pos = pacmanx / blocksize + nrofblocks * (int)(pacmany / blocksize);
             ch = screendata[pos];
 
             if ((ch & 16) != 0) {
@@ -509,7 +590,19 @@ public class Board extends JPanel implements ActionListener {
     public void LevelInit() {
         int i;
         for (i = 0; i < nrofblocks * nrofblocks; i++)
-            screendata[i] = leveldata[i];
+        {
+            if (numBoardsCleared%3 == 0)
+                screendata[i] = leveldata1[i];
+            else if (numBoardsCleared%3 == 1)
+                screendata[i] = leveldata2[i];
+            else if (numBoardsCleared%3 == 2)
+                screendata[i] = leveldata3[i];
+            else if (numBoardsCleared%5 == 3)
+                screendata[i] = leveldata4[i];
+            else if (numBoardsCleared%3 == 4)
+                screendata[i] = leveldata5[i];
+
+        }
 
         LevelContinue();
     }
@@ -544,27 +637,33 @@ public class Board extends JPanel implements ActionListener {
         viewdy = 0;
         dying = false;
     }
+
     /**
-       Load game sprites from images folder
+       Load game sprites from pacpix directory
      */
     public void GetImages()
     {
-
-      ghost = new ImageIcon(Board.class.getResource("../../../../../../images/ghost.png")).getImage();
-      pacman1 = new ImageIcon(Board.class.getResource("../../../../../../images/pacman.png")).getImage();
-      pacman2up = new ImageIcon(Board.class.getResource("../../../../../../images/up1.png")).getImage();
-      pacman3up = new ImageIcon(Board.class.getResource("../../../../../../images/up2.png")).getImage();
-      pacman4up = new ImageIcon(Board.class.getResource("../../../../../../images/up3.png")).getImage();
-      pacman2down = new ImageIcon(Board.class.getResource("../../../../../../images/down1.png")).getImage();
-      pacman3down = new ImageIcon(Board.class.getResource("../../../../../../images/down2.png")).getImage(); 
-      pacman4down = new ImageIcon(Board.class.getResource("../../../../../../images/down3.png")).getImage();
-      pacman2left = new ImageIcon(Board.class.getResource("../../../../../../images/left1.png")).getImage();
-      pacman3left = new ImageIcon(Board.class.getResource("../../../../../../images/left2.png")).getImage();
-      pacman4left = new ImageIcon(Board.class.getResource("../../../../../../images/left3.png")).getImage();
-      pacman2right = new ImageIcon(Board.class.getResource("../../../../../../images/right1.png")).getImage();
-      pacman3right = new ImageIcon(Board.class.getResource("../../../../../../images/right2.png")).getImage();
-      pacman4right = new ImageIcon(Board.class.getResource("../../../../../../images/right3.png")).getImage();
-
+	    try 
+        {
+	        ghost = ImageIO.read(getClass().getResource("pacpix/ghost.png"));
+	        pacman1 = ImageIO.read(getClass().getResource("pacpix/pacman.png"));
+	        pacman2up = ImageIO.read(getClass().getResource("pacpix/up1.png"));
+	        pacman3up = ImageIO.read(getClass().getResource("pacpix/up2.png"));
+	        pacman4up = ImageIO.read(getClass().getResource("pacpix/up3.png"));
+	        pacman2down = ImageIO.read(getClass().getResource("pacpix/down1.png"));
+	        pacman3down = ImageIO.read(getClass().getResource("pacpix/down2.png")); 
+	        pacman4down = ImageIO.read(getClass().getResource("pacpix/down3.png"));
+	        pacman2left = ImageIO.read(getClass().getResource("pacpix/left1.png"));
+	        pacman3left = ImageIO.read(getClass().getResource("pacpix/left2.png"));
+	        pacman4left = ImageIO.read(getClass().getResource("pacpix/left3.png"));
+	        pacman2right = ImageIO.read(getClass().getResource("pacpix/right1.png"));
+	        pacman3right = ImageIO.read(getClass().getResource("pacpix/right2.png"));
+	        pacman4right = ImageIO.read(getClass().getResource("pacpix/right3.png"));
+	    } 
+        catch (IOException e) 
+        {
+	        e.printStackTrace();
+	    }
     }
 
     /**
@@ -597,6 +696,7 @@ public class Board extends JPanel implements ActionListener {
        Class that handles key presses for game controls
      */
     class TAdapter extends KeyAdapter {
+
 	/**
 	   Detects when a key is pressed.<p>
 	   In-game: Changes Pacman's direction of movement with the arrow keys. Quit game by pressing the escape key.<p> 
@@ -648,21 +748,23 @@ public class Board extends JPanel implements ActionListener {
             }
           }
       }
+
 	/**
 	   Detects when a key is released
 	   @param e a KeyEvent
 	 */
-	public void keyReleased(KeyEvent e) {
-	    int key = e.getKeyCode();
-	    if (key == Event.LEFT || key == Event.RIGHT || 
-                key == Event.UP ||  key == Event.DOWN)
-	    {
+          public void keyReleased(KeyEvent e) {
+              int key = e.getKeyCode();
+
+              if (key == Event.LEFT || key == Event.RIGHT || 
+                 key == Event.UP ||  key == Event.DOWN)
+              {
                 reqdx=0;
                 reqdy=0;
-	    }
-	}
-    }
-    
+              }
+          }
+      }
+
     /**
        Repaint the graphics each frame
        @param e an ActionEvent
