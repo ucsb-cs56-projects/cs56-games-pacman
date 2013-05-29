@@ -21,6 +21,15 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.imageio.ImageIO;
 
+/**
+   Playing field for a Pacman arcade game remake that keeps track of all relevant data and handles game logic.<p>
+   The version of the code by Jan Bodnar may be found at http://zetcode.com/tutorials/javagamestutorial/pacman/
+   @author Brian Postma
+   @author Jan Bodnar
+   @author Dario Castellanos
+   @author Brandon Newman
+   @version CS56 S13
+ */
 
 public class Board extends JPanel implements ActionListener {
 
@@ -158,7 +167,9 @@ public class Board extends JPanel implements ActionListener {
     short[] screendata;
     Timer timer;
 
-
+    /**
+       Constructor for Board object
+     */
     public Board() {
 
         GetImages();
@@ -185,12 +196,17 @@ public class Board extends JPanel implements ActionListener {
         timer.start();
     }
 
+    /**
+       Called by the system
+     */
     public void addNotify() {
         super.addNotify();
         GameInit();
     }
 
-
+    /**
+       Animates the Pacman sprite's direction as well as mouth opening and closing
+     */
     public void DoAnim() {
         pacanimcount--;
         if (pacanimcount <= 0) {
@@ -201,7 +217,10 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-
+    /**
+       Main game logic loop
+       @param g2d a Graphics 2D object 
+     */
     public void PlayGame(Graphics2D g2d) {
         if (dying) {
             Death();
@@ -213,7 +232,10 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-
+    /**
+       Draw a message box with the text "Press s to start." in the center of the screen
+       @param g2d a Graphics2D object
+     */
     public void ShowIntroScreen(Graphics2D g2d) {
 
         g2d.setColor(new Color(0, 32, 48));
@@ -230,7 +252,10 @@ public class Board extends JPanel implements ActionListener {
         g2d.drawString(s, (scrsize - metr.stringWidth(s)) / 2, scrsize / 2);
     }
 
-
+    /**
+       Display the current score on the bottom right of the screen
+       @param g a Graphics object
+     */
     public void DrawScore(Graphics2D g) {
         int i;
         String s;
@@ -244,7 +269,9 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-
+    /**
+       Checks if there are any pellets left for Pacman to eat, and restarts the game on the next board in a  higher difficulty if finished
+     */
     public void CheckMaze() {
         short i = 0;
         boolean finished = true;
@@ -267,6 +294,10 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
+    /**
+       Decrements number of lives left when player touches a ghost and reinitializes player location.
+       End the game if remaining lives reaches 0.
+     */
     public void Death() {
 
         pacsleft--;
@@ -278,7 +309,10 @@ public class Board extends JPanel implements ActionListener {
         LevelContinue();
     }
 
-
+    /**
+       Movement logic for ghost enemies. Ghosts will move one square and then decide whether to change directions or not
+       @param g2d a Graphics2D object
+     */
     public void moveGhosts(Graphics2D g2d) {
         short i;
         int pos;
@@ -342,12 +376,19 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-
+    /**
+       Draws the ghost sprite
+       @param g2d a Graphics2D object
+       @param x the x position of the ghost
+       @param y the y position of the ghost
+     */
     public void DrawGhost(Graphics2D g2d, int x, int y) {
         g2d.drawImage(ghost, x, y, this);
     }
 
-
+    /**
+       Handles movement for Pacman
+     */
     public void MovePacMan() {
         int pos;
         short ch;
@@ -392,7 +433,10 @@ public class Board extends JPanel implements ActionListener {
         pacmany = pacmany + pacmanspeed * pacmandy;
     }
 
-
+    /**
+       Calls the appropriate draw method for the direction Pacman is facing
+       @param g2d a Graphics2D object
+     */
     public void DrawPacMan(Graphics2D g2d) {
         if (viewdx == -1)
             DrawPacManLeft(g2d);
@@ -404,6 +448,10 @@ public class Board extends JPanel implements ActionListener {
             DrawPacManDown(g2d);
     }
 
+    /**
+       Draws Pacman facing up
+       @param g2d a Graphics2D object
+     */
     public void DrawPacManUp(Graphics2D g2d) {
         switch (pacmananimpos) {
         case 1:
@@ -421,7 +469,10 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-
+    /**
+       Draws Pacman facing down
+       @param g2d a Graphics2D object
+     */
     public void DrawPacManDown(Graphics2D g2d) {
         switch (pacmananimpos) {
         case 1:
@@ -439,7 +490,10 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-
+    /**
+       Draws Pacman facing left
+       @param g2d a Graphics2D object
+     */
     public void DrawPacManLeft(Graphics2D g2d) {
         switch (pacmananimpos) {
         case 1:
@@ -457,7 +511,10 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-
+    /**
+       Draws Pacman facing right
+       @param g2d a Graphics2D object
+     */
     public void DrawPacManRight(Graphics2D g2d) {
         switch (pacmananimpos) {
         case 1:
@@ -475,7 +532,10 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-
+    /**
+       Draws the maze that serves as a playing field.
+       @param g2d a Graphics2D object
+     */
     public void DrawMaze(Graphics2D g2d) {
         short i = 0;
         int x, y;
@@ -513,6 +573,9 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
+    /**
+       Initialize game variables
+     */
     public void GameInit() {
         pacsleft = 3;
         score = 0;
@@ -521,7 +584,9 @@ public class Board extends JPanel implements ActionListener {
         currentspeed = 3;
     }
 
-
+    /**
+       Initialize level
+     */
     public void LevelInit() {
         int i;
         for (i = 0; i < nrofblocks * nrofblocks; i++)
@@ -542,7 +607,9 @@ public class Board extends JPanel implements ActionListener {
         LevelContinue();
     }
 
-
+    /**
+       Initialize Pacman and ghost position/direction
+     */
     public void LevelContinue() {
         short i;
         int dx = 1;
@@ -571,6 +638,9 @@ public class Board extends JPanel implements ActionListener {
         dying = false;
     }
 
+    /**
+       Load game sprites from pacpix directory
+     */
     public void GetImages()
     {
 	    try 
@@ -596,6 +666,10 @@ public class Board extends JPanel implements ActionListener {
 	    }
     }
 
+    /**
+       Paint graphics onto screen
+       @param g a Graphics object
+     */
     public void paint(Graphics g)
     {
       super.paint(g);
@@ -618,7 +692,17 @@ public class Board extends JPanel implements ActionListener {
       g.dispose();
     }
 
+    /**
+       Class that handles key presses for game controls
+     */
     class TAdapter extends KeyAdapter {
+
+	/**
+	   Detects when a key is pressed.<p>
+	   In-game: Changes Pacman's direction of movement with the arrow keys. Quit game by pressing the escape key.<p> 
+	   Not in-game: Press the 'S' key to begin the game.
+	   @param e a KeyEvent
+	 */
         public void keyPressed(KeyEvent e) {
 
           int key = e.getKeyCode();
@@ -665,6 +749,10 @@ public class Board extends JPanel implements ActionListener {
           }
       }
 
+	/**
+	   Detects when a key is released
+	   @param e a KeyEvent
+	 */
           public void keyReleased(KeyEvent e) {
               int key = e.getKeyCode();
 
@@ -677,6 +765,10 @@ public class Board extends JPanel implements ActionListener {
           }
       }
 
+    /**
+       Repaint the graphics each frame
+       @param e an ActionEvent
+     */
     public void actionPerformed(ActionEvent e) {
         repaint();  
     }
