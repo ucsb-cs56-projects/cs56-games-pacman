@@ -10,6 +10,12 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
+/**
+   Player controlled pacman character.
+   @author Dario Castellanos
+   @author Daniel Ly
+   @version CS56 S13
+ */
 public class PacPlayer extends Character{
     private final int pacanimdelay = 2;
     private final int pacmananimcount = 4;
@@ -21,6 +27,11 @@ public class PacPlayer extends Character{
     int pacanimdir = 1;
     int pacmananimpos = 0;
     
+    /**
+       Constructor for PacPlayer class
+       @param x the starting x coordinate of pacman
+       @param y the starting y coordinate of pacman
+     */
     public PacPlayer(int x, int y){
     	super(x,y);
     	speed = pacmanspeed;
@@ -28,7 +39,7 @@ public class PacPlayer extends Character{
     }
 
     /**
-	 * Load game sprites from images folder
+       Load game sprites from images folder
      */
 	@Override
 	public void loadImages() {
@@ -77,10 +88,10 @@ public class PacPlayer extends Character{
     }
     
     /**
-	 * Draws Pacman facing up
-	 * @param g2d a Graphics2D object
-	 * @param canvas A JComponent object to be drawn on
-	 */
+     * Draws Pacman facing up
+     * @param g2d a Graphics2D object
+     * @param canvas A JComponent object to be drawn on
+     */
     public void drawPacManUp(Graphics2D g2d, JComponent canvas) {
         switch (pacmananimpos) {
 	        case 1:

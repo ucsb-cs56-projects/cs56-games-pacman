@@ -28,6 +28,7 @@ import javax.imageio.ImageIO;
    @author Jan Bodnar
    @author Dario Castellanos
    @author Brandon Newman
+   @author Daniel Ly
    @version CS56 S13
  */
 
@@ -224,6 +225,10 @@ public class Board extends JPanel implements ActionListener {
         g2d.drawRect(50, scrsize / 2 - 30, scrsize - 100, 50);
 
         String s = "Press s to start.";
+	//BufferedReader br = new BufferedReader(new FileReader("highscores.txt"));
+        //for(int i=0; i < 10; i++){
+	//    g2d.drawString(br.readLine(), 
+	//} 
         Font small = new Font("Helvetica", Font.BOLD, 14);
         FontMetrics metr = this.getFontMetrics(small);
 
