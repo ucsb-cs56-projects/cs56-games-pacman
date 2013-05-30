@@ -47,28 +47,21 @@ public class Board extends JPanel implements ActionListener {
     final int blocksize = 24;
     final int nrofblocks = 15;
     final int scrsize = nrofblocks * blocksize;
-    final int pacanimdelay = 2;
-    final int pacmananimcount = 4;
+
+    Character pacman = new PacPlayer(7*blocksize, 11*blocksize);
     final int maxghosts = 12;
-    final int pacmanspeed = 6;
+
     int numBoardsCleared = 0;
 
-    int pacanimcount = pacanimdelay;
-    int pacanimdir = 1;
-    int pacmananimpos = 0;
+
     int nrofghosts = 6;
     int pacsleft, score;
     int deathcounter;
     int[] dx, dy;
     int[] ghostx, ghosty, ghostdx, ghostdy, ghostspeed;
 
-    Image ghost, ghoster;
-    Image pacman1, pacman2up, pacman2left, pacman2right, pacman2down;
-    Image pacman3up, pacman3down, pacman3left, pacman3right;
-    Image pacman4up, pacman4down, pacman4left, pacman4right;
+    Image ghost;
 
-    int pacmanx, pacmany, pacmandx, pacmandy;
-    int reqdx, reqdy, viewdx, viewdy;
 
     //Real level data
     final short leveldata1[] =
@@ -205,19 +198,6 @@ public class Board extends JPanel implements ActionListener {
     }
 
     /**
-       Animates the Pacman sprite's direction as well as mouth opening and closing
-     */
-    public void DoAnim() {
-        pacanimcount--;
-        if (pacanimcount <= 0) {
-            pacanimcount = pacanimdelay;
-            pacmananimpos = pacmananimpos + pacanimdir;
-            if (pacmananimpos == (pacmananimcount - 1) || pacmananimpos == 0)
-                pacanimdir = -pacanimdir;
-        }
-    }
-
-    /**
        Main game logic loop
        @param g2d a Graphics 2D object 
      */
@@ -225,8 +205,8 @@ public class Board extends JPanel implements ActionListener {
         if (dying) {
             Death();
         } else {
-            moveCharacter();
-            DrawPacMan(g2d);
+            moveCharacter(pacman);
+	    pacman.draw(g2d, this);
             moveGhosts(g2d);
             CheckMaze();
         }
@@ -265,7 +245,7 @@ public class Board extends JPanel implements ActionListener {
         s = "Score: " + score;
         g.drawString(s, scrsize / 2 + 96, scrsize + 16);
         for (i = 0; i < pacsleft; i++) {
-            g.drawImage(pacman3left, i * 28 + 8, scrsize + 1, this);
+            g.drawImage(pacman.getLifeImage(), i * 28 + 8, scrsize + 1, this);
         }
     }
 
@@ -365,8 +345,8 @@ public class Board extends JPanel implements ActionListener {
             ghosty[i] = ghosty[i] + (ghostdy[i] * ghostspeed[i]);
             DrawGhost(g2d, ghostx[i] + 1, ghosty[i] + 1);
 
-            if (pacmanx > (ghostx[i] - 12) && pacmanx < (ghostx[i] + 12) &&
-                pacmany > (ghosty[i] - 12) && pacmany < (ghosty[i] + 12) &&
+            if (pacman.x > (ghostx[i] - 12) && pacman.x < (ghostx[i] + 12) &&
+                pacman.y > (ghosty[i] - 12) && pacman.y < (ghosty[i] + 12) &&
                 ingame) {
 
                 dying = true;
@@ -389,18 +369,18 @@ public class Board extends JPanel implements ActionListener {
     /**
        Handles movement for Pacman
      */
-    public void moveCharacter() {
+    public void moveCharacter(Character player) {
         int pos;
         short ch;
 
-        if (reqdx == -pacmandx && reqdy == -pacmandy) {
-            pacmandx = reqdx;
-            pacmandy = reqdy;
-            viewdx = pacmandx;
-            viewdy = pacmandy;
+        if (player.reqdx == -player.dx && player.reqdy == -player.dy) {
+            player.dx = player.reqdx;
+            player.dy = player.reqdy;
+            player.viewdx = player.dx;
+            player.viewdy = player.dy;
         }
-        if (pacmanx % blocksize == 0 && pacmany % blocksize == 0) {
-            pos = pacmanx / blocksize + nrofblocks * (int)(pacmany / blocksize);
+        if (player.x % blocksize == 0 && player.y % blocksize == 0) {
+            pos = player.x / blocksize + nrofblocks * (int)(player.y / blocksize);
             ch = screendata[pos];
 
             if ((ch & 16) != 0) {
@@ -408,128 +388,28 @@ public class Board extends JPanel implements ActionListener {
                 score++;
             }
 
-            if (reqdx != 0 || reqdy != 0) {
-                if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) ||
-                      (reqdx == 1 && reqdy == 0 && (ch & 4) != 0) ||
-                      (reqdx == 0 && reqdy == -1 && (ch & 2) != 0) ||
-                      (reqdx == 0 && reqdy == 1 && (ch & 8) != 0))) {
-                    pacmandx = reqdx;
-                    pacmandy = reqdy;
-                    viewdx = pacmandx;
-                    viewdy = pacmandy;
+            if (player.reqdx != 0 || player.reqdy != 0) {
+                if (!((player.reqdx == -1 && player.reqdy == 0 && (ch & 1) != 0) ||
+                      (player.reqdx == 1 && player.reqdy == 0 && (ch & 4) != 0) ||
+                      (player.reqdx == 0 && player.reqdy == -1 && (ch & 2) != 0) ||
+                      (player.reqdx == 0 && player.reqdy == 1 && (ch & 8) != 0))) {
+                    player.dx = player.reqdx;
+                    player.dy = player.reqdy;
+                    player.viewdx = player.dx;
+                    player.viewdy = player.dy;
                 }
             }
 
             // Check for standstill
-            if ((pacmandx == -1 && pacmandy == 0 && (ch & 1) != 0) ||
-                (pacmandx == 1 && pacmandy == 0 && (ch & 4) != 0) ||
-                (pacmandx == 0 && pacmandy == -1 && (ch & 2) != 0) ||
-                (pacmandx == 0 && pacmandy == 1 && (ch & 8) != 0)) {
-                pacmandx = 0;
-                pacmandy = 0;
+            if ((player.dx == -1 && player.dy == 0 && (ch & 1) != 0) ||
+                (player.dx == 1 && player.dy == 0 && (ch & 4) != 0) ||
+                (player.dx == 0 && player.dy == -1 && (ch & 2) != 0) ||
+                (player.dx == 0 && player.dy == 1 && (ch & 8) != 0)) {
+                player.dx = 0;
+                player.dy = 0;
             }
         }
-        pacmanx = pacmanx + pacmanspeed * pacmandx;
-        pacmany = pacmany + pacmanspeed * pacmandy;
-    }
-
-    /**
-       Calls the appropriate draw method for the direction Pacman is facing
-       @param g2d a Graphics2D object
-     */
-    public void DrawPacMan(Graphics2D g2d) {
-        if (viewdx == -1)
-            DrawPacManLeft(g2d);
-        else if (viewdx == 1)
-            DrawPacManRight(g2d);
-        else if (viewdy == -1)
-            DrawPacManUp(g2d);
-        else
-            DrawPacManDown(g2d);
-    }
-
-    /**
-       Draws Pacman facing up
-       @param g2d a Graphics2D object
-     */
-    public void DrawPacManUp(Graphics2D g2d) {
-        switch (pacmananimpos) {
-        case 1:
-            g2d.drawImage(pacman2up, pacmanx + 1, pacmany + 1, this);
-            break;
-        case 2:
-            g2d.drawImage(pacman3up, pacmanx + 1, pacmany + 1, this);
-            break;
-        case 3:
-            g2d.drawImage(pacman4up, pacmanx + 1, pacmany + 1, this);
-            break;
-        default:
-            g2d.drawImage(pacman1, pacmanx + 1, pacmany + 1, this);
-            break;
-        }
-    }
-
-    /**
-       Draws Pacman facing down
-       @param g2d a Graphics2D object
-     */
-    public void DrawPacManDown(Graphics2D g2d) {
-        switch (pacmananimpos) {
-        case 1:
-            g2d.drawImage(pacman2down, pacmanx + 1, pacmany + 1, this);
-            break;
-        case 2:
-            g2d.drawImage(pacman3down, pacmanx + 1, pacmany + 1, this);
-            break;
-        case 3:
-            g2d.drawImage(pacman4down, pacmanx + 1, pacmany + 1, this);
-            break;
-        default:
-            g2d.drawImage(pacman1, pacmanx + 1, pacmany + 1, this);
-            break;
-        }
-    }
-
-    /**
-       Draws Pacman facing left
-       @param g2d a Graphics2D object
-     */
-    public void DrawPacManLeft(Graphics2D g2d) {
-        switch (pacmananimpos) {
-        case 1:
-            g2d.drawImage(pacman2left, pacmanx + 1, pacmany + 1, this);
-            break;
-        case 2:
-            g2d.drawImage(pacman3left, pacmanx + 1, pacmany + 1, this);
-            break;
-        case 3:
-            g2d.drawImage(pacman4left, pacmanx + 1, pacmany + 1, this);
-            break;
-        default:
-            g2d.drawImage(pacman1, pacmanx + 1, pacmany + 1, this);
-            break;
-        }
-    }
-
-    /**
-       Draws Pacman facing right
-       @param g2d a Graphics2D object
-     */
-    public void DrawPacManRight(Graphics2D g2d) {
-        switch (pacmananimpos) {
-        case 1:
-            g2d.drawImage(pacman2right, pacmanx + 1, pacmany + 1, this);
-            break;
-        case 2:
-            g2d.drawImage(pacman3right, pacmanx + 1, pacmany + 1, this);
-            break;
-        case 3:
-            g2d.drawImage(pacman4right, pacmanx + 1, pacmany + 1, this);
-            break;
-        default:
-            g2d.drawImage(pacman1, pacmanx + 1, pacmany + 1, this);
-            break;
-        }
+        player.move();
     }
 
     /**
@@ -627,14 +507,7 @@ public class Board extends JPanel implements ActionListener {
             ghostspeed[i] = validspeeds[random];
         }
 
-        pacmanx = 7 * blocksize;
-        pacmany = 11 * blocksize;
-        pacmandx = 0;
-        pacmandy = 0;
-        reqdx = 0;
-        reqdy = 0;
-        viewdx = -1;
-        viewdy = 0;
+	pacman.reset();
         dying = false;
     }
 
@@ -643,27 +516,14 @@ public class Board extends JPanel implements ActionListener {
      */
     public void GetImages()
     {
-	    try 
+	try 
         {
-	        ghost = ImageIO.read(getClass().getResource("pacpix/ghost.png"));
-	        pacman1 = ImageIO.read(getClass().getResource("pacpix/pacman.png"));
-	        pacman2up = ImageIO.read(getClass().getResource("pacpix/up1.png"));
-	        pacman3up = ImageIO.read(getClass().getResource("pacpix/up2.png"));
-	        pacman4up = ImageIO.read(getClass().getResource("pacpix/up3.png"));
-	        pacman2down = ImageIO.read(getClass().getResource("pacpix/down1.png"));
-	        pacman3down = ImageIO.read(getClass().getResource("pacpix/down2.png")); 
-	        pacman4down = ImageIO.read(getClass().getResource("pacpix/down3.png"));
-	        pacman2left = ImageIO.read(getClass().getResource("pacpix/left1.png"));
-	        pacman3left = ImageIO.read(getClass().getResource("pacpix/left2.png"));
-	        pacman4left = ImageIO.read(getClass().getResource("pacpix/left3.png"));
-	        pacman2right = ImageIO.read(getClass().getResource("pacpix/right1.png"));
-	        pacman3right = ImageIO.read(getClass().getResource("pacpix/right2.png"));
-	        pacman4right = ImageIO.read(getClass().getResource("pacpix/right3.png"));
-	    } 
+	    ghost = ImageIO.read(getClass().getResource("pacpix/ghost.png"));
+	} 
         catch (IOException e) 
         {
-	        e.printStackTrace();
-	    }
+	    e.printStackTrace();
+	}
     }
 
     /**
@@ -681,7 +541,6 @@ public class Board extends JPanel implements ActionListener {
 
       DrawMaze(g2d);
       DrawScore(g2d);
-      DoAnim();
       if (ingame)
         PlayGame(g2d);
       else
@@ -711,23 +570,23 @@ public class Board extends JPanel implements ActionListener {
           {
             if (key == KeyEvent.VK_LEFT)
             {
-              reqdx=-1;
-              reqdy=0;
+              pacman.reqdx=-1;
+              pacman.reqdy=0;
             }
             else if (key == KeyEvent.VK_RIGHT)
             {
-              reqdx=1;
-              reqdy=0;
+              pacman.reqdx=1;
+              pacman.reqdy=0;
             }
             else if (key == KeyEvent.VK_UP)
             {
-              reqdx=0;
-              reqdy=-1;
+              pacman.reqdx=0;
+              pacman.reqdy=-1;
             }
             else if (key == KeyEvent.VK_DOWN)
             {
-              reqdx=0;
-              reqdy=1;
+              pacman.reqdx=0;
+              pacman.reqdy=1;
             }
             else if (key == KeyEvent.VK_ESCAPE && timer.isRunning())
             {
@@ -759,8 +618,8 @@ public class Board extends JPanel implements ActionListener {
               if (key == Event.LEFT || key == Event.RIGHT || 
                  key == Event.UP ||  key == Event.DOWN)
               {
-                reqdx=0;
-                reqdy=0;
+                pacman.reqdx=0;
+                pacman.reqdy=0;
               }
           }
       }

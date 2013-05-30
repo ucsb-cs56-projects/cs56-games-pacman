@@ -24,6 +24,7 @@ public class PacPlayer extends Character{
     public PacPlayer(int x, int y){
     	super(x,y);
     	speed = pacmanspeed;
+	loadImages();
     }
 
     /**
@@ -50,31 +51,21 @@ public class PacPlayer extends Character{
 	        e.printStackTrace();
 	    }
 	}
-	
     /**
-	 * Calls the appropriate draw method for the direction Pacman is facing
-	 * @param g a Graphics object
-	 */
-	@Override
-    public void draw(Graphics2D g, JComponent canvas){
-        doAnim();
-        if (viewdx == -1)
-            drawPacManLeft(g, canvas);
-        else if (viewdx == 1)
-            drawPacManRight(g, canvas);
-        else if (viewdy == -1)
-            drawPacManUp(g, canvas);
-        else
-            drawPacManDown(g, canvas);
+       Returns the image used for displaying remaining lives
+       @return image of pacman facing left
+     */
+    @Override
+    public Image getLifeImage() {
+	return pacman3left;
     }
-    
-
     /**
 	 * Calls the appropriate draw method for the direction Pacman is facing
 	 * @param g2d a Graphics2D object
 	 * @param canvas A Jcomponent object to be drawn on
 	 */
-    public void drawPacMan(Graphics2D g2d, JComponent canvas) {
+    public void draw(Graphics2D g2d, JComponent canvas) {
+	doAnim();
         if (viewdx == -1)
             drawPacManLeft(g2d, canvas);
         else if (viewdx == 1)
