@@ -225,7 +225,7 @@ public class Board extends JPanel implements ActionListener {
         if (dying) {
             Death();
         } else {
-            MovePacMan();
+            moveCharacter();
             DrawPacMan(g2d);
             moveGhosts(g2d);
             CheckMaze();
@@ -389,7 +389,7 @@ public class Board extends JPanel implements ActionListener {
     /**
        Handles movement for Pacman
      */
-    public void MovePacMan() {
+    public void moveCharacter() {
         int pos;
         short ch;
 
