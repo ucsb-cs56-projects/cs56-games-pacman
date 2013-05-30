@@ -44,19 +44,19 @@ public class PacPlayer extends Character{
 	@Override
 	public void loadImages() {
 	    try {
-	        pacman1 = ImageIO.read(getClass().getResource("pacpix/pacman.png"));
-	        pacman2up = ImageIO.read(getClass().getResource("pacpix/up1.png"));
-	        pacman3up = ImageIO.read(getClass().getResource("pacpix/up2.png"));
-	        pacman4up = ImageIO.read(getClass().getResource("pacpix/up3.png"));
-	        pacman2down = ImageIO.read(getClass().getResource("pacpix/down1.png"));
-	        pacman3down = ImageIO.read(getClass().getResource("pacpix/down2.png")); 
-	        pacman4down = ImageIO.read(getClass().getResource("pacpix/down3.png"));
-	        pacman2left = ImageIO.read(getClass().getResource("pacpix/left1.png"));
-	        pacman3left = ImageIO.read(getClass().getResource("pacpix/left2.png"));
-	        pacman4left = ImageIO.read(getClass().getResource("pacpix/left3.png"));
-	        pacman2right = ImageIO.read(getClass().getResource("pacpix/right1.png"));
-	        pacman3right = ImageIO.read(getClass().getResource("pacpix/right2.png"));
-	        pacman4right = ImageIO.read(getClass().getResource("pacpix/right3.png"));
+		pacman1 = ImageIO.read(getClass().getResource("pacpix/pacman.png"));
+		pacman2up = ImageIO.read(getClass().getResource("pacpix/up1.png"));
+		pacman3up = ImageIO.read(getClass().getResource("pacpix/up2.png"));
+		pacman4up = ImageIO.read(getClass().getResource("pacpix/up3.png"));
+		pacman2down = ImageIO.read(getClass().getResource("pacpix/down1.png"));
+		pacman3down = ImageIO.read(getClass().getResource("pacpix/down2.png"));
+		pacman4down = ImageIO.read(getClass().getResource("pacpix/down3.png"));
+		pacman2left = ImageIO.read(getClass().getResource("pacpix/left1.png"));
+		pacman3left = ImageIO.read(getClass().getResource("pacpix/left2.png"));
+		pacman4left = ImageIO.read(getClass().getResource("pacpix/left3.png"));
+		pacman2right = ImageIO.read(getClass().getResource("pacpix/right1.png"));
+		pacman3right = ImageIO.read(getClass().getResource("pacpix/right2.png"));
+		pacman4right = ImageIO.read(getClass().getResource("pacpix/right3.png"));
 	    } 
         catch (IOException e) {
 	        e.printStackTrace();

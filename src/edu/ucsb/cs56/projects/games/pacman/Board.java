@@ -523,8 +523,8 @@ public class Board extends JPanel implements ActionListener {
     {
 	try 
         {
-	    ghost = ImageIO.read(getClass().getResource("pacpix/ghost.png"));
-	} 
+	ghost = ImageIO.read(getClass().getResource("pacpix/ghost.png"));
+	}
         catch (IOException e) 
         {
 	    e.printStackTrace();
