@@ -16,7 +16,7 @@ public class Ghost extends Character{
 		loadImages();
 	}
 
-    /**
+        /**
 	 * Draws the ghost
 	 * @param g2d a Graphics2D object
 	 * @param canvas A Jcomponent object to be drawn on

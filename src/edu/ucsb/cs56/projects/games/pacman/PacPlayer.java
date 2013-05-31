@@ -38,6 +38,12 @@ public class PacPlayer extends Character{
     	loadImages();
     }
     
+    /**
+     * Moves character's current position with the board's collision
+     * @param blockSize The size of each block in pixels
+     * @param nrOfBlocks The number of blocks
+     * @param screenData The contents of the blocks
+     */
     public void move(int blockSize, int nrOfBlocks, short[] screenData) {
         int pos;
         short ch;

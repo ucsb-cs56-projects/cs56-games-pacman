@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -32,6 +33,7 @@ public class Board extends JPanel implements ActionListener {
 	public final static int SINGLEPLAYER = 1;
 	
 	public static int score;
+	ScoreLoader sl = new ScoreLoader("highScores.txt");
     Dimension d;
     Font smallfont = new Font("Helvetica", Font.BOLD, 14);
 
@@ -59,7 +61,6 @@ public class Board extends JPanel implements ActionListener {
     
     Ghost[] ghosts;
     Image ghost;
-
 
     //Real level data
     final short leveldata1[] =
@@ -133,23 +134,21 @@ public class Board extends JPanel implements ActionListener {
       25, 24, 24, 24, 24, 24, 28,  0, 25, 24, 24, 24, 24, 24, 28};
 
       final short leveldata5[] =
-      {   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-          0,  0, 19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,  0,
-          0,  0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,  0,
-          0,  0, 17, 16, 16, 16, 24, 24, 24, 24, 24, 24, 16, 20,  0,
-          0,  0, 17, 16, 16, 20,  0,  0,  0,  0,  0,  0, 17, 20,  0,
-          0,  0, 17, 16, 16, 20,  0,  0,  0,  0,  0,  0, 25, 28,  0,
-          0,  0, 17, 16, 16, 16, 18, 18, 18, 18, 22,  0,  0,  0,  0,
-          0,  0, 17, 16, 16, 16, 16, 16, 16, 16, 20,  0,  0,  0,  0,
-          0,  0, 25, 24, 16, 16, 16, 16, 16, 16, 16, 18, 18, 18, 22,
-          0,  0,  0,  0, 17, 16, 16, 16, 16, 16, 24, 16, 16, 16, 20,
-          0,  0,  0,  0, 17, 16, 16, 16, 16, 20,  0, 17, 16, 16, 20,
-         19, 18, 18, 26, 16, 24, 24,  0, 24, 28,  0, 17, 16, 16, 20,
-         17, 16, 20,  0, 21,  0,  0, 21,  0,  0,  0, 17, 16, 16, 20,
-         17, 16, 20,  0, 21,  0, 19, 16, 22,  0,  0, 25, 24, 24, 28,
-         25, 24, 28,  0, 29,  0, 25, 24, 28,  0,  0,  0,  0,  0,  0 };
-
-
+	{  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+	   0,  0, 19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,  0,
+	   0,  0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,  0,
+	   0,  0, 17, 16, 16, 16, 24, 24, 24, 24, 24, 24, 16, 20,  0,
+	   0,  0, 17, 16, 16, 20,  0,  0,  0,  0,  0,  0, 17, 20,  0,
+	   0,  0, 17, 16, 16, 20,  0,  0,  0,  0,  0,  0, 25, 28,  0,
+	   0,  0, 17, 16, 16, 16, 18, 18, 18, 18, 22,  0,  0,  0,  0,
+	   0,  0, 17, 16, 16, 16, 16, 16, 16, 16, 20,  0,  0,  0,  0,
+	   0,  0, 25, 24, 16, 16, 16, 16, 16, 16, 16, 18, 18, 18, 22,
+	   0,  0,  0,  0, 17, 16, 16, 16, 16, 16, 24, 16, 16, 16, 20,
+	   0,  0,  0,  0, 17, 16, 16, 16, 16, 20,  0, 17, 16, 16, 20,
+	  19, 18, 18, 26, 16, 24, 24,  0, 24, 28,  0, 17, 16, 16, 20,
+	  17, 16, 20,  0, 21,  0,  0, 21,  0,  0,  0, 17, 16, 16, 20,
+	  17, 16, 20,  0, 21,  0, 19, 16, 22,  0,  0, 25, 24, 24, 28,
+	  25, 24, 28,  0, 29,  0, 25, 24, 28,  0,  0,  0,  0,  0,  0};
 
     final int validspeeds[] = { 1, 2, 3, 4, 6, 8 };
     final int maxspeed = 6;
@@ -159,7 +158,7 @@ public class Board extends JPanel implements ActionListener {
     Timer timer;
 
     /**
-       Constructor for Board object
+     * Constructor for Board object
      */
     public Board() {
         addKeyListener(new TAdapter());
@@ -195,31 +194,34 @@ public class Board extends JPanel implements ActionListener {
     public void playGame(Graphics2D g2d) {
         if (dying) {
             death();
-        } else {
-            moveCharacter(pacman);
-            pacman.draw(g2d, this);
+        } 
+	else {
+	    pacman.move(blocksize, nrofblocks, screendata);
+	    pacman.draw(g2d, this);
             moveGhosts(g2d);
+	    detectCollision(ghosts, pacman);
             checkMaze();
         }
     }
 
     /**
      * Draw a message box with the text "Press s to start." in the center of the screen
-     * @param g2d a Graphics2D object
+     * @param g a Graphics2D object
      */
-    public void showIntroScreen(Graphics2D g2d) {
-        g2d.setColor(new Color(0, 32, 48));
-        g2d.fillRect(50, scrsize / 2 - 30, scrsize - 100, 50);
-        g2d.setColor(Color.white);
-        g2d.drawRect(50, scrsize / 2 - 30, scrsize - 100, 50);
+    public void showIntroScreen(Graphics2D g) {
+        g.setColor(new Color(0, 32, 48));
+        g.fillRect(50, scrsize / 2 - 30, scrsize - 100, 50);
+        g.setColor(Color.white);
+        g.drawRect(50, scrsize / 2 - 30, scrsize - 100, 50);
 
         String s = "Press s to start.";
         Font small = new Font("Helvetica", Font.BOLD, 14);
         FontMetrics metr = this.getFontMetrics(small);
 
-        g2d.setColor(Color.white);
-        g2d.setFont(small);
-        g2d.drawString(s, (scrsize - metr.stringWidth(s)) / 2, scrsize / 2);
+        g.setColor(Color.white);
+        g.setFont(small);
+        g.drawString(s, (scrsize - metr.stringWidth(s)) / 2, scrsize / 2);
+        drawHighScores(g);
     }
 
     /**
@@ -239,6 +241,28 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Displays a list of scores on the bottom of the screen
+     */
+    public void drawHighScores(Graphics2D g) {
+    	ArrayList<Integer> scores = sl.loadScores();
+    	g.setFont(smallfont);
+    	FontMetrics fm = this.getFontMetrics(smallfont);
+    	
+    	g.setColor(new Color(0, 32, 48));
+        g.fillRect((int) scrsize / 4 , (int) scrsize - (scrsize / 3) - fm.getAscent(), (int) (scrsize / 2), blocksize * 4);
+        g.setColor(Color.white);
+        g.drawRect((int) scrsize / 4, (int) scrsize - (scrsize / 3) - fm.getAscent(), (int) (scrsize / 2), blocksize * 4);
+        
+        g.setColor(new Color(96, 128, 255));
+    	for (int i = 0; i < scores.size(); i++) {
+    		if (i < 5)
+    			g.drawString((i + 1) + ": " + scores.get(i), (int) scrsize / 4 + blocksize, (int) (scrsize - (scrsize / 3) + (i * fm.getHeight())));
+    		else if (i < 10)
+    			g.drawString((i + 1) + ": " + scores.get(i), (int) scrsize / 2 + blocksize, (int) (scrsize - (scrsize / 3) + ((i - 5) * fm.getHeight())));
+    	}
+    }
+    
     /**
      * Checks if there are any pellets left for Pacman to eat, and restarts the game on the next board in a  higher difficulty if finished
      */
@@ -270,8 +294,8 @@ public class Board extends JPanel implements ActionListener {
      */
     public void death() {
         pacsleft--;
-        if (pacsleft == 0)
-        {
+        if (pacsleft == 0) {
+        	if (score  > 1) sl.writeScore(score);
             ingame = false;
             numBoardsCleared = 0;
         }
@@ -327,28 +351,27 @@ public class Board extends JPanel implements ActionListener {
                     ghosts[i].dx = dx[count];
                     ghosts[i].dy = dy[count];
                 }
-
             }
-            ghosts[i].x = ghosts[i].x + (ghosts[i].dx * ghosts[i].speed);
-            ghosts[i].y = ghosts[i].y + (ghosts[i].dy * ghosts[i].speed);
+	    ghosts[i].move();
             ghosts[i].draw(g2d, this);
-
-            if (pacman.x > (ghosts[i].x - 12) && pacman.x < (ghosts[i].x + 12) &&
-                pacman.y > (ghosts[i].y - 12) && pacman.y < (ghosts[i].y + 12) &&
-                ingame) {
-
-                dying = true;
-                deathcounter = 64;
-            }
         }
     }
 
-	/**
-	 * Handles movement for the player
-	 * @param player Character to be moved
-	 */
-    public void moveCharacter(Character player) {
-        player.move(blocksize, nrofblocks, screendata);
+    /**
+     * Detects when ghosts and pacman collide
+     * @param ghosts An array of Ghost
+     * @param pacman Character controlled by player
+     */
+    public void detectCollision(Ghost[] ghosts, Character pacman) {
+	for(int i = 0; i < nrofghosts; i++) {
+	    if (pacman.x > (ghosts[i].x - 12) && pacman.x < (ghosts[i].x + 12) &&
+		pacman.y > (ghosts[i].y - 12) && pacman.y < (ghosts[i].y + 12) &&
+		ingame) {
+	    
+		dying = true;
+		deathcounter = 64;
+	    }
+	}	
     }
 
     /**
@@ -397,8 +420,8 @@ public class Board extends JPanel implements ActionListener {
      */
     public void gameInit() {
         pacsleft = 3;
-        score = 0;
         levelInit();
+        score = 0;
         nrofghosts = 6;
         currentspeed = 3;
     }

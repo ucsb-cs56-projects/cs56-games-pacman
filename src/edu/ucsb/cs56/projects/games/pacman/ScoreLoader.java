@@ -12,6 +12,7 @@ import java.util.Collections;
 /**
  * Writes and loads a list of int from a textfile
  * @author Daniel Ly
+ * @author Dario Castellanos Anaya
  * @version CS56, Spring 2013
  */
 public class ScoreLoader {
