@@ -7,6 +7,9 @@ import javax.swing.JComponent;
 /**
  * Class that every character inherits from, including players
  * and AI-controlled enemies.
+ * @author Dario Castellanos Anaya
+ * @author Daniel Ly
+ * @version CS56, S13
  */
 public abstract class Character {
 	public int startX, startY;

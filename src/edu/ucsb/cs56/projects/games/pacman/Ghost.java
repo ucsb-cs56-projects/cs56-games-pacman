@@ -7,6 +7,13 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
+/**
+ * Class representing enemy ghosts in single player mode
+ * and player ghosts in multiplayer mode
+ * @author Dario Castellanos Anaya
+ * @author Daniel Ly
+ * @version CS56, S13
+ */
 public class Ghost extends Character{
 	private Image ghost;
 
