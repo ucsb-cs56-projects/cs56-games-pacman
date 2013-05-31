@@ -13,6 +13,7 @@ public class Ghost extends Character{
 	public Ghost(int x, int y, int speed) {
 		super(x, y);
 		this.speed = speed;
+		loadImages();
 	}
 
     /**

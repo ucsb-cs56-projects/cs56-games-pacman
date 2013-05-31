@@ -59,8 +59,8 @@ public class Board extends JPanel implements ActionListener {
     int pacsleft, score;
     int deathcounter;
     int[] dx, dy;
-    int[] ghostx, ghosty, ghostdx, ghostdy, ghostspeed;
-
+    
+    Ghost[] ghosts;
     Image ghost;
 
 
@@ -165,9 +165,6 @@ public class Board extends JPanel implements ActionListener {
        Constructor for Board object
      */
     public Board() {
-
-        GetImages();
-
         addKeyListener(new TAdapter());
 
         screendata = new short[nrofblocks * nrofblocks];
@@ -179,11 +176,7 @@ public class Board extends JPanel implements ActionListener {
         setBackground(Color.black);
         setDoubleBuffered(true);
 
-        ghostx = new int[maxghosts];
-        ghostdx = new int[maxghosts];
-        ghosty = new int[maxghosts];
-        ghostdy = new int[maxghosts];
-        ghostspeed = new int[maxghosts];
+        ghosts = new Ghost[maxghosts];
         dx = new int[4];
         dy = new int[4];
         timer = new Timer(40, this);
@@ -195,21 +188,21 @@ public class Board extends JPanel implements ActionListener {
      */
     public void addNotify() {
         super.addNotify();
-        GameInit();
+        gameInit();
     }
 
     /**
        Main game logic loop
        @param g2d a Graphics 2D object 
      */
-    public void PlayGame(Graphics2D g2d) {
+    public void playGame(Graphics2D g2d) {
         if (dying) {
-            Death();
+            death();
         } else {
             moveCharacter(pacman);
 	    pacman.draw(g2d, this);
             moveGhosts(g2d);
-            CheckMaze();
+            checkMaze();
         }
     }
 
@@ -217,7 +210,7 @@ public class Board extends JPanel implements ActionListener {
        Draw a message box with the text "Press s to start." in the center of the screen
        @param g2d a Graphics2D object
      */
-    public void ShowIntroScreen(Graphics2D g2d) {
+    public void showIntroScreen(Graphics2D g2d) {
 
         g2d.setColor(new Color(0, 32, 48));
         g2d.fillRect(50, scrsize / 2 - 30, scrsize - 100, 50);
@@ -241,7 +234,7 @@ public class Board extends JPanel implements ActionListener {
        Display the current score on the bottom right of the screen
        @param g a Graphics object
      */
-    public void DrawScore(Graphics2D g) {
+    public void drawScore(Graphics2D g) {
         int i;
         String s;
 
@@ -257,7 +250,7 @@ public class Board extends JPanel implements ActionListener {
     /**
        Checks if there are any pellets left for Pacman to eat, and restarts the game on the next board in a  higher difficulty if finished
      */
-    public void CheckMaze() {
+    public void checkMaze() {
         short i = 0;
         boolean finished = true;
 
@@ -275,7 +268,7 @@ public class Board extends JPanel implements ActionListener {
                 nrofghosts++;
             if (currentspeed < maxspeed)
                 currentspeed++;
-            LevelInit();
+            levelInit();
         }
     }
 
@@ -283,7 +276,7 @@ public class Board extends JPanel implements ActionListener {
        Decrements number of lives left when player touches a ghost and reinitializes player location.
        End the game if remaining lives reaches 0.
      */
-    public void Death() {
+    public void death() {
 
         pacsleft--;
         if (pacsleft == 0)
@@ -291,7 +284,7 @@ public class Board extends JPanel implements ActionListener {
             ingame = false;
             numBoardsCleared = 0;
         }
-        LevelContinue();
+        levelContinue();
     }
 
     /**
@@ -304,26 +297,26 @@ public class Board extends JPanel implements ActionListener {
         int count;
 
         for (i = 0; i < nrofghosts; i++) {
-            if (ghostx[i] % blocksize == 0 && ghosty[i] % blocksize == 0) {
-                pos = ghostx[i] / blocksize + nrofblocks * (int)(ghosty[i] / blocksize);
+            if (ghosts[i].x % blocksize == 0 && ghosts[i].y % blocksize == 0) {
+                pos = ghosts[i].x / blocksize + nrofblocks * (int)(ghosts[i].y / blocksize);
 
                 count = 0;
-                if ((screendata[pos] & 1) == 0 && ghostdx[i] != 1) {
+                if ((screendata[pos] & 1) == 0 && ghosts[i].dx != 1) {
                     dx[count] = -1;
                     dy[count] = 0;
                     count++;
                 }
-                if ((screendata[pos] & 2) == 0 && ghostdy[i] != 1) {
+                if ((screendata[pos] & 2) == 0 && ghosts[i].dy != 1) {
                     dx[count] = 0;
                     dy[count] = -1;
                     count++;
                 }
-                if ((screendata[pos] & 4) == 0 && ghostdx[i] != -1) {
+                if ((screendata[pos] & 4) == 0 && ghosts[i].dx != -1) {
                     dx[count] = 1;
                     dy[count] = 0;
                     count++;
                 }
-                if ((screendata[pos] & 8) == 0 && ghostdy[i] != -1) {
+                if ((screendata[pos] & 8) == 0 && ghosts[i].dy != -1) {
                     dx[count] = 0;
                     dy[count] = 1;
                     count++;
@@ -331,27 +324,27 @@ public class Board extends JPanel implements ActionListener {
  
                 if (count == 0) {
                     if ((screendata[pos] & 15) == 15) {
-                        ghostdx[i] = 0;
-                        ghostdy[i] = 0;
+                        ghosts[i].dx = 0;
+                        ghosts[i].dy = 0;
                     } else {
-                        ghostdx[i] = -ghostdx[i];
-                        ghostdy[i] = -ghostdy[i];
+                        ghosts[i].dx = -ghosts[i].dx;
+                        ghosts[i].dy = -ghosts[i].dy;
                     }
                 } else {
                     count = (int)(Math.random() * count);
                     if (count > 3)
                         count = 3;
-                    ghostdx[i] = dx[count];
-                    ghostdy[i] = dy[count];
+                    ghosts[i].dx = dx[count];
+                    ghosts[i].dy = dy[count];
                 }
 
             }
-            ghostx[i] = ghostx[i] + (ghostdx[i] * ghostspeed[i]);
-            ghosty[i] = ghosty[i] + (ghostdy[i] * ghostspeed[i]);
-            DrawGhost(g2d, ghostx[i] + 1, ghosty[i] + 1);
+            ghosts[i].x = ghosts[i].x + (ghosts[i].dx * ghosts[i].speed);
+            ghosts[i].y = ghosts[i].y + (ghosts[i].dy * ghosts[i].speed);
+            ghosts[i].draw(g2d, this);
 
-            if (pacman.x > (ghostx[i] - 12) && pacman.x < (ghostx[i] + 12) &&
-                pacman.y > (ghosty[i] - 12) && pacman.y < (ghosty[i] + 12) &&
+            if (pacman.x > (ghosts[i].x - 12) && pacman.x < (ghosts[i].x + 12) &&
+                pacman.y > (ghosts[i].y - 12) && pacman.y < (ghosts[i].y + 12) &&
                 ingame) {
 
                 dying = true;
@@ -367,7 +360,7 @@ public class Board extends JPanel implements ActionListener {
        @param x the x position of the ghost
        @param y the y position of the ghost
      */
-    public void DrawGhost(Graphics2D g2d, int x, int y) {
+    public void drawGhost(Graphics2D g2d, int x, int y) {
         g2d.drawImage(ghost, x, y, this);
     }
 
@@ -421,7 +414,7 @@ public class Board extends JPanel implements ActionListener {
        Draws the maze that serves as a playing field.
        @param g2d a Graphics2D object
      */
-    public void DrawMaze(Graphics2D g2d) {
+    public void drawMaze(Graphics2D g2d) {
         short i = 0;
         int x, y;
 
@@ -461,10 +454,10 @@ public class Board extends JPanel implements ActionListener {
     /**
        Initialize game variables
      */
-    public void GameInit() {
+    public void gameInit() {
         pacsleft = 3;
         score = 0;
-        LevelInit();
+        levelInit();
         nrofghosts = 6;
         currentspeed = 3;
     }
@@ -472,7 +465,7 @@ public class Board extends JPanel implements ActionListener {
     /**
        Initialize level
      */
-    public void LevelInit() {
+    public void levelInit() {
         int i;
         for (i = 0; i < nrofblocks * nrofblocks; i++)
         {
@@ -489,46 +482,29 @@ public class Board extends JPanel implements ActionListener {
 
         }
 
-        LevelContinue();
+        levelContinue();
     }
 
     /**
        Initialize Pacman and ghost position/direction
      */
-    public void LevelContinue() {
+    public void levelContinue() {
         short i;
         int dx = 1;
         int random;
 
         for (i = 0; i < nrofghosts; i++) {
-            ghosty[i] = 4 * blocksize;
-            ghostx[i] = 4 * blocksize;
-            ghostdy[i] = 0;
-            ghostdx[i] = dx;
-            dx = -dx;
             random = (int)(Math.random() * (currentspeed + 1));
             if (random > currentspeed)
                 random = currentspeed;
-            ghostspeed[i] = validspeeds[random];
+        	ghosts[i] = new Ghost(4 * blocksize, 4 * blocksize, random);
+        	ghosts[i].dx = dx;
+            dx = -dx;
+            ghosts[i].speed = validspeeds[random];
         }
 
 	pacman.reset();
         dying = false;
-    }
-
-    /**
-       Load game sprites from pacpix directory
-     */
-    public void GetImages()
-    {
-	try 
-        {
-	ghost = ImageIO.read(getClass().getResource("pacpix/ghost.png"));
-	}
-        catch (IOException e) 
-        {
-	    e.printStackTrace();
-	}
     }
 
     /**
@@ -544,12 +520,12 @@ public class Board extends JPanel implements ActionListener {
       g2d.setColor(Color.black);
       g2d.fillRect(0, 0, d.width, d.height);
 
-      DrawMaze(g2d);
-      DrawScore(g2d);
+      drawMaze(g2d);
+      drawScore(g2d);
       if (ingame)
-        PlayGame(g2d);
+        playGame(g2d);
       else
-        ShowIntroScreen(g2d);
+        showIntroScreen(g2d);
 
       g.drawImage(ii, 5, 5, this);
       Toolkit.getDefaultToolkit().sync();
@@ -608,7 +584,7 @@ public class Board extends JPanel implements ActionListener {
             if (key == 's' || key == 'S')
           {
               ingame=true;
-              GameInit();
+              gameInit();
             }
           }
       }
