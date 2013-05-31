@@ -3,7 +3,6 @@ package edu.ucsb.cs56.projects.games.pacman;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Event;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -14,12 +13,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.*;
 
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-import javax.imageio.ImageIO;
 
 /**
    Playing field for a Pacman arcade game remake that keeps track of all relevant data and handles game logic.<p>
@@ -33,7 +29,9 @@ import javax.imageio.ImageIO;
  */
 
 public class Board extends JPanel implements ActionListener {
-
+	public final static int SINGLEPLAYER = 1;
+	
+	public static int score;
     Dimension d;
     Font smallfont = new Font("Helvetica", Font.BOLD, 14);
 
@@ -42,6 +40,7 @@ public class Board extends JPanel implements ActionListener {
     Color dotcolor = new Color(192, 192, 0);
     Color mazecolor;
 
+    int gameType;
     boolean ingame = false;
     boolean dying = false;
 
@@ -49,15 +48,13 @@ public class Board extends JPanel implements ActionListener {
     final int nrofblocks = 15;
     final int scrsize = nrofblocks * blocksize;
 
-    Character pacman = new PacPlayer(7*blocksize, 11*blocksize);
+    Character pacman = new PacPlayer(7 * blocksize, 11 * blocksize);
     final int maxghosts = 12;
+    int nrofghosts = 6;
 
     int numBoardsCleared = 0;
 
-
-    int nrofghosts = 6;
-    int pacsleft, score;
-    int deathcounter;
+    int pacsleft, deathcounter;
     int[] dx, dy;
     
     Ghost[] ghosts;
@@ -182,9 +179,9 @@ public class Board extends JPanel implements ActionListener {
         timer = new Timer(40, this);
         timer.start();
     }
-
+    
     /**
-       Called by the system
+     * Called by the system
      */
     public void addNotify() {
         super.addNotify();
@@ -192,36 +189,31 @@ public class Board extends JPanel implements ActionListener {
     }
 
     /**
-       Main game logic loop
-       @param g2d a Graphics 2D object 
+     * Main game logic loop
+     * @param g2d a Graphics 2D object 
      */
     public void playGame(Graphics2D g2d) {
         if (dying) {
             death();
         } else {
             moveCharacter(pacman);
-	    pacman.draw(g2d, this);
+            pacman.draw(g2d, this);
             moveGhosts(g2d);
             checkMaze();
         }
     }
 
     /**
-       Draw a message box with the text "Press s to start." in the center of the screen
-       @param g2d a Graphics2D object
+     * Draw a message box with the text "Press s to start." in the center of the screen
+     * @param g2d a Graphics2D object
      */
     public void showIntroScreen(Graphics2D g2d) {
-
         g2d.setColor(new Color(0, 32, 48));
         g2d.fillRect(50, scrsize / 2 - 30, scrsize - 100, 50);
         g2d.setColor(Color.white);
         g2d.drawRect(50, scrsize / 2 - 30, scrsize - 100, 50);
 
         String s = "Press s to start.";
-	//BufferedReader br = new BufferedReader(new FileReader("highscores.txt"));
-        //for(int i=0; i < 10; i++){
-	//    g2d.drawString(br.readLine(), 
-	//} 
         Font small = new Font("Helvetica", Font.BOLD, 14);
         FontMetrics metr = this.getFontMetrics(small);
 
@@ -231,8 +223,8 @@ public class Board extends JPanel implements ActionListener {
     }
 
     /**
-       Display the current score on the bottom right of the screen
-       @param g a Graphics object
+     * Display the current score on the bottom right of the screen
+     * @param g a Graphics object
      */
     public void drawScore(Graphics2D g) {
         int i;
@@ -248,7 +240,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     /**
-       Checks if there are any pellets left for Pacman to eat, and restarts the game on the next board in a  higher difficulty if finished
+     * Checks if there are any pellets left for Pacman to eat, and restarts the game on the next board in a  higher difficulty if finished
      */
     public void checkMaze() {
         short i = 0;
@@ -273,11 +265,10 @@ public class Board extends JPanel implements ActionListener {
     }
 
     /**
-       Decrements number of lives left when player touches a ghost and reinitializes player location.
-       End the game if remaining lives reaches 0.
+     * Decrements number of lives left when player touches a ghost and reinitializes player location.
+     * End the game if remaining lives reaches 0.
      */
     public void death() {
-
         pacsleft--;
         if (pacsleft == 0)
         {
@@ -288,15 +279,14 @@ public class Board extends JPanel implements ActionListener {
     }
 
     /**
-       Movement logic for ghost enemies. Ghosts will move one square and then decide whether to change directions or not
-       @param g2d a Graphics2D object
+     * Movement logic for ghost enemies. Ghosts will move one square and then decide whether to change directions or not
+     * @param g2d a Graphics2D object
      */
     public void moveGhosts(Graphics2D g2d) {
-        short i;
         int pos;
         int count;
 
-        for (i = 0; i < nrofghosts; i++) {
+        for (short i = 0; i < nrofghosts; i++) {
             if (ghosts[i].x % blocksize == 0 && ghosts[i].y % blocksize == 0) {
                 pos = ghosts[i].x / blocksize + nrofblocks * (int)(ghosts[i].y / blocksize);
 
@@ -349,70 +339,21 @@ public class Board extends JPanel implements ActionListener {
 
                 dying = true;
                 deathcounter = 64;
-
             }
         }
     }
 
-    /**
-       Draws the ghost sprite
-       @param g2d a Graphics2D object
-       @param x the x position of the ghost
-       @param y the y position of the ghost
-     */
-    public void drawGhost(Graphics2D g2d, int x, int y) {
-        g2d.drawImage(ghost, x, y, this);
-    }
-
-    /**
-       Handles movement for Pacman
-     */
+	/**
+	 * Handles movement for the player
+	 * @param player Character to be moved
+	 */
     public void moveCharacter(Character player) {
-        int pos;
-        short ch;
-
-        if (player.reqdx == -player.dx && player.reqdy == -player.dy) {
-            player.dx = player.reqdx;
-            player.dy = player.reqdy;
-            player.viewdx = player.dx;
-            player.viewdy = player.dy;
-        }
-        if (player.x % blocksize == 0 && player.y % blocksize == 0) {
-            pos = player.x / blocksize + nrofblocks * (int)(player.y / blocksize);
-            ch = screendata[pos];
-
-            if ((ch & 16) != 0) {
-                screendata[pos] = (short)(ch & 15);
-                score++;
-            }
-
-            if (player.reqdx != 0 || player.reqdy != 0) {
-                if (!((player.reqdx == -1 && player.reqdy == 0 && (ch & 1) != 0) ||
-                      (player.reqdx == 1 && player.reqdy == 0 && (ch & 4) != 0) ||
-                      (player.reqdx == 0 && player.reqdy == -1 && (ch & 2) != 0) ||
-                      (player.reqdx == 0 && player.reqdy == 1 && (ch & 8) != 0))) {
-                    player.dx = player.reqdx;
-                    player.dy = player.reqdy;
-                    player.viewdx = player.dx;
-                    player.viewdy = player.dy;
-                }
-            }
-
-            // Check for standstill
-            if ((player.dx == -1 && player.dy == 0 && (ch & 1) != 0) ||
-                (player.dx == 1 && player.dy == 0 && (ch & 4) != 0) ||
-                (player.dx == 0 && player.dy == -1 && (ch & 2) != 0) ||
-                (player.dx == 0 && player.dy == 1 && (ch & 8) != 0)) {
-                player.dx = 0;
-                player.dy = 0;
-            }
-        }
-        player.move();
+        player.move(blocksize, nrofblocks, screendata);
     }
 
     /**
-       Draws the maze that serves as a playing field.
-       @param g2d a Graphics2D object
+     * Draws the maze that serves as a playing field.
+     * @param g2d a Graphics2D object
      */
     public void drawMaze(Graphics2D g2d) {
         short i = 0;
@@ -452,7 +393,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     /**
-       Initialize game variables
+     * Initialize game variables
      */
     public void gameInit() {
         pacsleft = 3;
@@ -463,12 +404,10 @@ public class Board extends JPanel implements ActionListener {
     }
 
     /**
-       Initialize level
+     * Initialize level
      */
     public void levelInit() {
-        int i;
-        for (i = 0; i < nrofblocks * nrofblocks; i++)
-        {
+        for (int i = 0; i < nrofblocks * nrofblocks; i++) {
             if (numBoardsCleared%3 == 0)
                 screendata[i] = leveldata1[i];
             else if (numBoardsCleared%3 == 1)
@@ -479,40 +418,36 @@ public class Board extends JPanel implements ActionListener {
                 screendata[i] = leveldata4[i];
             else if (numBoardsCleared%3 == 4)
                 screendata[i] = leveldata5[i];
-
         }
-
         levelContinue();
     }
 
     /**
-       Initialize Pacman and ghost position/direction
+     * Initialize Pacman and ghost position/direction
      */
     public void levelContinue() {
-        short i;
-        int dx = 1;
+    	int dx = 1;
         int random;
-
-        for (i = 0; i < nrofghosts; i++) {
-            random = (int)(Math.random() * (currentspeed + 1));
+        
+        for (short i = 0; i < nrofghosts; i++) {
+        	random = (int)(Math.random() * (currentspeed + 1));
             if (random > currentspeed)
-                random = currentspeed;
+            	random = currentspeed;
         	ghosts[i] = new Ghost(4 * blocksize, 4 * blocksize, random);
         	ghosts[i].dx = dx;
             dx = -dx;
             ghosts[i].speed = validspeeds[random];
         }
 
-	pacman.reset();
+        pacman.reset();
         dying = false;
     }
 
     /**
-       Paint graphics onto screen
-       @param g a Graphics object
+     * Paint graphics onto screen
+     * @param g a Graphics object
      */
-    public void paint(Graphics g)
-    {
+    public void paint(Graphics g) {
       super.paint(g);
 
       Graphics2D g2d = (Graphics2D) g;
@@ -533,15 +468,15 @@ public class Board extends JPanel implements ActionListener {
     }
 
     /**
-       Class that handles key presses for game controls
+     * Class that handles key presses for game controls
      */
     class TAdapter extends KeyAdapter {
 
 	/**
-	   Detects when a key is pressed.<p>
-	   In-game: Changes Pacman's direction of movement with the arrow keys. Quit game by pressing the escape key.<p> 
-	   Not in-game: Press the 'S' key to begin the game.
-	   @param e a KeyEvent
+	 * Detects when a key is pressed.<p>
+	 * In-game: Changes Pacman's direction of movement with the arrow keys. Quit game by pressing the escape key.<p> 
+	 * Not in-game: Press the 'S' key to begin the game.
+	 * @param e a KeyEvent
 	 */
         public void keyPressed(KeyEvent e) {
 
@@ -549,28 +484,10 @@ public class Board extends JPanel implements ActionListener {
 
           if (ingame)
           {
-            if (key == KeyEvent.VK_LEFT)
-            {
-              pacman.reqdx=-1;
-              pacman.reqdy=0;
-            }
-            else if (key == KeyEvent.VK_RIGHT)
-            {
-              pacman.reqdx=1;
-              pacman.reqdy=0;
-            }
-            else if (key == KeyEvent.VK_UP)
-            {
-              pacman.reqdx=0;
-              pacman.reqdy=-1;
-            }
-            else if (key == KeyEvent.VK_DOWN)
-            {
-              pacman.reqdx=0;
-              pacman.reqdy=1;
-            }
-            else if (key == KeyEvent.VK_ESCAPE && timer.isRunning())
-            {
+        	if (gameType == SINGLEPLAYER)
+        		pacman.keyPressed(key);
+        	
+            if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
               ingame=false;
             }
             else if (key == KeyEvent.VK_PAUSE) {
@@ -579,35 +496,29 @@ public class Board extends JPanel implements ActionListener {
                 else timer.start();
             }
           }
-          else
-          {
-            if (key == 's' || key == 'S')
-          {
+          else {
+            if (key == 's' || key == 'S') {
               ingame=true;
+              gameType = SINGLEPLAYER;
               gameInit();
             }
           }
       }
 
-	/**
-	   Detects when a key is released
-	   @param e a KeyEvent
-	 */
-          public void keyReleased(KeyEvent e) {
-              int key = e.getKeyCode();
-
-              if (key == Event.LEFT || key == Event.RIGHT || 
-                 key == Event.UP ||  key == Event.DOWN)
-              {
-                pacman.reqdx=0;
-                pacman.reqdy=0;
-              }
-          }
-      }
-
+		/**
+		 * Detects when a key is released
+		 * @param e a KeyEvent
+		 */
+		public void keyReleased(KeyEvent e) {
+			int key = e.getKeyCode();
+			if (gameType == SINGLEPLAYER)
+				pacman.keyReleased(key);
+		}
+    }
+    
     /**
-       Repaint the graphics each frame
-       @param e an ActionEvent
+     * Repaint the graphics each frame
+     * @param e an ActionEvent
      */
     public void actionPerformed(ActionEvent e) {
         repaint();  

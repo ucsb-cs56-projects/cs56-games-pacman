@@ -5,8 +5,8 @@ import java.awt.Image;
 import javax.swing.JComponent;
 
 /**
-   Class that every character inherits from, including players
-   and AI-controlled enemies.
+ * Class that every character inherits from, including players
+ * and AI-controlled enemies.
  */
 public abstract class Character {
 	public int startX, startY;
@@ -54,12 +54,34 @@ public abstract class Character {
 	 * @return Image of character
 	 */
 	public abstract Image getLifeImage();
-
+	
+    /**
+	 * Handles key presses for game controls
+	 * @param key Integer representing the key pressed
+     */
+	public abstract void keyPressed(int key);
+	
+  	/**
+     * Handles key releases for game controls
+     * @param key Integer representing the key released
+  	 */
+	public abstract void keyReleased(int key);
+	
 	/**
-	 *Moves character's current position
+	 * Moves character's current position with the board's collision
+	 * @param blockSize The size of each block in pixels
+	 * @param nrOfBlocks The number of blocks
+	 * @param screenData The contents of the blocks
+	 */
+	public abstract void move(int blockSize, int nrOfBlocks, short[] screenData);
+	
+	/**
+	 * Moves character's current position
 	 */
 	public void move(){
         x = x + speed * dx;
         y = y + speed * dy;
 	}
+	
+
 }
