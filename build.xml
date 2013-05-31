@@ -4,6 +4,7 @@
 
    <property environment="env"/> <!-- load the environment variables --> 
    <property name="projectPackage" value="edu.ucsb.cs56.projects.games.pacman" />
+   <property name="out.assets.dir" value="build/edu/ucsb/cs56/projects/games/pacman/pacpix" />
    <property name="webRoot" value="${env.HOME}/public_html/cs56" />
    <property name="webBaseURL"
 	     value="http://www.cs.ucsb.edu/~${env.USER}/cs56" />
@@ -23,6 +24,10 @@
 
   <target name="compile" description="compile my code">
     <mkdir dir="build" />
+    <mkdir dir="${out.assets.dir}" />
+    <copy includeemptydirs="false" todir="${out.assets.dir}">
+      <fileset dir="pacpix"/>
+    </copy>
     <javac srcdir="src" destdir="build" debug="true" debuglevel="lines,source" 
 	   includeantruntime="false" >
       <classpath refid="project.class.path" />
