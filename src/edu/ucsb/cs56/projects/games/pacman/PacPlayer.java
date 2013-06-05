@@ -11,10 +11,10 @@ import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
 /**
-   Player controlled pacman character.
-   @author Dario Castellanos
-   @author Daniel Ly
-   @version CS56 S13
+ * Player controlled pacman character.
+ * @author Dario Castellanos
+ * @author Daniel Ly
+ * @version CS56 S13
  */
 public class PacPlayer extends Character{
     private final int pacanimdelay = 2;
@@ -44,7 +44,7 @@ public class PacPlayer extends Character{
      * @param nrOfBlocks The number of blocks
      * @param screenData The contents of the blocks
      */
-    public void move(int blockSize, int nrOfBlocks, short[] screenData) {
+    public void move(Grid grid) {
         int pos;
         short ch;
 
@@ -54,12 +54,12 @@ public class PacPlayer extends Character{
             viewdx = dx;
             viewdy = dy;
         }
-        if (x % blockSize == 0 && y % blockSize == 0) {
-            pos = x / blockSize + nrOfBlocks * (int)(y / blockSize);
-            ch = screenData[pos];
+        if (x % grid.blockSize == 0 && y % grid.blockSize == 0) {
+            pos = x / grid.blockSize + grid.nrOfBlocks * (int)(y / grid.blockSize);
+            ch = grid.screenData[pos];
 
             if ((ch & 16) != 0) {
-                screenData[pos] = (short)(ch & 15);
+            	grid.screenData[pos] = (short)(ch & 15);
                 Board.score++;
             }
 
@@ -88,10 +88,10 @@ public class PacPlayer extends Character{
     }
     
     /**
-	 * Calls the appropriate draw method for the direction Pacman is facing
-	 * @param g2d a Graphics2D object
-	 * @param canvas A Jcomponent object to be drawn on
-	 */
+     * Calls the appropriate draw method for the direction Pacman is facing
+     * @param g2d a Graphics2D object
+     * @param canvas A Jcomponent object to be drawn on
+     */
     public void draw(Graphics2D g2d, JComponent canvas) {
     	doAnim();
         if (viewdx == -1)
@@ -127,10 +127,10 @@ public class PacPlayer extends Character{
     }
 
     /**
-	 * Draws Pacman facing down
-	 * @param g2d a Graphics2D object
-	 * @param canvas A JComponent object to be drawn on
-	 */
+     * Draws Pacman facing down
+     * @param g2d a Graphics2D object
+     * @param canvas A JComponent object to be drawn on
+     */
     public void drawPacManDown(Graphics2D g2d, JComponent canvas) {
         switch (pacmananimpos) {
 	        case 1:
@@ -149,10 +149,10 @@ public class PacPlayer extends Character{
     }
 
     /**
-	 * Draws Pacman facing left
-	 * @param g2d a Graphics2D object
-	 * @param canvas A JComponent object to be drawn on
-	 */
+     * Draws Pacman facing left
+     * @param g2d a Graphics2D object
+     * @param canvas A JComponent object to be drawn on
+     */
     public void drawPacManLeft(Graphics2D g2d, JComponent canvas) {
         switch (pacmananimpos) {
         case 1:
@@ -171,10 +171,10 @@ public class PacPlayer extends Character{
     }
 
     /**
-	 * Draws Pacman facing right
-	 * @param g2d a Graphics2D object
-	 * @param canvas A JComponent object to be drawn on
-	 */
+     * Draws Pacman facing right
+     * @param g2d a Graphics2D object
+     * @param canvas A JComponent object to be drawn on
+     */
     public void drawPacManRight(Graphics2D g2d, JComponent canvas) {
         switch (pacmananimpos) {
 	        case 1:
@@ -193,7 +193,7 @@ public class PacPlayer extends Character{
     }
     
     /**
-	 * Animates the Pacman sprite's direction as well as mouth opening and closing
+     * Animates the Pacman sprite's direction as well as mouth opening and closing
      */
     public void doAnim() {
         pacanimcount--;
@@ -206,8 +206,8 @@ public class PacPlayer extends Character{
     }
     
     /**
-	 * Handles key presses for game controls
-	 * @param key Integer representing the key pressed
+     * Handles key presses for game controls
+     * @param key Integer representing the key pressed
      */
     public void keyPressed(int key) {
         switch (key){
@@ -231,10 +231,10 @@ public class PacPlayer extends Character{
         }
     }
       
-  	/**
+    /**
      * Detects when a key is released
      * @param key Integer representing the key released
-  	 */
+     */
     public void keyReleased(int key) {
     	if (key == Event.LEFT || key == Event.RIGHT || 
     			key == Event.UP ||  key == Event.DOWN) {
@@ -276,4 +276,13 @@ public class PacPlayer extends Character{
     public Image getLifeImage() {
     	return pacman3left;
     }
+
+    /**
+     * Moves character's current position with the board's collision
+     * @param grid The Grid to be used for collision
+     * @param dx An array of integers used for randomized movement
+     * @param dy An array of integers used for randomized movement
+     */
+    @Override
+    public void moveAI(Grid grid, int[] dx, int[] dy) {	}
 }

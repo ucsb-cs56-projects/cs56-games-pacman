@@ -12,24 +12,24 @@ import javax.swing.JComponent;
  * @version CS56, S13
  */
 public abstract class Character {
-	public int startX, startY;
-	public int x, y, dx, dy, viewdx, viewdy, reqdx, reqdy, speed;
-	
-	/**
-	 * Constructor for Character class
-	 * @param x the starting x coordinate of pacman
-	 * @param y the starting y coordinate of pacman
-	 */
-	public Character(int x, int y){
-		startX = x;
-		startY = y;
+    public int startX, startY;
+    public int x, y, dx, dy, viewdx, viewdy, reqdx, reqdy, speed;
+    
+    /**
+     * Constructor for Character class
+     * @param x the starting x coordinate of pacman
+     * @param y the starting y coordinate of pacman
+     */
+    public Character(int x, int y){
+	startX = x;
+	startY = y;
         reset();
-	}
-	
-	/**
-	 * Restores the character's default values.
-	 */
-	public void reset(){
+    }
+    
+    /**
+     * Restores the character's default values.
+     */
+    public void reset(){
         this.x = startX;
         this.y = startY;
         dx = 0;
@@ -38,53 +38,57 @@ public abstract class Character {
         reqdy = 0;
         viewdx = -1;
         viewdy = 0;
-	}
-       
-	/**
-	 * draws the character onto the screen	  
-	 * @param g a Graphics2D object
-	 * @param canvas A JComponent object to be drawn on	 
-	 */
-	public abstract void draw(Graphics2D g, JComponent canvas);
-	
-	/**
-	 * Load game sprites from images folder
-	 */
-	public abstract void loadImages();
-
-	/**
-	 * Returns the image used for displaying remaining lives
-	 * @return Image of character
-	 */
-	public abstract Image getLifeImage();
-	
+    }
+    
     /**
-	 * Handles key presses for game controls
-	 * @param key Integer representing the key pressed
+     * draws the character onto the screen	  
+     * @param g a Graphics2D object
+     * @param canvas A JComponent object to be drawn on	 
      */
-	public abstract void keyPressed(int key);
-	
-  	/**
+    public abstract void draw(Graphics2D g, JComponent canvas);
+    
+    /**
+     * Load game sprites from images folder
+     */
+    public abstract void loadImages();
+    
+    /**
+     * Returns the image used for displaying remaining lives
+     * @return Image of character
+     */
+    public abstract Image getLifeImage();
+    
+    /**
+     * Handles key presses for game controls
+     * @param key Integer representing the key pressed
+     */
+    public abstract void keyPressed(int key);
+    
+    /**
      * Handles key releases for game controls
      * @param key Integer representing the key released
-  	 */
-	public abstract void keyReleased(int key);
-	
-	/**
-	 * Moves character's current position with the board's collision
-	 * @param blockSize The size of each block in pixels
-	 * @param nrOfBlocks The number of blocks
-	 * @param screenData The contents of the blocks
-	 */
-	public abstract void move(int blockSize, int nrOfBlocks, short[] screenData);
-	
-	/**
-	 * Moves character's current position
-	 */
-	public void move(){
+     */
+    public abstract void keyReleased(int key);
+    
+    /**
+     * Moves character's current position with the board's collision
+     * @param grid The Grid to be used for collision
+     */
+    public abstract void move(Grid grid);
+    
+    /**
+     * Moves character's current position with the board's collision
+     * @param grid The Grid to be used for collision
+     * @param dx An array of integers used for randomized movement
+     * @param dy An array of integers used for randomized movement
+     */
+    public abstract void moveAI(Grid grid, int[] dx, int[] dy);
+    
+    /**
+     * Moves character's current position
+     */
+    public void move(){
         x = x + speed * dx;
         y = y + speed * dy;
-	}
-	
-
+    }
 }
