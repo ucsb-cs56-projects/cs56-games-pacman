@@ -113,8 +113,10 @@ public class Board extends JPanel implements ActionListener {
 	else {
 	    switch (gameType) {
 	    case SINGLEPLAYER:
-		pacman.move(grid);
-		pacman.draw(g2d, this);
+		if (pacman.alive){
+		    pacman.move(grid);
+		    pacman.draw(g2d, this);
+		}
 		for (int i=0; i<nrofghosts; i++){
 		    ghosts[i].moveAI(grid, dx, dy);
 		    ghosts[i].draw(g2d, this);
@@ -122,10 +124,14 @@ public class Board extends JPanel implements ActionListener {
 		detectCollision(ghosts, pacman);
 		break;
 	    case COOPERATIVE:
-		pacman.move(grid);
-		pacman.draw(g2d, this);
-		msPacman.move(grid);
-		msPacman.draw(g2d, this);
+		if (pacman.alive){
+		    pacman.move(grid);
+		    pacman.draw(g2d, this);
+		}
+		if (msPacman.alive){
+		    msPacman.move(grid);
+		    msPacman.draw(g2d, this);
+		}
 		for (int i=0; i<nrofghosts; i++){
 		    ghosts[i].moveAI(grid, dx, dy);
 		    ghosts[i].draw(g2d, this);
@@ -133,8 +139,10 @@ public class Board extends JPanel implements ActionListener {
 		detectCollision(ghosts, pacman, msPacman);
 		break;
 	    case VERSUS:
-	       	pacman.move(grid);
-		pacman.draw(g2d, this);
+		if (pacman.alive){
+		    pacman.move(grid);
+		    pacman.draw(g2d, this);
+		}
 		for (Character ghost: playerGhosts){
 		    ghost.move(grid);
 		    ghost.draw(g2d, this);
@@ -162,9 +170,9 @@ public class Board extends JPanel implements ActionListener {
      */
     public void showIntroScreen(Graphics2D g) {
         g.setColor(new Color(0, 32, 48));
-        g.fillRect(50, scrsize / 2 - 30, scrsize - 100, 50);
+        g.fillRect(50, scrsize / 2 - 30, scrsize - 100, 65);
         g.setColor(Color.white);
-        g.drawRect(50, scrsize / 2 - 30, scrsize - 100, 50);
+        g.drawRect(50, scrsize / 2 - 30, scrsize - 100, 65);
 
         String s = "Press s for single player";
         String d = "Press d for Co-Op";
@@ -176,7 +184,7 @@ public class Board extends JPanel implements ActionListener {
         g.setFont(small);
         g.drawString(s, (scrsize - metr.stringWidth(s)) / 2, scrsize / 2 - metr.getHeight()/2);
         g.drawString(d, (scrsize - metr.stringWidth(d)) / 2, scrsize / 2 + metr.getHeight()/2);
-	g.drawString(f, (scrsize - metr.stringWidth(f)) / 2, scrsize / 2 - metr.getHeight()*(3/2));
+	g.drawString(f, (scrsize - metr.stringWidth(f)) / 2, scrsize / 2 + metr.getHeight()*3/2);
         drawHighScores(g);
     }
 
@@ -235,7 +243,6 @@ public class Board extends JPanel implements ActionListener {
 	if (score  > 1) sl.writeScore(score);
 	ingame = false;
 	numBoardsCleared = 0;
-        //levelContinue();
     }
 
     /**
@@ -328,14 +335,14 @@ public class Board extends JPanel implements ActionListener {
 
 		switch (gameType) {
 			case SINGLEPLAYER:
-			    pacman.reset();
+			    pacman.resetPos();
 			    break;
 			case COOPERATIVE:
-			    pacman.reset();
-			    msPacman.reset();
+			    pacman.resetPos();
+			    msPacman.resetPos();
 			    break;
 			case VERSUS:
-			    pacman.reset();
+			    pacman.resetPos();
 			    for (Character ghost: playerGhosts){
 				ghost.reset();
 			    }
