@@ -12,6 +12,7 @@ import javax.swing.JComponent;
  * @version CS56, S13
  */
 public abstract class Character {
+	public int playerNum;
     public int startX, startY;
     public int x, y, dx, dy, viewdx, viewdy, reqdx, reqdy, speed;
     
@@ -23,7 +24,21 @@ public abstract class Character {
     public Character(int x, int y){
 	startX = x;
 	startY = y;
+	playerNum = 1;
         reset();
+    }
+    
+    /**
+     * Constructor for Character class
+     * @param x the starting x coordinate of pacman
+     * @param y the starting y coordinate of pacman
+     * @param playerNum int representing who the player is controlling
+     */
+    public Character(int x, int y, int playerNum){
+    	startX = x;
+    	startY = y;
+    	this.playerNum = playerNum;
+    	reset();
     }
     
     /**

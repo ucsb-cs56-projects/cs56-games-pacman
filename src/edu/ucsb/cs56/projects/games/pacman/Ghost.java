@@ -15,12 +15,20 @@ import javax.swing.JComponent;
  * @version CS56, S13
  */
 public class Ghost extends Character{
+	public static final int GHOST = 1;
+	
     private Image ghost;
     
     public Ghost(int x, int y, int speed) {
 	super(x, y);
 	this.speed = speed;
 	loadImages();
+    }
+    
+    public Ghost(int x, int y, int speed, int playerNum){
+    	super(x, y, playerNum);
+    	this.speed = speed;
+    	loadImages();
     }
     
     /**

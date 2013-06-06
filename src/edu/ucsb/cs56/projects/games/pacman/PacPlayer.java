@@ -17,6 +17,9 @@ import javax.swing.JComponent;
  * @version CS56 S13
  */
 public class PacPlayer extends Character{
+	public final static int PACMAN = 1;
+	public final static int MSPACMAN = 2;
+	
     private final int pacanimdelay = 2;
     private final int pacmananimcount = 4;
     private final int pacmanspeed = 6;
@@ -39,10 +42,20 @@ public class PacPlayer extends Character{
     }
     
     /**
+     * Constructor for PacPlayer class
+     * @param x the starting x coordinate of pacman
+     * @param y the starting y coordinate of pacman
+     * @param playerNum int representing who the player is controlling
+     */
+    public PacPlayer(int x, int y, int playerNum){
+    	super(x,y, playerNum);
+    	speed = pacmanspeed;
+    	loadImages();
+    }
+    
+    /**
      * Moves character's current position with the board's collision
-     * @param blockSize The size of each block in pixels
-     * @param nrOfBlocks The number of blocks
-     * @param screenData The contents of the blocks
+     * @param grid The Grid to be used for collision
      */
     public void move(Grid grid) {
         int pos;
@@ -193,6 +206,15 @@ public class PacPlayer extends Character{
     }
     
     /**
+     * Moves character's current position with the board's collision
+     * @param grid The Grid to be used for collision
+     * @param dx An array of integers used for randomized movement
+     * @param dy An array of integers used for randomized movement
+     */
+    @Override
+    public void moveAI(Grid grid, int[] dx, int[] dy) {	}   
+    
+    /**
      * Animates the Pacman sprite's direction as well as mouth opening and closing
      */
     public void doAnim() {
@@ -210,24 +232,47 @@ public class PacPlayer extends Character{
      * @param key Integer representing the key pressed
      */
     public void keyPressed(int key) {
-        switch (key){
-	          case KeyEvent.VK_LEFT:
-	            reqdx=-1;
-	            reqdy=0;
-	            break;
-	          case KeyEvent.VK_RIGHT:
-	            reqdx=1;
-	            reqdy=0;
-	          	break;
-	          case KeyEvent.VK_UP:
-	            reqdx=0;
-	            reqdy=-1;
-	            break;
-	          case KeyEvent.VK_DOWN:
-	            reqdx=0;
-	            reqdy=1;
-	            break;
-	          default: break;
+    	if (playerNum == PACMAN){
+	        switch (key){
+		          case KeyEvent.VK_LEFT:
+		            reqdx=-1;
+		            reqdy=0;
+		            break;
+		          case KeyEvent.VK_RIGHT:
+		            reqdx=1;
+		            reqdy=0;
+		          	break;
+		          case KeyEvent.VK_UP:
+		            reqdx=0;
+		            reqdy=-1;
+		            break;
+		          case KeyEvent.VK_DOWN:
+		            reqdx=0;
+		            reqdy=1;
+		            break;
+		          default: break;
+	        }
+        }
+    	else if (playerNum == MSPACMAN){
+	        switch (key){
+		          case KeyEvent.VK_A:
+		            reqdx=-1;
+		            reqdy=0;
+		            break;
+		          case KeyEvent.VK_D:
+		            reqdx=1;
+		            reqdy=0;
+		          	break;
+		          case KeyEvent.VK_W:
+		            reqdx=0;
+		            reqdy=-1;
+		            break;
+		          case KeyEvent.VK_S:
+		            reqdx=0;
+		            reqdy=1;
+		            break;
+		          default: break;
+	        }
         }
     }
       
@@ -236,8 +281,15 @@ public class PacPlayer extends Character{
      * @param key Integer representing the key released
      */
     public void keyReleased(int key) {
-    	if (key == Event.LEFT || key == Event.RIGHT || 
-    			key == Event.UP ||  key == Event.DOWN) {
+    	if ((key == Event.LEFT || key == Event.RIGHT || 
+    			key == Event.UP ||  key == Event.DOWN) &&
+    			playerNum == PACMAN) {
+    		reqdx=0;
+    		reqdy=0;
+    	}
+    	else if ((key == KeyEvent.VK_A || key == KeyEvent.VK_D || 
+    			key == KeyEvent.VK_W ||  key == KeyEvent.VK_S) &&
+    			playerNum == MSPACMAN) {
     		reqdx=0;
     		reqdy=0;
     	}
@@ -276,13 +328,4 @@ public class PacPlayer extends Character{
     public Image getLifeImage() {
     	return pacman3left;
     }
-
-    /**
-     * Moves character's current position with the board's collision
-     * @param grid The Grid to be used for collision
-     * @param dx An array of integers used for randomized movement
-     * @param dy An array of integers used for randomized movement
-     */
-    @Override
-    public void moveAI(Grid grid, int[] dx, int[] dy) {	}
 }

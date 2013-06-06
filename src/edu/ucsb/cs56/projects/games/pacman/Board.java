@@ -31,6 +31,8 @@ import javax.swing.Timer;
 
 public class Board extends JPanel implements ActionListener {
     public final static int SINGLEPLAYER = 1;
+    public final static int COOPERATIVE = 2;
+    public final static int VERSUS = 3;
     
     public static int score;
     ScoreLoader sl = new ScoreLoader("highScores.txt");
@@ -51,7 +53,7 @@ public class Board extends JPanel implements ActionListener {
     final int nrofblocks = 15;
     final int scrsize = nrofblocks * blocksize;
 
-    Character pacman;
+    Character pacman, msPacman;
     final int maxghosts = 12;
     int nrofghosts = 6;
 
@@ -75,7 +77,8 @@ public class Board extends JPanel implements ActionListener {
     public Board() {
         addKeyListener(new TAdapter());
         grid = new Grid();
-        pacman = new PacPlayer(7 * blocksize, 11 * blocksize);
+        pacman = new PacPlayer(7 * blocksize, 11 * blocksize, PacPlayer.PACMAN);
+        msPacman = new PacPlayer(7 * blocksize, 11 * blocksize, PacPlayer.MSPACMAN);
         setFocusable(true);
 
         d = new Dimension(400, 400);
@@ -107,13 +110,30 @@ public class Board extends JPanel implements ActionListener {
             death();
         } 
 	else {
-	    pacman.move(grid);
-	    pacman.draw(g2d, this);
-	    for (int i=0; i<nrofghosts; i++){
-	    	ghosts[i].moveAI(grid, dx, dy);
-	    	ghosts[i].draw(g2d, this);
-	    }
-	    detectCollision(ghosts, pacman);
+		switch (gameType) {
+		case SINGLEPLAYER:
+			pacman.move(grid);
+			pacman.draw(g2d, this);
+		    for (int i=0; i<nrofghosts; i++){
+		    	ghosts[i].moveAI(grid, dx, dy);
+		    	ghosts[i].draw(g2d, this);
+		    }
+		    detectCollision(ghosts, pacman);
+			break;
+		case COOPERATIVE:
+			pacman.move(grid);
+			pacman.draw(g2d, this);
+			msPacman.move(grid);
+			msPacman.draw(g2d, this);
+		    for (int i=0; i<nrofghosts; i++){
+		    	ghosts[i].moveAI(grid, dx, dy);
+		    	ghosts[i].draw(g2d, this);
+		    }
+		    detectCollision(ghosts, pacman, msPacman);
+			break;
+		case VERSUS:
+			break;
+	}
             if (grid.checkMaze()){
                 score += 50;
                 numBoardsCleared++;
@@ -138,13 +158,15 @@ public class Board extends JPanel implements ActionListener {
         g.setColor(Color.white);
         g.drawRect(50, scrsize / 2 - 30, scrsize - 100, 50);
 
-        String s = "Press s to start.";
+        String s = "Press s for single player";
+        String d = "Press d for Co-Op";
         Font small = new Font("Helvetica", Font.BOLD, 14);
         FontMetrics metr = this.getFontMetrics(small);
 
         g.setColor(Color.white);
         g.setFont(small);
-        g.drawString(s, (scrsize - metr.stringWidth(s)) / 2, scrsize / 2);
+        g.drawString(s, (scrsize - metr.stringWidth(s)) / 2, scrsize / 2 - metr.getHeight()/2);
+        g.drawString(d, (scrsize - metr.stringWidth(d)) / 2, scrsize / 2 + metr.getHeight()/2);
         drawHighScores(g);
     }
 
@@ -207,18 +229,20 @@ public class Board extends JPanel implements ActionListener {
     /**
      * Detects when ghosts and pacman collide
      * @param ghosts An array of Ghost
-     * @param pacman Character controlled by player
+     * @param pacmen Characters controlled by player
      */
-    public void detectCollision(Ghost[] ghosts, Character pacman) {
-	for(int i = 0; i < nrofghosts; i++) {
-	    if (pacman.x > (ghosts[i].x - 12) && pacman.x < (ghosts[i].x + 12) &&
-		pacman.y > (ghosts[i].y - 12) && pacman.y < (ghosts[i].y + 12) &&
-		ingame) {
-	    
-		dying = true;
-		deathcounter = 64;
-	    }
-	}	
+    public void detectCollision(Ghost[] ghosts, Character... pacmen) {
+    	for (Character pacman: pacmen){
+			for(int i = 0; i < nrofghosts; i++) {
+			    if (pacman.x > (ghosts[i].x - 12) && pacman.x < (ghosts[i].x + 12) &&
+				pacman.y > (ghosts[i].y - 12) && pacman.y < (ghosts[i].y + 12) &&
+				ingame) {
+			    
+				dying = true;
+				deathcounter = 64;
+			    }
+		    }
+		}	
     }
 
     /**
@@ -250,7 +274,17 @@ public class Board extends JPanel implements ActionListener {
             ghosts[i].speed = validspeeds[random];
         }
 
-        pacman.reset();
+		switch (gameType) {
+			case SINGLEPLAYER:
+				pacman.reset();
+				break;
+			case COOPERATIVE:
+				pacman.reset();
+				msPacman.reset();
+				break;
+			case VERSUS:
+				break;
+		}
         dying = false;
     }
 
@@ -295,8 +329,17 @@ public class Board extends JPanel implements ActionListener {
 
           if (ingame)
           {
-        	if (gameType == SINGLEPLAYER)
-        		pacman.keyPressed(key);
+      		switch (gameType) {
+			case SINGLEPLAYER:
+				pacman.keyPressed(key);
+				break;
+			case COOPERATIVE:
+				pacman.keyPressed(key);
+				msPacman.keyPressed(key);
+				break;
+			case VERSUS:
+				break;
+		}
         	
             if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
               ingame=false;
@@ -313,6 +356,11 @@ public class Board extends JPanel implements ActionListener {
               gameType = SINGLEPLAYER;
               gameInit();
             }
+            else if (key == 'd' || key == 'D') {
+                ingame=true;
+                gameType = COOPERATIVE;
+                gameInit();
+              }
           }
       }
 
@@ -320,11 +368,22 @@ public class Board extends JPanel implements ActionListener {
 	 * Detects when a key is released
 	 * @param e a KeyEvent
 	 */
+        /*
 	    public void keyReleased(KeyEvent e) {
 		int key = e.getKeyCode();
-		if (gameType == SINGLEPLAYER)
-		    pacman.keyReleased(key);
-	    }
+		switch (gameType) {
+			case SINGLEPLAYER:
+				pacman.keyReleased(key);
+				break;
+			case COOPERATIVE:
+				pacman.keyReleased(key);
+				msPacman.keyReleased(key);
+				break;
+			case VERSUS:
+				break;
+			}
+		}
+		*/
     }
     
     /**
