@@ -236,7 +236,6 @@ public class Board extends JPanel implements ActionListener {
     }
 
     /**
-     * Decrements number of lives left when player touches a ghost and reinitializes player location.
      * End the game if remaining lives reaches 0.
      */
     public void gameOver() {
@@ -253,7 +252,7 @@ public class Board extends JPanel implements ActionListener {
     public void detectCollision(Character[] ghosts, Character... pacmen) {
     	for (Character pacman: pacmen){
 	    if (gameType == VERSUS){
-		for (Character ghost: playerGhosts){
+		for (Character ghost: ghosts){
 		    if (pacman.x > (ghost.x - 12) && pacman.x < (ghost.x + 12) &&
 			pacman.y > (ghost.y - 12) && pacman.y < (ghost.y + 12) &&
 			ingame) {
@@ -413,7 +412,7 @@ public class Board extends JPanel implements ActionListener {
 			    break;
 			case VERSUS:
 			    pacman.keyPressed(key);
-			    ghost1.keyPressed(key);
+			    //ghost1.keyPressed(key);
 			    ghost2.keyPressed(key);
 			    break;
 		}

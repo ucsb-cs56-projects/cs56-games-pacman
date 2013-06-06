@@ -145,11 +145,6 @@ public class Ghost extends Character{
             pos = x / grid.blockSize + grid.nrOfBlocks * (int)(y / grid.blockSize);
             ch = grid.screenData[pos];
 
-            if ((ch & 16) != 0) {
-            	grid.screenData[pos] = (short)(ch & 15);
-                Board.score++;
-            }
-
             if (reqdx != 0 || reqdy != 0) {
                 if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) ||
                       (reqdx == 1 && reqdy == 0 && (ch & 4) != 0) ||
