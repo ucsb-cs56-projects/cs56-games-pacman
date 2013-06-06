@@ -47,7 +47,7 @@ public class Ghost extends Character{
     @Override
     public void loadImages() {
 	try {
-	    ghost = ImageIO.read(getClass().getResource("pacpix/ghost.png"));
+	    ghost = ImageIO.read(getClass().getResource("assets/ghost.png"));
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
