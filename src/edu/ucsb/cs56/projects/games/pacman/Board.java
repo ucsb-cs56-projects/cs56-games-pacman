@@ -53,17 +53,17 @@ public class Board extends JPanel implements ActionListener {
     final int nrofblocks = 15;
     final int scrsize = nrofblocks * blocksize;
 
-    Character pacman, msPacman;
+    Character pacman, msPacman, ghost1, ghost2;
+    Character[] pacmen, playerGhosts;
     final int maxghosts = 12;
     int nrofghosts = 6;
 
     int numBoardsCleared = 0;
 
-    int pacsleft, deathcounter;
+    int pacsleft;
     int[] dx, dy;
     
     Ghost[] ghosts;
-    Image ghost;
 
     final int validspeeds[] = { 1, 2, 3, 4, 6, 8 };
     final int maxspeed = 6;
@@ -79,13 +79,14 @@ public class Board extends JPanel implements ActionListener {
         grid = new Grid();
         pacman = new PacPlayer(7 * blocksize, 11 * blocksize, PacPlayer.PACMAN);
         msPacman = new PacPlayer(7 * blocksize, 11 * blocksize, PacPlayer.MSPACMAN);
+	ghost1 = new Ghost(4 * blocksize, 4 * blocksize, 5, Ghost.GHOST1);
+	ghost2 = new Ghost(4 * blocksize, 4 * blocksize, 5, Ghost.GHOST2);
         setFocusable(true);
 
         d = new Dimension(400, 400);
 
         setBackground(Color.black);
         setDoubleBuffered(true);
-
         ghosts = new Ghost[maxghosts];
         dx = new int[4];
         dy = new int[4];
@@ -106,33 +107,40 @@ public class Board extends JPanel implements ActionListener {
      * @param g2d a Graphics 2D object 
      */
     public void playGame(Graphics2D g2d) {
-        if (dying) {
-            death();
-        } 
+	if (!checkAlive(pacmen)){
+	    gameOver();
+	}	    
 	else {
-		switch (gameType) {
-		case SINGLEPLAYER:
-			pacman.move(grid);
-			pacman.draw(g2d, this);
-		    for (int i=0; i<nrofghosts; i++){
-		    	ghosts[i].moveAI(grid, dx, dy);
-		    	ghosts[i].draw(g2d, this);
-		    }
-		    detectCollision(ghosts, pacman);
-			break;
-		case COOPERATIVE:
-			pacman.move(grid);
-			pacman.draw(g2d, this);
-			msPacman.move(grid);
-			msPacman.draw(g2d, this);
-		    for (int i=0; i<nrofghosts; i++){
-		    	ghosts[i].moveAI(grid, dx, dy);
-		    	ghosts[i].draw(g2d, this);
-		    }
-		    detectCollision(ghosts, pacman, msPacman);
-			break;
-		case VERSUS:
-			break;
+	    switch (gameType) {
+	    case SINGLEPLAYER:
+		pacman.move(grid);
+		pacman.draw(g2d, this);
+		for (int i=0; i<nrofghosts; i++){
+		    ghosts[i].moveAI(grid, dx, dy);
+		    ghosts[i].draw(g2d, this);
+		}
+		detectCollision(ghosts, pacman);
+		break;
+	    case COOPERATIVE:
+		pacman.move(grid);
+		pacman.draw(g2d, this);
+		msPacman.move(grid);
+		msPacman.draw(g2d, this);
+		for (int i=0; i<nrofghosts; i++){
+		    ghosts[i].moveAI(grid, dx, dy);
+		    ghosts[i].draw(g2d, this);
+		}
+		detectCollision(ghosts, pacman, msPacman);
+		break;
+	    case VERSUS:
+	       	pacman.move(grid);
+		pacman.draw(g2d, this);
+		for (Character ghost: playerGhosts){
+		    ghost.move(grid);
+		    ghost.draw(g2d, this);
+		}
+		detectCollision(playerGhosts, pacman);
+		break;
 	}
             if (grid.checkMaze()){
                 score += 50;
@@ -216,13 +224,10 @@ public class Board extends JPanel implements ActionListener {
      * Decrements number of lives left when player touches a ghost and reinitializes player location.
      * End the game if remaining lives reaches 0.
      */
-    public void death() {
-        pacsleft--;
-        if (pacsleft == 0) {
-        	if (score  > 1) sl.writeScore(score);
-            ingame = false;
-            numBoardsCleared = 0;
-        }
+    public void gameOver() {
+	if (score  > 1) sl.writeScore(score);
+	ingame = false;
+	numBoardsCleared = 0;
         levelContinue();
     }
 
@@ -231,24 +236,58 @@ public class Board extends JPanel implements ActionListener {
      * @param ghosts An array of Ghost
      * @param pacmen Characters controlled by player
      */
-    public void detectCollision(Ghost[] ghosts, Character... pacmen) {
+    public void detectCollision(Character[] ghosts, Character... pacmen) {
     	for (Character pacman: pacmen){
-			for(int i = 0; i < nrofghosts; i++) {
-			    if (pacman.x > (ghosts[i].x - 12) && pacman.x < (ghosts[i].x + 12) &&
-				pacman.y > (ghosts[i].y - 12) && pacman.y < (ghosts[i].y + 12) &&
-				ingame) {
-			    
-				dying = true;
-				deathcounter = 64;
-			    }
-		    }
-		}	
+	    for(int i = 0; i < nrofghosts; i++) {
+		if (pacman.x > (ghosts[i].x - 12) && pacman.x < (ghosts[i].x + 12) &&
+		    pacman.y > (ghosts[i].y - 12) && pacman.y < (ghosts[i].y + 12) &&
+		    ingame) {
+		    
+		    pacman.death();
+		}
+	    }
+	}	
     }
 
+    /**
+       Returns true if any pacman is alive, returns false if they
+       are all dead
+       @param pacmen Any number of characters to check
+       @return true if any surviving, false if all dead
+     */
+    public boolean checkAlive(Character... pacmen) {
+	int nAlive = 0;
+	for (Character pacman: pacmen) {
+	    if (pacman.lives != 0)
+		nAlive++;
+	}
+	if (nAlive == 0)
+	    return false;
+	else
+	    return true;
+    }
     /**
      * Initialize game variables
      */
     public void gameInit() {
+	switch (gameType) {
+	case SINGLEPLAYER:
+	    pacmen = new Character[1];
+	    pacmen[0] = pacman;
+	    break;
+	case COOPERATIVE:
+	    pacmen = new Character[2];
+	    pacmen[0] = pacman;
+	    pacmen[1] = msPacman;
+	    break;
+	case VERSUS:
+	    pacmen = new Character[1];
+	    pacmen[0] = pacman;
+	    playerGhosts = new Character[2];
+	    playerGhosts[0] = ghost1;
+	    playerGhosts[1] = ghost2;
+	    break;
+	}
         pacsleft = 3;
         grid.levelInit(numBoardsCleared);
         levelContinue();

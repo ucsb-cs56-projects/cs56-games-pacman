@@ -38,6 +38,7 @@ public class PacPlayer extends Character{
     public PacPlayer(int x, int y){
     	super(x,y);
     	speed = pacmanspeed;
+	lives = 3;
     	loadImages();
     }
     
@@ -50,9 +51,15 @@ public class PacPlayer extends Character{
     public PacPlayer(int x, int y, int playerNum){
     	super(x,y, playerNum);
     	speed = pacmanspeed;
+	lives = 3;
     	loadImages();
     }
     
+    public void death() {
+	lives--;
+	reset();
+    }
+
     /**
      * Moves character's current position with the board's collision
      * @param grid The Grid to be used for collision

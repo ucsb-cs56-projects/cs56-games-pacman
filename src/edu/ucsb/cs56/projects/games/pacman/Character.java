@@ -12,7 +12,7 @@ import javax.swing.JComponent;
  * @version CS56, S13
  */
 public abstract class Character {
-	public int playerNum;
+    public int playerNum, lives;
     public int startX, startY;
     public int x, y, dx, dy, viewdx, viewdy, reqdx, reqdy, speed;
     
@@ -67,6 +67,8 @@ public abstract class Character {
      */
     public abstract void loadImages();
     
+    public abstract void death();
+
     /**
      * Returns the image used for displaying remaining lives
      * @return Image of character

@@ -2,6 +2,8 @@ package edu.ucsb.cs56.projects.games.pacman;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.KeyEvent;
+
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -15,7 +17,8 @@ import javax.swing.JComponent;
  * @version CS56, S13
  */
 public class Ghost extends Character{
-	public static final int GHOST = 1;
+    public static final int GHOST1 = 1;
+    public static final int GHOST2 = 2;
 	
     private Image ghost;
     
@@ -31,6 +34,8 @@ public class Ghost extends Character{
     	loadImages();
     }
     
+    public void death() { }
+
     /**
      * Draws the ghost
      * @param g2d a Graphics2D object
@@ -67,7 +72,50 @@ public class Ghost extends Character{
      * @param key Integer representing the key pressed
      */
     @Override
-    public void keyPressed(int key) { }
+    public void keyPressed(int key) {
+    	if (playerNum == GHOST1){
+	    switch (key){
+	    case KeyEvent.VK_LEFT:
+		reqdx=-1;
+		reqdy=0;
+		break;
+	    case KeyEvent.VK_RIGHT:
+		reqdx=1;
+		reqdy=0;
+		break;
+	    case KeyEvent.VK_UP:
+		reqdx=0;
+		reqdy=-1;
+		break;
+	    case KeyEvent.VK_DOWN:
+		reqdx=0;
+		reqdy=1;
+		break;
+	    default: break;
+	    }
+        }
+    	else if (playerNum == GHOST2){
+	    switch (key){
+	    case KeyEvent.VK_NUMPAD4:
+		reqdx=-1;
+		reqdy=0;
+		break;
+	    case KeyEvent.VK_NUMPAD6:
+		reqdx=1;
+		reqdy=0;
+		break;
+	    case KeyEvent.VK_NUMPAD8:
+		reqdx=0;
+		reqdy=-1;
+		break;
+	    case KeyEvent.VK_NUMPAD5:
+		reqdx=0;
+		reqdy=1;
+		break;
+	    default: break;
+	    }
+        }
+    }
     
     /**
      * Handles key releases for game controls
