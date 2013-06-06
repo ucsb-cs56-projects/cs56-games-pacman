@@ -252,12 +252,24 @@ public class Board extends JPanel implements ActionListener {
      */
     public void detectCollision(Character[] ghosts, Character... pacmen) {
     	for (Character pacman: pacmen){
-	    for(int i = 0; i < nrofghosts; i++) {
-		if (pacman.x > (ghosts[i].x - 12) && pacman.x < (ghosts[i].x + 12) &&
-		    pacman.y > (ghosts[i].y - 12) && pacman.y < (ghosts[i].y + 12) &&
-		    ingame) {
-		    
-		    pacman.death();
+	    if (gameType == VERSUS){
+		for (Character ghost: playerGhosts){
+		    if (pacman.x > (ghost.x - 12) && pacman.x < (ghost.x + 12) &&
+			pacman.y > (ghost.y - 12) && pacman.y < (ghost.y + 12) &&
+			ingame) {
+
+			pacman.death();
+		    }
+		}
+	    }
+	    else {
+		for(int i = 0; i < nrofghosts; i++) {
+		    if (pacman.x > (ghosts[i].x - 12) && pacman.x < (ghosts[i].x + 12) &&
+			pacman.y > (ghosts[i].y - 12) && pacman.y < (ghosts[i].y + 12) &&
+			ingame) {
+			
+			pacman.death();
+		    }
 		}
 	    }
 	}	

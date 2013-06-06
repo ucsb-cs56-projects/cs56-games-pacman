@@ -131,7 +131,48 @@ public class Ghost extends Character{
      * @param screenData The contents of the blocks
      */
     @Override
-    public void move(Grid grid) { }
+    public void move(Grid grid) { 
+	int pos;
+        short ch;
+
+        if (reqdx == -dx && reqdy == -dy) {
+            dx = reqdx;
+            dy = reqdy;
+            viewdx = dx;
+            viewdy = dy;
+        }
+        if (x % grid.blockSize == 0 && y % grid.blockSize == 0) {
+            pos = x / grid.blockSize + grid.nrOfBlocks * (int)(y / grid.blockSize);
+            ch = grid.screenData[pos];
+
+            if ((ch & 16) != 0) {
+            	grid.screenData[pos] = (short)(ch & 15);
+                Board.score++;
+            }
+
+            if (reqdx != 0 || reqdy != 0) {
+                if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) ||
+                      (reqdx == 1 && reqdy == 0 && (ch & 4) != 0) ||
+                      (reqdx == 0 && reqdy == -1 && (ch & 2) != 0) ||
+                      (reqdx == 0 && reqdy == 1 && (ch & 8) != 0))) {
+                    dx = reqdx;
+                    dy = reqdy;
+                    viewdx = dx;
+                    viewdy = dy;
+                }
+            }
+
+            // Check for standstill
+            if ((dx == -1 && dy == 0 && (ch & 1) != 0) ||
+                (dx == 1 && dy == 0 && (ch & 4) != 0) ||
+                (dx == 0 && dy == -1 && (ch & 2) != 0) ||
+                (dx == 0 && dy == 1 && (ch & 8) != 0)) {
+                dx = 0;
+                dy = 0;
+            }
+        }
+        move();
+    }
     
     /**
      * Moves character's current position with the board's collision
