@@ -168,6 +168,7 @@ public class Board extends JPanel implements ActionListener {
 
         String s = "Press s for single player";
         String d = "Press d for Co-Op";
+	String f = "Press f for Versus";
         Font small = new Font("Helvetica", Font.BOLD, 14);
         FontMetrics metr = this.getFontMetrics(small);
 
@@ -175,6 +176,7 @@ public class Board extends JPanel implements ActionListener {
         g.setFont(small);
         g.drawString(s, (scrsize - metr.stringWidth(s)) / 2, scrsize / 2 - metr.getHeight()/2);
         g.drawString(d, (scrsize - metr.stringWidth(d)) / 2, scrsize / 2 + metr.getHeight()/2);
+	g.drawString(f, (scrsize - metr.stringWidth(f)) / 2, scrsize / 2 - metr.getHeight()*(3/2));
         drawHighScores(g);
     }
 
@@ -190,9 +192,14 @@ public class Board extends JPanel implements ActionListener {
         g.setColor(new Color(96, 128, 255));
         s = "Score: " + score;
         g.drawString(s, scrsize / 2 + 96, scrsize + 16);
-        for (i = 0; i < pacsleft; i++) {
+        for (i = 0; i < pacman.lives; i++) {
             g.drawImage(pacman.getLifeImage(), i * 28 + 8, scrsize + 1, this);
         }
+	if (gameType == COOPERATIVE){
+	    for (i = 0; i < msPacman.lives; i++) {
+		g.drawImage(msPacman.getLifeImage(), i * 28 + 108, scrsize + 1, this);
+	    }
+	}
     }
 
     /**
@@ -258,7 +265,7 @@ public class Board extends JPanel implements ActionListener {
     public boolean checkAlive(Character... pacmen) {
 	int nAlive = 0;
 	for (Character pacman: pacmen) {
-	    if (pacman.lives != 0)
+	    if (pacman.alive)
 		nAlive++;
 	}
 	if (nAlive == 0)
@@ -315,14 +322,18 @@ public class Board extends JPanel implements ActionListener {
 
 		switch (gameType) {
 			case SINGLEPLAYER:
-				pacman.reset();
-				break;
+			    pacman.reset();
+			    break;
 			case COOPERATIVE:
-				pacman.reset();
-				msPacman.reset();
-				break;
+			    pacman.reset();
+			    msPacman.reset();
+			    break;
 			case VERSUS:
-				break;
+			    pacman.reset();
+			    for (Character ghost: playerGhosts){
+				ghost.reset();
+			    }
+			    break;
 		}
         dying = false;
     }
@@ -370,14 +381,17 @@ public class Board extends JPanel implements ActionListener {
           {
       		switch (gameType) {
 			case SINGLEPLAYER:
-				pacman.keyPressed(key);
-				break;
+			    pacman.keyPressed(key);
+			    break;
 			case COOPERATIVE:
-				pacman.keyPressed(key);
-				msPacman.keyPressed(key);
-				break;
+			    pacman.keyPressed(key);
+			    msPacman.keyPressed(key);
+			    break;
 			case VERSUS:
-				break;
+			    pacman.keyPressed(key);
+			    ghost1.keyPressed(key);
+			    ghost2.keyPressed(key);
+			    break;
 		}
         	
             if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
@@ -390,16 +404,21 @@ public class Board extends JPanel implements ActionListener {
             }
           }
           else {
-            if (key == 's' || key == 'S') {
-              ingame=true;
-              gameType = SINGLEPLAYER;
-              gameInit();
-            }
-            else if (key == 'd' || key == 'D') {
-                ingame=true;
-                gameType = COOPERATIVE;
-                gameInit();
-              }
+	      if (key == 's' || key == 'S') {
+		  ingame=true;
+		  gameType = SINGLEPLAYER;
+		  gameInit();
+	      }
+	      else if (key == 'd' || key == 'D') {
+		  ingame=true;
+		  gameType = COOPERATIVE;
+		  gameInit();
+	      }
+	      else if (key == 'f' || key == 'F') {
+		  ingame=true;
+		  gameType = VERSUS;
+		  gameInit();
+	      }
           }
       }
 

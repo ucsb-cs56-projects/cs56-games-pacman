@@ -12,6 +12,7 @@ import javax.swing.JComponent;
  * @version CS56, S13
  */
 public abstract class Character {
+    public boolean alive;
     public int playerNum, lives;
     public int startX, startY;
     public int x, y, dx, dy, viewdx, viewdy, reqdx, reqdy, speed;
@@ -25,6 +26,7 @@ public abstract class Character {
 	startX = x;
 	startY = y;
 	playerNum = 1;
+	alive = true;
         reset();
     }
     
@@ -38,6 +40,7 @@ public abstract class Character {
     	startX = x;
     	startY = y;
     	this.playerNum = playerNum;
+	alive = true;
     	reset();
     }
     
