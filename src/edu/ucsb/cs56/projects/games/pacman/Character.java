@@ -48,14 +48,23 @@ public abstract class Character {
      * Restores the character's default values.
      */
     public void reset(){
-        this.x = startX;
-        this.y = startY;
-        dx = 0;
-        dy = 0;
-        reqdx = 0;
-        reqdy = 0;
-        viewdx = -1;
-        viewdy = 0;
+        resetPos();
+	lives = 3;
+	alive = true;
+    }
+
+    /**
+     * Restores the character's default position
+     */
+    public void resetPos(){
+	this.x = startX;
+	this.y = startY;
+	dx = 0;
+	dy = 0;
+	reqdx = 0;
+	reqdy = 0;
+	viewdx = -1;
+	viewdy = 0;
     }
     
     /**

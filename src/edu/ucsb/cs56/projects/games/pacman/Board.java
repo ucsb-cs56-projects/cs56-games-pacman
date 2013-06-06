@@ -235,7 +235,7 @@ public class Board extends JPanel implements ActionListener {
 	if (score  > 1) sl.writeScore(score);
 	ingame = false;
 	numBoardsCleared = 0;
-        levelContinue();
+        //levelContinue();
     }
 
     /**
@@ -281,18 +281,24 @@ public class Board extends JPanel implements ActionListener {
 	case SINGLEPLAYER:
 	    pacmen = new Character[1];
 	    pacmen[0] = pacman;
+	    pacman.reset();
 	    break;
 	case COOPERATIVE:
 	    pacmen = new Character[2];
 	    pacmen[0] = pacman;
 	    pacmen[1] = msPacman;
+	    pacman.reset();
+	    msPacman.reset();
 	    break;
 	case VERSUS:
 	    pacmen = new Character[1];
 	    pacmen[0] = pacman;
+	    pacman.reset();
 	    playerGhosts = new Character[2];
 	    playerGhosts[0] = ghost1;
 	    playerGhosts[1] = ghost2;
+	    ghost1.reset();
+	    ghost2.reset();
 	    break;
 	}
         pacsleft = 3;
@@ -335,7 +341,6 @@ public class Board extends JPanel implements ActionListener {
 			    }
 			    break;
 		}
-        dying = false;
     }
 
     /**

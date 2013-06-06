@@ -57,7 +57,7 @@ public class PacPlayer extends Character{
     
     public void death() {
 	lives--;
-	reset();
+	resetPos();
 	if (lives <= 0) {
 	    alive = false;
 	}
