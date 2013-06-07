@@ -60,7 +60,6 @@ public class Board extends JPanel implements ActionListener {
 
     int numBoardsCleared = 0;
 
-    int pacsleft;
     int[] dx, dy;
     
     Ghost[] ghosts;
@@ -79,8 +78,8 @@ public class Board extends JPanel implements ActionListener {
         grid = new Grid();
         pacman = new PacPlayer(7 * blocksize, 11 * blocksize, PacPlayer.PACMAN);
         msPacman = new PacPlayer(7 * blocksize, 11 * blocksize, PacPlayer.MSPACMAN);
-	ghost1 = new Ghost(4 * blocksize, 4 * blocksize, 5, Ghost.GHOST1);
-	ghost2 = new Ghost(4 * blocksize, 4 * blocksize, 5, Ghost.GHOST2);
+	ghost1 = new Ghost(4 * blocksize, 4 * blocksize, 4, Ghost.GHOST1);
+	ghost2 = new Ghost(4 * blocksize, 4 * blocksize, 4, Ghost.GHOST2);
         setFocusable(true);
 
         d = new Dimension(400, 400);
@@ -275,10 +274,10 @@ public class Board extends JPanel implements ActionListener {
     }
 
     /**
-       Returns true if any pacman is alive, returns false if they
-       are all dead
-       @param pacmen Any number of characters to check
-       @return true if any surviving, false if all dead
+     * Returns true if any pacman is alive, returns false if they
+     * are all dead
+     * @param pacmen Any number of characters to check
+     * @return true if any surviving, false if all dead
      */
     public boolean checkAlive(Character... pacmen) {
 	int nAlive = 0;
@@ -319,7 +318,6 @@ public class Board extends JPanel implements ActionListener {
 	    ghost2.reset();
 	    break;
 	}
-        pacsleft = 3;
         grid.levelInit(numBoardsCleared);
         levelContinue();
         score = 0;
@@ -355,7 +353,7 @@ public class Board extends JPanel implements ActionListener {
 			case VERSUS:
 			    pacman.resetPos();
 			    for (Character ghost: playerGhosts){
-				ghost.reset();
+				ghost.resetPos();
 			    }
 			    break;
 		}
@@ -412,7 +410,7 @@ public class Board extends JPanel implements ActionListener {
 			    break;
 			case VERSUS:
 			    pacman.keyPressed(key);
-			    //ghost1.keyPressed(key);
+			    ghost1.keyPressed(key);
 			    ghost2.keyPressed(key);
 			    break;
 		}

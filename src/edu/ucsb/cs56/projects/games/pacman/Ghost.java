@@ -126,13 +126,11 @@ public class Ghost extends Character{
     
     /**
      * Moves character's current position with the board's collision
-     * @param blockSize The size of each block in pixels
-     * @param nrOfBlocks The number of blocks
-     * @param screenData The contents of the blocks
+     * @param grid The Grid to be used for collision
      */
     @Override
     public void move(Grid grid) { 
-	int pos;
+        int pos;
         short ch;
 
         if (reqdx == -dx && reqdy == -dy) {
@@ -144,6 +142,11 @@ public class Ghost extends Character{
         if (x % grid.blockSize == 0 && y % grid.blockSize == 0) {
             pos = x / grid.blockSize + grid.nrOfBlocks * (int)(y / grid.blockSize);
             ch = grid.screenData[pos];
+
+            if ((ch & 16) != 0) {
+            	grid.screenData[pos] = (short)(ch & 15);
+                Board.score++;
+            }
 
             if (reqdx != 0 || reqdy != 0) {
                 if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) ||

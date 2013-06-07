@@ -244,27 +244,6 @@ public class PacPlayer extends Character{
     public void keyPressed(int key) {
     	if (playerNum == PACMAN){
 	        switch (key){
-		          case KeyEvent.VK_LEFT:
-		            reqdx=-1;
-		            reqdy=0;
-		            break;
-		          case KeyEvent.VK_RIGHT:
-		            reqdx=1;
-		            reqdy=0;
-		          	break;
-		          case KeyEvent.VK_UP:
-		            reqdx=0;
-		            reqdy=-1;
-		            break;
-		          case KeyEvent.VK_DOWN:
-		            reqdx=0;
-		            reqdy=1;
-		            break;
-		          default: break;
-	        }
-        }
-    	else if (playerNum == MSPACMAN){
-	        switch (key){
 		          case KeyEvent.VK_A:
 		            reqdx=-1;
 		            reqdy=0;
@@ -278,6 +257,27 @@ public class PacPlayer extends Character{
 		            reqdy=-1;
 		            break;
 		          case KeyEvent.VK_S:
+		            reqdx=0;
+		            reqdy=1;
+		            break;
+		          default: break;
+	        }
+        }
+    	else if (playerNum == MSPACMAN){
+	        switch (key){
+		          case KeyEvent.VK_LEFT:
+		            reqdx=-1;
+		            reqdy=0;
+		            break;
+		          case KeyEvent.VK_RIGHT:
+		            reqdx=1;
+		            reqdy=0;
+		          	break;
+		          case KeyEvent.VK_UP:
+		            reqdx=0;
+		            reqdy=-1;
+		            break;
+		          case KeyEvent.VK_DOWN:
 		            reqdx=0;
 		            reqdy=1;
 		            break;
