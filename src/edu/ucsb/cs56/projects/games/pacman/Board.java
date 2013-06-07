@@ -206,7 +206,7 @@ public class Board extends JPanel implements ActionListener {
         g.setFont(smallfont);
         g.setColor(new Color(96, 128, 255));
 	if (gameType == VERSUS) {
-	    pelletsLeft = 159 - score;
+	    pelletsLeft = 149 - score;
 	    p = "Pellets left: " + pelletsLeft;
 	    g.drawString(p, scrsize / 2 + 56, scrsize + 16);
 	}
