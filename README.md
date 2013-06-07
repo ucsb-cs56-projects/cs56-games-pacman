@@ -3,8 +3,8 @@ cs56-games-pacman
 
 Pacman game, starting with code from http://zetcode.com/tutorials/javagamestutorial/pacman/, and improving
 
-
-CONTROLS:
+________________
+Controls:
 	Title Screen:
 		S - Start Single Player
 		D - Start Co-op
