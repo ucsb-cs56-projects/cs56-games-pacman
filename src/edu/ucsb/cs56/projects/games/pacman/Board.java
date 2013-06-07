@@ -341,22 +341,21 @@ public class Board extends JPanel implements ActionListener {
             dx = -dx;
             ghosts[i].speed = validspeeds[random];
         }
-
-		switch (gameType) {
-			case SINGLEPLAYER:
-			    pacman.resetPos();
-			    break;
-			case COOPERATIVE:
-			    pacman.resetPos();
-			    msPacman.resetPos();
-			    break;
-			case VERSUS:
-			    pacman.resetPos();
-			    for (Character ghost: playerGhosts){
-				ghost.resetPos();
-			    }
-			    break;
-		}
+	switch (gameType) {
+	case SINGLEPLAYER:
+	    pacman.resetPos();
+	    break;
+	case COOPERATIVE:
+	    pacman.resetPos();
+	    msPacman.resetPos();
+	    break;
+	case VERSUS:
+	    pacman.resetPos();
+	    for (Character ghost: playerGhosts){
+		ghost.resetPos();
+	    }
+	    break;
+	}
     }
 
     /**
@@ -442,27 +441,6 @@ public class Board extends JPanel implements ActionListener {
 	      }
           }
       }
-
-	/**
-	 * Detects when a key is released
-	 * @param e a KeyEvent
-	 */
-        /*
-	    public void keyReleased(KeyEvent e) {
-		int key = e.getKeyCode();
-		switch (gameType) {
-			case SINGLEPLAYER:
-				pacman.keyReleased(key);
-				break;
-			case COOPERATIVE:
-				pacman.keyReleased(key);
-				msPacman.keyReleased(key);
-				break;
-			case VERSUS:
-				break;
-			}
-		}
-		*/
     }
     
     /**

@@ -33,7 +33,10 @@ public class Ghost extends Character{
     	this.speed = speed;
     	loadImages();
     }
-    
+	
+	/**
+     * Handles character's death
+     */
     public void death() { }
 
     /**
@@ -116,13 +119,6 @@ public class Ghost extends Character{
 	    }
         }
     }
-    
-    /**
-     * Handles key releases for game controls
-     * @param key Integer representing the key released
-     */
-    @Override
-    public void keyReleased(int key) { }
     
     /**
      * Moves character's current position with the board's collision

@@ -13,7 +13,9 @@ import javax.swing.JComponent;
  */
 public abstract class Character {
     public boolean alive;
+    public String assetPath;
     public int playerNum, lives;
+    public int deathTimer; // Used for invincibility after reviving
     public int startX, startY;
     public int x, y, dx, dy, viewdx, viewdy, reqdx, reqdy, speed;
     
@@ -26,6 +28,7 @@ public abstract class Character {
 	startX = x;
 	startY = y;
 	playerNum = 1;
+	deathTimer = PacPlayer.PACMAN;
 	alive = true;
         reset();
     }
@@ -40,6 +43,7 @@ public abstract class Character {
     	startX = x;
     	startY = y;
     	this.playerNum = playerNum;
+    	deathTimer = 0;
 	alive = true;
     	reset();
     }
@@ -49,6 +53,7 @@ public abstract class Character {
      */
     public void reset(){
         resetPos();
+        deathTimer = 0;
 	lives = 3;
 	alive = true;
     }
@@ -79,6 +84,9 @@ public abstract class Character {
      */
     public abstract void loadImages();
     
+    /**
+     * Handles character's death
+     */
     public abstract void death();
 
     /**
@@ -92,12 +100,6 @@ public abstract class Character {
      * @param key Integer representing the key pressed
      */
     public abstract void keyPressed(int key);
-    
-    /**
-     * Handles key releases for game controls
-     * @param key Integer representing the key released
-     */
-    public abstract void keyReleased(int key);
     
     /**
      * Moves character's current position with the board's collision
