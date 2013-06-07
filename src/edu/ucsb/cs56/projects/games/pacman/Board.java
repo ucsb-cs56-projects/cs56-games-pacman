@@ -103,7 +103,7 @@ public class Board extends JPanel implements ActionListener {
 
     /**
      * Main game logic loop
-     * @param g2d a Graphics 2D object 
+     * @param g2d a Graphics 2D object
      */
     public void playGame(Graphics2D g2d) {
 	if (!checkAlive(pacmen)){
@@ -145,6 +145,12 @@ public class Board extends JPanel implements ActionListener {
 		for (Character ghost: playerGhosts){
 		    ghost.move(grid);
 		    ghost.draw(g2d, this);
+		}
+		if (score >= 159){
+		    score = 0;
+		    numBoardsCleared++;
+		    grid.levelInit(numBoardsCleared);
+		    levelContinue();
 		}
 		detectCollision(playerGhosts, pacman);
 		break;
@@ -193,13 +199,22 @@ public class Board extends JPanel implements ActionListener {
      */
     public void drawScore(Graphics2D g) {
         int i;
+	int pelletsLeft;
         String s;
+	String p;
 
         g.setFont(smallfont);
         g.setColor(new Color(96, 128, 255));
-        s = "Score: " + score;
-        g.drawString(s, scrsize / 2 + 96, scrsize + 16);
-        for (i = 0; i < pacman.lives; i++) {
+	if (gameType == VERSUS) {
+	    pelletsLeft = 159 - score;
+	    p = "Pellets left: " + pelletsLeft;
+	    g.drawString(p, scrsize / 2 + 56, scrsize + 16);
+	}
+	else {
+	    s = "Score: " + score;
+	    g.drawString(s, scrsize / 2 + 96, scrsize + 16);
+	}        
+	for (i = 0; i < pacman.lives; i++) {
             g.drawImage(pacman.getLifeImage(), i * 28 + 8, scrsize + 1, this);
         }
 	if (gameType == COOPERATIVE){
@@ -238,9 +253,12 @@ public class Board extends JPanel implements ActionListener {
      * End the game if remaining lives reaches 0.
      */
     public void gameOver() {
-	if (score  > 1) sl.writeScore(score);
+	if(gameType != VERSUS) {
+	    if (score  > 1)
+		sl.writeScore(score);
+	}
 	ingame = false;
-	numBoardsCleared = 0;
+        numBoardsCleared = 0;
     }
 
     /**
@@ -416,6 +434,7 @@ public class Board extends JPanel implements ActionListener {
         	
             if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
               ingame=false;
+	      numBoardsCleared = 0;
             }
             else if (key == KeyEvent.VK_PAUSE) {
                 if (timer.isRunning())
