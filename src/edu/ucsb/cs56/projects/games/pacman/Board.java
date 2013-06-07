@@ -146,7 +146,7 @@ public class Board extends JPanel implements ActionListener {
 		    ghost.move(grid);
 		    ghost.draw(g2d, this);
 		}
-		if (score >= 159){
+		if (score >= 149){
 		    score = 0;
 		    numBoardsCleared++;
 		    grid.levelInit(numBoardsCleared);
@@ -371,6 +371,9 @@ public class Board extends JPanel implements ActionListener {
 	    pacman.resetPos();
 	    for (Character ghost: playerGhosts){
 		ghost.resetPos();
+		if (numBoardsCleared == 3){
+		    ghost.speed = 6;
+		}
 	    }
 	    break;
 	}
