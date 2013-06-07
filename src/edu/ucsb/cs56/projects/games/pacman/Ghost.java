@@ -25,12 +25,14 @@ public class Ghost extends Character{
     public Ghost(int x, int y, int speed) {
 	super(x, y);
 	this.speed = speed;
+	assetPath = "assets/";
 	loadImages();
     }
     
     public Ghost(int x, int y, int speed, int playerNum){
     	super(x, y, playerNum);
     	this.speed = speed;
+    	assetPath = "assets/";
     	loadImages();
     }
 	
@@ -55,7 +57,9 @@ public class Ghost extends Character{
     @Override
     public void loadImages() {
 	try {
-	    ghost = ImageIO.read(getClass().getResource("assets/ghost.png"));
+		if (playerNum == GHOST1) ghost = ImageIO.read(getClass().getResource(assetPath + "ghostred.png"));
+		else if (playerNum == GHOST2) ghost = ImageIO.read(getClass().getResource(assetPath + "ghostblue.png"));
+		else ghost = ImageIO.read(getClass().getResource(assetPath + "ghostred.png"));
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -138,11 +142,6 @@ public class Ghost extends Character{
         if (x % grid.blockSize == 0 && y % grid.blockSize == 0) {
             pos = x / grid.blockSize + grid.nrOfBlocks * (int)(y / grid.blockSize);
             ch = grid.screenData[pos];
-
-            if ((ch & 16) != 0) {
-            	grid.screenData[pos] = (short)(ch & 15);
-                Board.score++;
-            }
 
             if (reqdx != 0 || reqdy != 0) {
                 if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) ||
