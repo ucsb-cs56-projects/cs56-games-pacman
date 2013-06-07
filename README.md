@@ -3,7 +3,7 @@ cs56-games-pacman
 
 Pacman game, starting with code from http://zetcode.com/tutorials/javagamestutorial/pacman/, and improving
 
-_______________________
+
 CONTROLS:
 	Title Screen:
 		S - Start Single Player
@@ -11,7 +11,6 @@ CONTROLS:
 		F - Start Versus
 	While In-Game:
 		Esc - Return to title screen
-		
 	Single Player:
 		Pacman:
 			W - Move Up
