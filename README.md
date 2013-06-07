@@ -28,7 +28,7 @@ CONTROLS
 			Up Arrow - Move Up
 			Down Arrow - Move Down
 			Left Arrow - Move Left
-			Down Arrow - Move Right
+			Right Arrow - Move Right
 	Versus:
 		Pacman:
 			W - Move Up
@@ -39,7 +39,7 @@ CONTROLS
 			Up Arrow - Move Up
 			Down Arrow - Move Down
 			Left Arrow - Move Left
-			Down Arrow - Move Right
+			Right Arrow - Move Right
 		Ghost 2:
 			Numpad 8 - Move Up
 			Numpad 5 - Move Down
