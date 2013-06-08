@@ -30,10 +30,13 @@ import javax.swing.Timer;
  */
 
 public class Board extends JPanel implements ActionListener {
-	public final static int SINGLEPLAYER = 1;
-	
-	public static int score;
-	ScoreLoader sl = new ScoreLoader("highScores.txt");
+    public final static int SINGLEPLAYER = 1;
+    public final static int COOPERATIVE = 2;
+    public final static int VERSUS = 3;
+    
+    public static int score;
+    ScoreLoader sl = new ScoreLoader("highScores.txt");
+    Grid grid;
     Dimension d;
     Font smallfont = new Font("Helvetica", Font.BOLD, 14);
 
@@ -50,111 +53,21 @@ public class Board extends JPanel implements ActionListener {
     final int nrofblocks = 15;
     final int scrsize = nrofblocks * blocksize;
 
-    Character pacman = new PacPlayer(7 * blocksize, 11 * blocksize);
+    Character pacman, msPacman, ghost1, ghost2;
+    Character[] pacmen, playerGhosts;
     final int maxghosts = 12;
     int nrofghosts = 6;
 
     int numBoardsCleared = 0;
 
-    int pacsleft, deathcounter;
     int[] dx, dy;
     
     Ghost[] ghosts;
-    Image ghost;
-
-    //Real level data
-    final short leveldata1[] =
-    { 19, 26, 26, 26, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
-      21, 0,  0,  0,  17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
-      21, 0,  0,  0,  17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20, 
-      21, 0,  0,  0,  17, 16, 16, 24, 16, 16, 16, 16, 16, 16, 20, 
-      17, 18, 18, 18, 16, 16, 20, 0,  17, 16, 16, 16, 16, 16, 20,
-      17, 16, 16, 16, 16, 16, 20, 0,  17, 16, 16, 16, 16, 24, 20, 
-      25, 16, 16, 16, 24, 24, 28, 0,  25, 24, 24, 16, 20, 0,  21, 
-      1,  17, 16, 20, 0,  0,  0,  0,  0,  0,  0,  17, 20, 0,  21,
-      1,  17, 16, 16, 18, 18, 22, 0,  19, 18, 18, 16, 20, 0,  21,
-      1,  17, 16, 16, 16, 16, 20, 0,  17, 16, 16, 16, 20, 0,  21, 
-      1,  17, 16, 16, 16, 16, 20, 0,  17, 16, 16, 16, 20, 0,  21,
-      1,  17, 16, 16, 16, 16, 16, 18, 16, 16, 16, 16, 20, 0,  21,
-      1,  17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20, 0,  21,
-      1,  25, 24, 24, 24, 24, 24, 24, 24, 24, 16, 16, 16, 18, 20,
-      9,  8,  8,  8,  8,  8,  8,  8,  8,  8,  25, 24, 24, 24, 28 };
-
-    final short leveldata2[] = 
-    {  0,  0, 19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,  0,  0,
-       0, 19, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 22,  0,
-      19, 16, 16, 16, 16, 16, 24, 24, 24, 16, 16, 16, 16, 16, 22,
-      17, 16, 16, 16, 16, 20,  0,  0,  0, 17, 16, 16, 16, 16, 20,
-      17, 16, 16, 16, 16, 20,  0,  0,  0, 17, 16, 16, 16, 16, 20,
-      17, 16, 16, 24, 24, 28,  0,  0,  0, 25, 24, 24, 16, 16, 20,
-      17, 16, 20,  0,  0,  0,  0,  0,  0,  0,  0,  0, 17, 16, 20,
-      17, 16, 20,  0,  0,  0,  0,  0,  0,  0,  0,  0, 17, 16, 20,
-      17, 16, 20,  0,  0,  0,  0,  0,  0,  0,  0,  0, 17, 16, 20,
-      17, 16, 16, 18, 18, 22,  0,  0,  0, 19, 18, 18, 16, 16, 20,
-      17, 16, 16, 16, 16, 20,  0, 23,  0, 17, 16, 16, 16, 16, 20,
-      17, 16, 16, 16, 16, 20,  0, 21,  0, 17, 16, 16, 16, 16, 20,
-      25, 16, 16, 16, 16, 16, 18, 16, 18, 16, 16, 16, 16, 16, 28,
-       0, 25, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 28,  0,
-       0,  0, 25, 24, 24, 24, 24, 24, 24, 24, 24, 24, 28,  0,  0 };
-
-
-    final short leveldata3[] = 
-    { 19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
-      17, 16, 24, 24, 16, 16, 16, 16, 16, 24, 24, 24, 24, 16, 20,
-      17, 20,  0,  0, 17, 16, 16, 16, 20,  0,  0,  0,  0, 17, 20,
-      17, 20,  0,  0, 17, 16, 16, 16, 20,  0,  0,  0,  0, 17, 20,
-      17, 16, 18, 18, 16, 16, 16, 16, 16, 18, 22,  0,  0, 17, 20,
-      17, 16, 16, 16, 16, 16, 24, 24, 24, 16, 20,  0,  0, 17, 20,
-      17, 16, 16, 16, 16, 20,  0,  0,  0, 17, 16, 18, 18, 16, 20,
-      17, 16, 16, 16, 16, 20,  0,  0,  0, 17, 16, 16, 16, 16, 20,
-      17, 16, 24, 24, 16, 20,  0,  0,  0, 17, 16, 16, 16, 16, 20,
-      17, 20,  0,  0, 17, 16, 18, 18, 18, 16, 16, 16, 16, 16, 20,
-      17, 20,  0,  0, 25, 24, 16, 16, 16, 16, 16, 24, 24, 16, 20,
-      17, 20,  0,  0,  0,  0, 17,  0, 16, 16, 20,  0,  0, 17, 20,
-      17, 20,  0,  0,  0,  0, 17, 16, 16, 16, 20,  0,  0, 17, 20,
-      17, 16, 18, 18, 18, 18, 16, 16, 16, 16, 16, 18, 18, 16, 20,
-      25, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 28 };
-
-
-    final short leveldata4[] =
-    { 19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
-      17, 16, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 16, 20,
-      17, 20,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 17, 20,
-      17, 16, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 16, 20,
-      17, 16, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 16, 20,
-      17, 20,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 17, 20,
-      17, 16, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 16, 20,
-      17, 16, 24, 24, 24, 24, 24, 16, 24, 24, 24, 24, 24, 16, 20,
-      17, 20,  0,  0,  0,  0,  0, 21,  0,  0,  0,  0,  0, 17, 20,
-      17, 20,  0, 19, 18, 18, 18, 16, 18, 18, 18, 22,  0, 17, 20,
-      17, 20,  0, 17, 16, 16, 16, 16, 16, 16, 16, 20,  0, 17, 20,
-      17, 20,  0, 25, 24, 24, 24, 24, 24, 24, 24, 28,  0, 17, 20,
-      17, 20,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 17, 20,
-      17, 16, 18, 18, 18, 18, 22,  0, 19, 18, 18, 18, 18, 16, 20,
-      25, 24, 24, 24, 24, 24, 28,  0, 25, 24, 24, 24, 24, 24, 28};
-
-      final short leveldata5[] =
-	{  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-	   0,  0, 19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,  0,
-	   0,  0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,  0,
-	   0,  0, 17, 16, 16, 16, 24, 24, 24, 24, 24, 24, 16, 20,  0,
-	   0,  0, 17, 16, 16, 20,  0,  0,  0,  0,  0,  0, 17, 20,  0,
-	   0,  0, 17, 16, 16, 20,  0,  0,  0,  0,  0,  0, 25, 28,  0,
-	   0,  0, 17, 16, 16, 16, 18, 18, 18, 18, 22,  0,  0,  0,  0,
-	   0,  0, 17, 16, 16, 16, 16, 16, 16, 16, 20,  0,  0,  0,  0,
-	   0,  0, 25, 24, 16, 16, 16, 16, 16, 16, 16, 18, 18, 18, 22,
-	   0,  0,  0,  0, 17, 16, 16, 16, 16, 16, 24, 16, 16, 16, 20,
-	   0,  0,  0,  0, 17, 16, 16, 16, 16, 20,  0, 17, 16, 16, 20,
-	  19, 18, 18, 26, 16, 24, 24,  0, 24, 28,  0, 17, 16, 16, 20,
-	  17, 16, 20,  0, 21,  0,  0, 21,  0,  0,  0, 17, 16, 16, 20,
-	  17, 16, 20,  0, 21,  0, 19, 16, 22,  0,  0, 25, 24, 24, 28,
-	  25, 24, 28,  0, 29,  0, 25, 24, 28,  0,  0,  0,  0,  0,  0};
 
     final int validspeeds[] = { 1, 2, 3, 4, 6, 8 };
     final int maxspeed = 6;
 
     int currentspeed = 3;
-    short[] screendata;
     Timer timer;
 
     /**
@@ -162,16 +75,17 @@ public class Board extends JPanel implements ActionListener {
      */
     public Board() {
         addKeyListener(new TAdapter());
-
-        screendata = new short[nrofblocks * nrofblocks];
-        mazecolor = new Color(5, 100, 5);
+        grid = new Grid();
+        pacman = new PacPlayer(7 * blocksize, 11 * blocksize, PacPlayer.PACMAN);
+        msPacman = new PacPlayer(7 * blocksize, 11 * blocksize, PacPlayer.MSPACMAN);
+	ghost1 = new Ghost(4 * blocksize, 4 * blocksize, 4, Ghost.GHOST1);
+	ghost2 = new Ghost(4 * blocksize, 4 * blocksize, 4, Ghost.GHOST2);
         setFocusable(true);
 
         d = new Dimension(400, 400);
 
         setBackground(Color.black);
         setDoubleBuffered(true);
-
         ghosts = new Ghost[maxghosts];
         dx = new int[4];
         dy = new int[4];
@@ -189,18 +103,69 @@ public class Board extends JPanel implements ActionListener {
 
     /**
      * Main game logic loop
-     * @param g2d a Graphics 2D object 
+     * @param g2d a Graphics 2D object
      */
     public void playGame(Graphics2D g2d) {
-        if (dying) {
-            death();
-        } 
+	if (!checkAlive(pacmen)){
+	    gameOver();
+	}	    
 	else {
-	    pacman.move(blocksize, nrofblocks, screendata);
-	    pacman.draw(g2d, this);
-            moveGhosts(g2d);
-	    detectCollision(ghosts, pacman);
-            checkMaze();
+	    switch (gameType) {
+	    case SINGLEPLAYER:
+		if (pacman.alive){
+		    pacman.move(grid);
+		    pacman.draw(g2d, this);
+		}
+		for (int i=0; i<nrofghosts; i++){
+		    ghosts[i].moveAI(grid, dx, dy);
+		    ghosts[i].draw(g2d, this);
+		}
+		detectCollision(ghosts, pacman);
+		break;
+	    case COOPERATIVE:
+		if (pacman.alive){
+		    pacman.move(grid);
+		    pacman.draw(g2d, this);
+		}
+		if (msPacman.alive){
+		    msPacman.move(grid);
+		    msPacman.draw(g2d, this);
+		}
+		for (int i=0; i<nrofghosts; i++){
+		    ghosts[i].moveAI(grid, dx, dy);
+		    ghosts[i].draw(g2d, this);
+		}
+		detectCollision(ghosts, pacman, msPacman);
+		break;
+	    case VERSUS:
+		if (pacman.alive){
+		    pacman.move(grid);
+		    pacman.draw(g2d, this);
+		}
+		for (Character ghost: playerGhosts){
+		    ghost.move(grid);
+		    ghost.draw(g2d, this);
+		}
+		if (score >= 149){
+		    score = 0;
+		    numBoardsCleared++;
+		    grid.levelInit(numBoardsCleared);
+		    levelContinue();
+		}
+		detectCollision(playerGhosts, pacman);
+		break;
+	}
+            if (grid.checkMaze()){
+                score += 50;
+                numBoardsCleared++;
+
+                if (nrofghosts < maxghosts)
+                    nrofghosts++;
+                if (currentspeed < maxspeed)
+                    currentspeed++;
+                grid.levelInit(numBoardsCleared);
+                levelContinue();
+            }
         }
     }
 
@@ -210,17 +175,21 @@ public class Board extends JPanel implements ActionListener {
      */
     public void showIntroScreen(Graphics2D g) {
         g.setColor(new Color(0, 32, 48));
-        g.fillRect(50, scrsize / 2 - 30, scrsize - 100, 50);
+        g.fillRect(50, scrsize / 2 - 30, scrsize - 100, 65);
         g.setColor(Color.white);
-        g.drawRect(50, scrsize / 2 - 30, scrsize - 100, 50);
+        g.drawRect(50, scrsize / 2 - 30, scrsize - 100, 65);
 
-        String s = "Press s to start.";
+        String s = "Press s for single player";
+        String d = "Press d for Co-Op";
+	String f = "Press f for Versus";
         Font small = new Font("Helvetica", Font.BOLD, 14);
         FontMetrics metr = this.getFontMetrics(small);
 
         g.setColor(Color.white);
         g.setFont(small);
-        g.drawString(s, (scrsize - metr.stringWidth(s)) / 2, scrsize / 2);
+        g.drawString(s, (scrsize - metr.stringWidth(s)) / 2, scrsize / 2 - metr.getHeight()/2);
+        g.drawString(d, (scrsize - metr.stringWidth(d)) / 2, scrsize / 2 + metr.getHeight()/2);
+	g.drawString(f, (scrsize - metr.stringWidth(f)) / 2, scrsize / 2 + metr.getHeight()*3/2);
         drawHighScores(g);
     }
 
@@ -230,19 +199,34 @@ public class Board extends JPanel implements ActionListener {
      */
     public void drawScore(Graphics2D g) {
         int i;
+	int pelletsLeft;
         String s;
+	String p;
 
         g.setFont(smallfont);
         g.setColor(new Color(96, 128, 255));
-        s = "Score: " + score;
-        g.drawString(s, scrsize / 2 + 96, scrsize + 16);
-        for (i = 0; i < pacsleft; i++) {
+	if (gameType == VERSUS) {
+	    pelletsLeft = 149 - score;
+	    p = "Pellets left: " + pelletsLeft;
+	    g.drawString(p, scrsize / 2 + 56, scrsize + 16);
+	}
+	else {
+	    s = "Score: " + score;
+	    g.drawString(s, scrsize / 2 + 96, scrsize + 16);
+	}        
+	for (i = 0; i < pacman.lives; i++) {
             g.drawImage(pacman.getLifeImage(), i * 28 + 8, scrsize + 1, this);
         }
+	if (gameType == COOPERATIVE){
+	    for (i = 0; i < msPacman.lives; i++) {
+		g.drawImage(msPacman.getLifeImage(), i * 28 + 108, scrsize + 1, this);
+	    }
+	}
     }
 
     /**
      * Displays a list of scores on the bottom of the screen
+     * @param g a Graphics2D object
      */
     public void drawHighScores(Graphics2D g) {
     	ArrayList<Integer> scores = sl.loadScores();
@@ -257,194 +241,108 @@ public class Board extends JPanel implements ActionListener {
         g.setColor(new Color(96, 128, 255));
     	for (int i = 0; i < scores.size(); i++) {
     		if (i < 5)
-    			g.drawString((i + 1) + ": " + scores.get(i), (int) scrsize / 4 + blocksize, (int) (scrsize - (scrsize / 3) + (i * fm.getHeight())));
+    			g.drawString((i + 1) + ": " + scores.get(i), (int) scrsize / 4 + blocksize, 
+				     (int) (scrsize - (scrsize / 3) + (i * fm.getHeight())));
     		else if (i < 10)
-    			g.drawString((i + 1) + ": " + scores.get(i), (int) scrsize / 2 + blocksize, (int) (scrsize - (scrsize / 3) + ((i - 5) * fm.getHeight())));
+    			g.drawString((i + 1) + ": " + scores.get(i), (int) scrsize / 2 + blocksize, 
+				     (int) (scrsize - (scrsize / 3) + ((i - 5) * fm.getHeight())));
     	}
     }
-    
-    /**
-     * Checks if there are any pellets left for Pacman to eat, and restarts the game on the next board in a  higher difficulty if finished
-     */
-    public void checkMaze() {
-        short i = 0;
-        boolean finished = true;
-
-        while (i < nrofblocks * nrofblocks && finished) {
-            if ((screendata[i] & 48) != 0)
-                finished = false;
-            i++;
-        }
-
-        if (finished) {
-            score += 50;
-            this.numBoardsCleared++;
-
-            if (nrofghosts < maxghosts)
-                nrofghosts++;
-            if (currentspeed < maxspeed)
-                currentspeed++;
-            levelInit();
-        }
-    }
 
     /**
-     * Decrements number of lives left when player touches a ghost and reinitializes player location.
      * End the game if remaining lives reaches 0.
      */
-    public void death() {
-        pacsleft--;
-        if (pacsleft == 0) {
-        	if (score  > 1) sl.writeScore(score);
-            ingame = false;
-            numBoardsCleared = 0;
-        }
-        levelContinue();
-    }
-
-    /**
-     * Movement logic for ghost enemies. Ghosts will move one square and then decide whether to change directions or not
-     * @param g2d a Graphics2D object
-     */
-    public void moveGhosts(Graphics2D g2d) {
-        int pos;
-        int count;
-
-        for (short i = 0; i < nrofghosts; i++) {
-            if (ghosts[i].x % blocksize == 0 && ghosts[i].y % blocksize == 0) {
-                pos = ghosts[i].x / blocksize + nrofblocks * (int)(ghosts[i].y / blocksize);
-
-                count = 0;
-                if ((screendata[pos] & 1) == 0 && ghosts[i].dx != 1) {
-                    dx[count] = -1;
-                    dy[count] = 0;
-                    count++;
-                }
-                if ((screendata[pos] & 2) == 0 && ghosts[i].dy != 1) {
-                    dx[count] = 0;
-                    dy[count] = -1;
-                    count++;
-                }
-                if ((screendata[pos] & 4) == 0 && ghosts[i].dx != -1) {
-                    dx[count] = 1;
-                    dy[count] = 0;
-                    count++;
-                }
-                if ((screendata[pos] & 8) == 0 && ghosts[i].dy != -1) {
-                    dx[count] = 0;
-                    dy[count] = 1;
-                    count++;
-                }
- 
-                if (count == 0) {
-                    if ((screendata[pos] & 15) == 15) {
-                        ghosts[i].dx = 0;
-                        ghosts[i].dy = 0;
-                    } else {
-                        ghosts[i].dx = -ghosts[i].dx;
-                        ghosts[i].dy = -ghosts[i].dy;
-                    }
-                } else {
-                    count = (int)(Math.random() * count);
-                    if (count > 3)
-                        count = 3;
-                    ghosts[i].dx = dx[count];
-                    ghosts[i].dy = dy[count];
-                }
-            }
-	    ghosts[i].move();
-            ghosts[i].draw(g2d, this);
-        }
+    public void gameOver() {
+	if(gameType != VERSUS) {
+	    if (score  > 1)
+		sl.writeScore(score);
+	}
+	ingame = false;
+        numBoardsCleared = 0;
     }
 
     /**
      * Detects when ghosts and pacman collide
      * @param ghosts An array of Ghost
-     * @param pacman Character controlled by player
+     * @param pacmen Characters controlled by player
      */
-    public void detectCollision(Ghost[] ghosts, Character pacman) {
-	for(int i = 0; i < nrofghosts; i++) {
-	    if (pacman.x > (ghosts[i].x - 12) && pacman.x < (ghosts[i].x + 12) &&
-		pacman.y > (ghosts[i].y - 12) && pacman.y < (ghosts[i].y + 12) &&
-		ingame) {
-	    
-		dying = true;
-		deathcounter = 64;
+    public void detectCollision(Character[] ghosts, Character... pacmen) {
+    	for (Character pacman: pacmen){
+	    if (gameType == VERSUS){
+		for (Character ghost: ghosts){
+		    if (pacman.x > (ghost.x - 12) && pacman.x < (ghost.x + 12) &&
+			pacman.y > (ghost.y - 12) && pacman.y < (ghost.y + 12) &&
+			ingame) {
+
+			pacman.death();
+		    }
+		}
+	    }
+	    else {
+		for(int i = 0; i < nrofghosts; i++) {
+		    if (pacman.x > (ghosts[i].x - 12) && pacman.x < (ghosts[i].x + 12) &&
+			pacman.y > (ghosts[i].y - 12) && pacman.y < (ghosts[i].y + 12) &&
+			ingame) {
+			
+			pacman.death();
+		    }
+		}
 	    }
 	}	
     }
 
     /**
-     * Draws the maze that serves as a playing field.
-     * @param g2d a Graphics2D object
+     * Returns true if any pacman is alive, returns false if they
+     * are all dead
+     * @param pacmen Any number of characters to check
+     * @return true if any surviving, false if all dead
      */
-    public void drawMaze(Graphics2D g2d) {
-        short i = 0;
-        int x, y;
-
-        for (y = 0; y < scrsize; y += blocksize) {
-            for (x = 0; x < scrsize; x += blocksize) {
-                g2d.setColor(mazecolor);
-                g2d.setStroke(new BasicStroke(2));
-
-                if ((screendata[i] & 1) != 0) // draws left
-                {
-                    g2d.drawLine(x, y, x, y + blocksize - 1);
-                }
-                if ((screendata[i] & 2) != 0) // draws top
-                {
-                    g2d.drawLine(x, y, x + blocksize - 1, y);
-                }
-                if ((screendata[i] & 4) != 0) // draws right
-                {
-                    g2d.drawLine(x + blocksize - 1, y, x + blocksize - 1,
-                                 y + blocksize - 1);
-                }
-                if ((screendata[i] & 8) != 0) // draws bottom
-                {
-                    g2d.drawLine(x, y + blocksize - 1, x + blocksize - 1,
-                                 y + blocksize - 1);
-                }
-                if ((screendata[i] & 16) != 0) // draws point
-                {
-                    g2d.setColor(dotcolor);
-                    g2d.fillRect(x + 11, y + 11, 2, 2);
-                }
-                i++;
-            }
-        }
+    public boolean checkAlive(Character... pacmen) {
+	int nAlive = 0;
+	for (Character pacman: pacmen) {
+	    if (pacman.alive)
+		nAlive++;
+	}
+	if (nAlive == 0)
+	    return false;
+	else
+	    return true;
     }
-
     /**
      * Initialize game variables
      */
     public void gameInit() {
-        pacsleft = 3;
-        levelInit();
+	switch (gameType) {
+	case SINGLEPLAYER:
+	    pacmen = new Character[1];
+	    pacmen[0] = pacman;
+	    pacman.reset();
+	    break;
+	case COOPERATIVE:
+	    pacmen = new Character[2];
+	    pacmen[0] = pacman;
+	    pacmen[1] = msPacman;
+	    pacman.reset();
+	    msPacman.reset();
+	    break;
+	case VERSUS:
+	    pacmen = new Character[1];
+	    pacmen[0] = pacman;
+	    pacman.reset();
+	    playerGhosts = new Character[2];
+	    playerGhosts[0] = ghost1;
+	    playerGhosts[1] = ghost2;
+	    ghost1.reset();
+	    ghost2.reset();
+	    break;
+	}
+        grid.levelInit(numBoardsCleared);
+        levelContinue();
         score = 0;
         nrofghosts = 6;
         currentspeed = 3;
     }
-
-    /**
-     * Initialize level
-     */
-    public void levelInit() {
-        for (int i = 0; i < nrofblocks * nrofblocks; i++) {
-            if (numBoardsCleared%3 == 0)
-                screendata[i] = leveldata1[i];
-            else if (numBoardsCleared%3 == 1)
-                screendata[i] = leveldata2[i];
-            else if (numBoardsCleared%3 == 2)
-                screendata[i] = leveldata3[i];
-            else if (numBoardsCleared%5 == 3)
-                screendata[i] = leveldata4[i];
-            else if (numBoardsCleared%3 == 4)
-                screendata[i] = leveldata5[i];
-        }
-        levelContinue();
-    }
-
+    
     /**
      * Initialize Pacman and ghost position/direction
      */
@@ -461,9 +359,24 @@ public class Board extends JPanel implements ActionListener {
             dx = -dx;
             ghosts[i].speed = validspeeds[random];
         }
-
-        pacman.reset();
-        dying = false;
+	switch (gameType) {
+	case SINGLEPLAYER:
+	    pacman.resetPos();
+	    break;
+	case COOPERATIVE:
+	    pacman.resetPos();
+	    msPacman.resetPos();
+	    break;
+	case VERSUS:
+	    pacman.resetPos();
+	    for (Character ghost: playerGhosts){
+		ghost.resetPos();
+		if (numBoardsCleared == 3){
+		    ghost.speed = 6;
+		}
+	    }
+	    break;
+	}
     }
 
     /**
@@ -478,7 +391,7 @@ public class Board extends JPanel implements ActionListener {
       g2d.setColor(Color.black);
       g2d.fillRect(0, 0, d.width, d.height);
 
-      drawMaze(g2d);
+      grid.drawMaze(g2d);
       drawScore(g2d);
       if (ingame)
         playGame(g2d);
@@ -507,11 +420,24 @@ public class Board extends JPanel implements ActionListener {
 
           if (ingame)
           {
-        	if (gameType == SINGLEPLAYER)
-        		pacman.keyPressed(key);
+      		switch (gameType) {
+			case SINGLEPLAYER:
+			    pacman.keyPressed(key);
+			    break;
+			case COOPERATIVE:
+			    pacman.keyPressed(key);
+			    msPacman.keyPressed(key);
+			    break;
+			case VERSUS:
+			    pacman.keyPressed(key);
+			    ghost1.keyPressed(key);
+			    ghost2.keyPressed(key);
+			    break;
+		}
         	
             if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
               ingame=false;
+	      numBoardsCleared = 0;
             }
             else if (key == KeyEvent.VK_PAUSE) {
                 if (timer.isRunning())
@@ -520,23 +446,23 @@ public class Board extends JPanel implements ActionListener {
             }
           }
           else {
-            if (key == 's' || key == 'S') {
-              ingame=true;
-              gameType = SINGLEPLAYER;
-              gameInit();
-            }
+	      if (key == 's' || key == 'S') {
+		  ingame=true;
+		  gameType = SINGLEPLAYER;
+		  gameInit();
+	      }
+	      else if (key == 'd' || key == 'D') {
+		  ingame=true;
+		  gameType = COOPERATIVE;
+		  gameInit();
+	      }
+	      else if (key == 'f' || key == 'F') {
+		  ingame=true;
+		  gameType = VERSUS;
+		  gameInit();
+	      }
           }
       }
-
-		/**
-		 * Detects when a key is released
-		 * @param e a KeyEvent
-		 */
-		public void keyReleased(KeyEvent e) {
-			int key = e.getKeyCode();
-			if (gameType == SINGLEPLAYER)
-				pacman.keyReleased(key);
-		}
     }
     
     /**
