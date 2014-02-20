@@ -166,7 +166,28 @@ public class Ghost extends Character{
         }
         move();
     }
-    
+    /**
+     * For ghosts that are close to pacman, have them follow pacman 
+     * @param grid The Grid to be used for the collision
+     * @param ix pacman's x position in integer form
+     * @param iy pacman's y position in integer form
+     * @param dx An array of integers used for randomized movement
+     * @param dy An array of integers used for randomized movement
+	 */ 
+	 public void moveAI(Grid grid, int ix, int iy, int[] dx, int[] dy){
+		double x = (double) ix;
+		double y = (double) iy;
+		double dSquared = Math.pow(this.x - x, 2.0) + Math.pow(this.y - y, 2.0); 
+		double distance = Math.sqrt(dSquared);
+		if( distance <=  100.0){
+			//this means the ghost is close enough to pacman to follow!
+		}else{
+			//means ghost is far and should move normally/randomly
+			this.moveAI(grid, dx, dy);
+			
+		}
+	 }
+          
     /**
      * Moves character's current position with the board's collision
      * @param grid The Grid to be used for collision
