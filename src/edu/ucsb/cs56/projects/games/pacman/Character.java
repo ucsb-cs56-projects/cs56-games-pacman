@@ -122,4 +122,9 @@ public abstract class Character {
         x = x + speed * dx;
         y = y + speed * dy;
     }
+    
+    public void move(int dx2, int dy2) {
+    	x = x + speed * dx2;
+    	y = y + speed * dy2;
+    }
 }
