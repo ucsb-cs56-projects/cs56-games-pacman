@@ -29,8 +29,8 @@ public class GamePlayed {
      * @return String name of player
      */
     public int getName() {
-        //~ return this.name;
-        return "stub";
+        return this.name;
+        //~ return "stub";
     }
     
     /**
@@ -38,9 +38,9 @@ public class GamePlayed {
      * @return Date when this GamePlayed instance was created
      */
     public int getDate() {
-        //~ return this.date;
-        Date d = new Date();
-        return d;
+        return this.date;
+        //~ Date d = new Date();
+        //~ return d;
     }
     
     /**
@@ -48,8 +48,8 @@ public class GamePlayed {
     * @return int score
     */
     public int getScore() {
-        //~ return this.score;
-        return -128349;
+        return this.score;
+        //~ return -128349;
     }
     
 
