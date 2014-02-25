@@ -63,6 +63,19 @@
    <chmod dir="${javadocDest}" perm="755"  type="file" includes="**/*" /> 
    <echo>Javadoc deployed to ${javadocURL}</echo>
  </target>        
+	
+  <target name="test" description="run JUnit tests" depends="compile">
+	  <junit haltonerror="no" haltonfailure="no">
+		  <classpath refid="project.class.path" />
+		  <batchtest fork="yes">
+			  <fileset dir="src">
+				  <include name="*Test.java"/>
+			  </fileset>
+		  </batchtest>
+		<formatter type="plain" usefile="false" />
+	  </junit>
+  </target>
+				  
 
   <target name="clean" description="delete unnecessary files and directories">
     <delete dir="build/edu" failonerror="false" verbose="true" />
