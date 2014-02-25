@@ -179,29 +179,26 @@ public class Ghost extends Character{
 		double y = (double) iy;
 		double dSquared = Math.pow(this.x - x, 2.0) + Math.pow(this.y - y, 2.0); 
 		double distance = Math.sqrt(dSquared);
-		if( distance <=  100.0){
-			//this means the ghost is close enough to pacman to follow!
-			/*this.dx = 1;
-			this.dy = 0;*/
+		
+		if( distance <=  100.0){	    
 			int xDiff = ix - this.x;
 			int yDiff = this.y - iy;
 			int dx1; int dy1;
 			if (xDiff > 0)
-				dx1 = -1;
-			else
 				dx1 = 1;
+			else
+				dx1 = -1;
 			if (yDiff > 0)
 				dy1 = -1;
 			else
 				dy1 = 1;
 			move(dx1, dy1);
-			
 		}else{
 			//means ghost is far and should move normally/randomly
+			//~ System.out.println("dx=" + dx[0]+ dx[1]+ dx[2] + " dy: "+ dy[0]+dy[1]+dy[2]);
 			this.moveAI(grid, dx, dy);
-			
-
 		}
+
 	 }
           
     /**
