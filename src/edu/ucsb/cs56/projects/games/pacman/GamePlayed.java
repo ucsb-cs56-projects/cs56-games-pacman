@@ -1,6 +1,7 @@
 package edu.ucsb.cs56.projects.games.pacman;
 
 import java.util.Date;
+import java.io.*;
 /**
 * Stores information about the game that has just been played
 * @author Kateryna Fomenko
@@ -8,7 +9,7 @@ import java.util.Date;
 * @version CS56, Winter 2014
  */
 
-public class GamePlayed {
+public class GamePlayed implements Serializable{
     private String name;
     private Date d;
     private int score;
@@ -28,7 +29,7 @@ public class GamePlayed {
      * Getter that returns the name for this GamePlayed instance
      * @return String name of player
      */
-    public int getName() {
+    public String getName() {
         return this.name;
         //~ return "stub";
     }
@@ -37,8 +38,8 @@ public class GamePlayed {
      * Getter that returns the date for this GamePlayed instance
      * @return Date when this GamePlayed instance was created
      */
-    public int getDate() {
-        return this.date;
+    public Date getDate() {
+        return this.d;
         //~ Date d = new Date();
         //~ return d;
     }

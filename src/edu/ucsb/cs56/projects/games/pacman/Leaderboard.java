@@ -1,11 +1,6 @@
 package edu.ucsb.cs56.projects.games.pacman;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -19,23 +14,65 @@ import java.util.Date;
 * @version CS56, Winter 2014
  */
 
-public class Leaderboard<GamePlayed> extends ArrayList<GamePlayed>{
-	
+public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
+	private static String filename="pacmanLeaderbaord.ser";
 	/**Add function that adds a GamePlayed object to the Leaderboard in the proper spot 
 	* @param g - represents a GamePlayed object that is to be added to the leaderboard
 	* @return boolean - true if added succesfully, false otherwise
 	*/
 	 @Override
 	 public boolean add(GamePlayed g){
-		 int i;
-		 for(GamePlayed game: this){	
+		 int i=0;
+         if (this.isEmpty()) {
+             this.add(0,g);
+             return true;
+         }
+		 for(GamePlayed game: this){
 			 if(game.getScore() < g.getScore()){
-				this.add(i, g); 
+				this.add(i, g);
+                 return true;
 			 }
 			i++;
 		 }
+         return false;
 	 }
+    
+    public void save(){
+        try {
+            FileOutputStream fileOut = new FileOutputStream(this.filename);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(this);
+            out.close();
+        }catch(IOException io) {
+            io.printStackTrace();
+        }
+    }
+    
+    public void load(){
+        Leaderboard temp = null;
+        try{
+            FileInputStream fileIn = new FileInputStream(this.filename);
+            ObjectInputStream in  = new ObjectInputStream(fileIn);
+            temp = (Leaderboard) in.readObject();
+            in.close();
+            fileIn.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        this.clear();
+        this.addAll(temp);
+    }
 	
+    public static void main(String [] args){
+        Leaderboard l = new Leaderboard();
+        Date d = new Date();
+        GamePlayed g = new GamePlayed("Bob", d, 10);
+        l.add(g);
+        l.save();
+        l.clear();
+        l.load();
+        System.out.println(l.get(0).getName());
+    }
 	
 	
 }
