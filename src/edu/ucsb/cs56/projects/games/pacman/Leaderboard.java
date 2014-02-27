@@ -50,12 +50,20 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
 		return true;
 	 }
 
+    /**Add function that creates a GamePlayed object and adds it to the Leaderboard in the proper spot
+     * @param name - represents the name of the player
+     * @param d - represents the date of the game
+     * @param score - represents the player's score
+     * @return boolean - true if added succesfully, false otherwise
+     */
 	public boolean add(String name, Date d, int score){
 		GamePlayed g = new GamePlayed(name, d, score);
 		return this.add(g);
 		
 	}
     
+    /** Saves the Leaderboard ArrayList in .ser file
+    */
     public void save(){
         try {
             FileOutputStream fileOut = new FileOutputStream(this.filename);
@@ -68,6 +76,8 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
         }
     }
     
+    /** Loads the Leaderboard ArrayList from the .ser file
+     */
     public void load(){
         Leaderboard temp = null;
         try{
@@ -85,6 +95,13 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
         this.addAll(temp);
     }
 	
+    /** returns a formatted string of the top three all time highest scores
+    * @return formatted string of scores
+    * e.g. 
+    * "        Barbara   50 09/18/2013
+    *             Nick   30 12/01/2013
+    *            Katie   29 10/15/2013"
+    */
 	public String getTopThree(){
 		int length = this.size();
 		String result ="";
@@ -101,6 +118,13 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
 		
 	}
 	
+    /** returns a formatted string of the top three scores for a player
+     * @param name of the player
+     * @return formatted string of scores
+     * e.g. "Barbara 50 09/18/2013
+     *       Barbara 30 12/1/2013
+     *       Barbara 29 10/15/2013"
+     */
 	public String getPlayerTopThree(String playerName){
 		int counter = 0;
 		String result ="";
