@@ -17,6 +17,7 @@ import java.awt.event.ActionListener;
  */
 
 public class LeaderboardGUI{
+	private JLabel gameOver = new JLabel();
     private JFrame frame;
 	private JPanel panel = new JPanel();
 	private JTextField field = new JTextField();
@@ -33,20 +34,36 @@ public class LeaderboardGUI{
      * @param b a Board object
      */
 	public void showEndGameScreen(Board b, Date d){
+		
+		this.leaderBoard.load();		
+		
+		//clear the panel in between games	
+		this.panel.removeAll();
+		
         this.frame = new JFrame("Leadboard");
-        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //~ this.panel.setLayout(new BoxLayout(this.panel, BoxLayout.Y_AXIS));
-		this.leaderBoard.load();
-		b.add(this.panel);
-		this.panel.setBackground(new Color(102,0,0));
-		this.panel.add(this.field);
-		//note: add Game Over Label
-		this.field.setText("Enter Your Name Here");
-		this.panel.add(this.submitBtn);
-		this.submitBtn.addActionListener(new submitBtnListener(b.score, d));
-		this.frame.getContentPane().add(this.panel);
+        this.frame.setSize(380, 420);
+		this.frame.setLocationRelativeTo(null);
         this.frame.setSize(250,250);
         this.frame.setVisible(true);
+		
+//TODO: remove this line:
+		//b.add(this.panel);
+
+		//add GameOver label
+		this.gameOver.setText("Game Over!");
+        this.gameOver.setForeground(Color.white);
+		this.gameOver.setPreferredSize(new Dimension(200,20));
+		this.gameOver.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		this.field.setText("Enter Your Name Here");
+		this.submitBtn.addActionListener(new submitBtnListener(b.score, d));
+   		this.panel.setBackground(new Color(102,0,0));
+
+
+		this.frame.getContentPane().add(this.panel);
+        this.panel.add(this.gameOver);
+		this.panel.add(this.field);
+		this.panel.add(this.submitBtn);
 	 }
 
 	/** submitBtnListener inner class - listens for the submit button to get pressed
@@ -89,8 +106,8 @@ public class LeaderboardGUI{
         top3 = top3.replace("\n", " <br> ");
         playerTop3 = playerTop3.replace("\n", " <br> ");
         
-        System.out.println("top3"+ top3);
-        System.out.println("playerTop3"+ playerTop3);
+		//~ System.out.println("top3"+ top3);
+        //~ System.out.println("playerTop3"+ playerTop3);
         
 
         this.heading.setText("High Scores!");
