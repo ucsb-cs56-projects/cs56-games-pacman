@@ -65,7 +65,6 @@ public class LeaderboardGUI{
 
 	/** submitBtnListener inner class - listens for the submit button to get pressed
      */
-	
 	private class submitBtnListener implements ActionListener{
 		private int score;
 		private Date d;
@@ -80,7 +79,7 @@ public class LeaderboardGUI{
 		}
 	}
 	
-    /*
+    /**
      * Add GamePlayed to leaderboard and display the highest scores
      * @param username the player's name
      * @param d the date of the game
@@ -135,17 +134,11 @@ public class LeaderboardGUI{
 		this.frame.repaint();
 		
 	}
-	
-	public void setLeaderBoardFileName(String [] args){
-		if(args.length > 1){
-			System.out.println("Invalid Command Line Arguments--Please enter a single file name, or leave blank for default.");
-			return;
-		}
-		if(args.length == 1){
-			leaderBoard.setFileName(args[0]);			
-		}else{
-			leaderBoard.setFileName("");
-		}
+	/** setLeaderBoardFileName method- sets the fileName in the instance of the leaderboard class
+	* @param args - a string version of the command line arguments
+	*/
+	public void setLeaderBoardFileName(String args){
+		leaderBoard.setFileName(args);
 
 	}
 	

@@ -27,7 +27,8 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
 		}else{ 
 			this.filename = fileName;
 		}
-		System.out.println("this.filename: "+ this.filename);
+		//To see which file it is being loaded/saved from:
+		//~ System.out.println("this.filename: "+ this.filename);
 	}
 	
 	/**Add function that adds a GamePlayed object to the Leaderboard in the proper spot 
@@ -37,6 +38,7 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
 	@Override
 	public boolean add(GamePlayed g){
 		 int i=0;
+//TODO: FIX BUG HERE!		 
          //~ if (this.isEmpty()) {
              //~ this.add(0,g);
              //~ return true;
@@ -146,12 +148,4 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
 		}
 		return result;
 	}
-	
-	
-    public static void main(String [] args){
-		//~ System.out.println("In Main!!");
-		
-    }
-	
-	
 }

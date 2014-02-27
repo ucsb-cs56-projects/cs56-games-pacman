@@ -38,6 +38,13 @@
     <java classpath="build" classname="${projectPackage}.PacMan" fork="true"/>
   </target>
 
+  <target name="run-args" depends="compile" description="run Pacman game">
+    <java classpath="build" classname="${projectPackage}.PacMan" fork="true">
+		<arg value="${arg0}"/>
+		<arg value="${arg1}"/>
+	</java>
+  </target>
+
  <target name="javadoc" depends="compile" description="publish javadoc"> 
    <delete dir="javadoc" quiet="true" /> 
    <javadoc  destdir="javadoc" author="true" version="true" use="true" >

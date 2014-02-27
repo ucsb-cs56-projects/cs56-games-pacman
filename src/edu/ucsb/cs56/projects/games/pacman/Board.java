@@ -483,7 +483,7 @@ public class Board extends JPanel implements ActionListener {
     /** Calls the leaderboards main method with the command line arguments 
      * @param args - represents the command line arguments
      */
-    public void callLeaderboardMain(String [] args){
+    public void callLeaderboardMain(String args){
 		leaderBoardGui.setLeaderBoardFileName(args);
 	}
     
