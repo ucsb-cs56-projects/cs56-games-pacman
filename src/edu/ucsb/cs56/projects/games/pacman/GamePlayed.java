@@ -1,4 +1,4 @@
-package edu.ucsb.cs56.projects.games.pacman;
+//~ package edu.ucsb.cs56.projects.games.pacman;
 
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -38,7 +38,22 @@ public class GamePlayed implements Serializable{
 		return result;
 	}
     
-    
+    @Override
+	public boolean equals(Object o){
+		
+		GamePlayed g = (GamePlayed) o;
+		
+		if(!this.name.equals(g.name)){
+			return false;
+		}
+		if(this.score != g.score){
+			return false;
+		}
+		if(!this.d.equals(g.d)){
+			return false;
+		}
+		return true;
+	}
     /**
      * Getter that returns the name for this GamePlayed instance
      * @return String name of player
@@ -66,6 +81,5 @@ public class GamePlayed implements Serializable{
         return this.score;
         //~ return -128349;
     }
-    
-
+ 
 }
