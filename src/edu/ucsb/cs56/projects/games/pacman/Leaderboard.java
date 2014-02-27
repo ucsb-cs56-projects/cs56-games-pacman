@@ -20,7 +20,7 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
 	* @param g - represents a GamePlayed object that is to be added to the leaderboard
 	* @return boolean - true if added succesfully, false otherwise
 	*/
-	 @Override
+
 	 public boolean add(GamePlayed g){
 		 int i=0;
          if (this.isEmpty()) {
@@ -36,6 +36,12 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
 		 }
          return false;
 	 }
+
+	public boolean add(String name, Date d, int score){
+		GamePlayed g = new GamePlayed(name, d, score);
+		return this.add(g);
+		
+	}
     
     public void save(){
         try {
@@ -65,6 +71,27 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
         this.clear();
         this.addAll(temp);
     }
+	
+	public String getTopThree(){
+		int length = this.size();
+		String result ="";
+		if(length < 3){
+			for(int i = 0; i < length; i++){
+				result += this.get(i) + "\n";
+			}
+		}else{
+			for(int i=0; i< 3; i++){
+				result += this.get(i) + "\n";
+			}
+		}
+		return result;
+		
+	}
+	
+	//~ public String getPlayerTopThree(){
+		//~ 
+	//~ }
+	
 	
     public static void main(String [] args){
         Leaderboard l = new Leaderboard();

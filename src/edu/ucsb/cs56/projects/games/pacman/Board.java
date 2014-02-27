@@ -17,6 +17,8 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import java.util.Date;
+
 
 /**
    Playing field for a Pacman arcade game remake that keeps track of all relevant data and handles game logic.<p>
@@ -36,6 +38,7 @@ public class Board extends JPanel implements ActionListener {
     
     public static int score;
     ScoreLoader sl = new ScoreLoader("highScores.txt");
+    LeaderboardGUI leaderBoardGui = new LeaderboardGUI();
     Grid grid;
     Dimension d;
     Font smallfont = new Font("Helvetica", Font.BOLD, 14);
@@ -78,8 +81,8 @@ public class Board extends JPanel implements ActionListener {
         grid = new Grid();
         pacman = new PacPlayer(7 * blocksize, 11 * blocksize, PacPlayer.PACMAN);
         msPacman = new PacPlayer(7 * blocksize, 11 * blocksize, PacPlayer.MSPACMAN);
-	ghost1 = new Ghost(4 * blocksize, 4 * blocksize, 4, Ghost.GHOST1);
-	ghost2 = new Ghost(4 * blocksize, 4 * blocksize, 4, Ghost.GHOST2);
+		ghost1 = new Ghost(4 * blocksize, 4 * blocksize, 4, Ghost.GHOST1);
+		ghost2 = new Ghost(4 * blocksize, 4 * blocksize, 4, Ghost.GHOST2);
         setFocusable(true);
 
         d = new Dimension(400, 400);
@@ -255,12 +258,14 @@ public class Board extends JPanel implements ActionListener {
      * End the game if remaining lives reaches 0.
      */
     public void gameOver() {
-	if(gameType != VERSUS) {
-	    if (score  > 1)
-		sl.writeScore(score);
-	}
-	ingame = false;
-        numBoardsCleared = 0;
+		if(gameType != VERSUS) {
+			if (score  > 1)
+			sl.writeScore(score);
+		}
+		ingame = false;
+		numBoardsCleared = 0;
+		Date d = new Date();
+		leaderBoardGui.showEndGameScreen(this, d);		
     }
 
     /**

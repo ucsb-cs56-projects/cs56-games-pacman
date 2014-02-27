@@ -1,6 +1,7 @@
 package edu.ucsb.cs56.projects.games.pacman;
 
 import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.io.*;
 /**
 * Stores information about the game that has just been played
@@ -24,6 +25,19 @@ public class GamePlayed implements Serializable{
         this.d = date;
         this.score = score;
     }
+    
+    /**
+    * ToString method for GamePlayed Class
+     */
+    @Override
+    public String toString(){
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		String date = dateFormat.format(this.d);
+
+		String result = String.format("%15s %5d (%10s)", this.name, this.score, date);
+		return result;
+	}
+    
     
     /**
      * Getter that returns the name for this GamePlayed instance
