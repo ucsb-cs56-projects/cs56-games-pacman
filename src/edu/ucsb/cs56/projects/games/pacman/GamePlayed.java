@@ -26,8 +26,8 @@ public class GamePlayed implements Serializable{
         this.score = score;
     }
     
-    /**
-    * ToString method for GamePlayed Class
+    /**Overriden version of toString() method for GamePlayed Class
+     * @return String returns string print out a the GamePlayed object
      */
     @Override
     public String toString(){
@@ -37,7 +37,10 @@ public class GamePlayed implements Serializable{
 		String result = String.format("%15s %5d (%10s)", this.name, this.score, date);
 		return result;
 	}
-    
+	
+    /**Overriden version of equals() method for GamePlayed Class
+     * @return boolean - represents whether the two GamePlayed Objects are equal or false
+     */
     @Override
 	public boolean equals(Object o){
 		
