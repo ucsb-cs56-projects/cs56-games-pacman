@@ -1,6 +1,6 @@
 package edu.ucsb.cs56.projects.games.pacman;
  
-import static org.junit.Test;
+import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -71,7 +71,7 @@ public class LeaderboardTest{
         GamePlayed g3 = new GamePlayed("Barbara", d, 250);
         l.add(g1); l.add(g2); l.add(g3);
 	String result = String.format("%15s %5d (%10s)\n","Barbara", date, 250); 
-	result + = String.format("%15s %5d (%10s)\n","Barbara", date, 200);
+	result += String.format("%15s %5d (%10s)\n","Barbara", date, 200);
 	result += String.format("%15s %5d (%10s)\n","Barbara", date, 100);
 	assertEquals(result,l.getPlayerTopThree("Barbara"));
     
