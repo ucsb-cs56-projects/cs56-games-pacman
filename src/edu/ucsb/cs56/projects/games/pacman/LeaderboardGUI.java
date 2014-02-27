@@ -16,13 +16,14 @@ import java.awt.Color;
  */
 
 public class LeaderboardGUI{
-
+    private JFrame frame;
 	private JPanel panel = new JPanel();
 	private JTextField field = new JTextField();
 	private	JButton submitBtn = new JButton("Submit");
+    private JLabel heading = new JLabel();
 	private JLabel topThree = new JLabel();
 	private JLabel playersTopThree = new JLabel();
-	
+
 	private Leaderboard leaderBoard = new Leaderboard();
 
     /**
@@ -30,6 +31,9 @@ public class LeaderboardGUI{
      * @param b a Board object
      */
 	public void showEndGameScreen(Board b, Date d){
+        this.frame = new JFrame("Leadboard");
+        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
 		this.leaderBoard.load();
 		b.add(this.panel);
 		this.panel.setBackground(new Color(102,0,0));
@@ -38,7 +42,9 @@ public class LeaderboardGUI{
 		this.field.setText("Enter Your Name Here");
 		this.panel.add(this.submitBtn);
 		this.submitBtn.addActionListener(new submitBtnListener(b.score, d));
-		//~ return this.panel;
+		this.frame.getContentPane().add(this.panel);
+        this.frame.setSize(250,250);
+        this.frame.setVisible(true);
 	 }
 
 	/** submitBtnListener inner class - listens for the submit button to get pressed
@@ -58,23 +64,42 @@ public class LeaderboardGUI{
 		}
 	}
 	
-	public void showLeaderboard(String userName, Date d, int score){
+    /*
+     * Add GamePlayed to leaderboard and display the highest scores
+     * @param username the player's name
+     * @param d the date of the game
+     * @param score the player's score
+    */
+    
+	private void showLeaderboard(String userName, Date d, int score){
 		//add and save new GamePlayed object
 		this.leaderBoard.add(userName, d, score);
 		this.leaderBoard.save();
+        
 		//removes old textField and submitBtn
-		this.panel.remove(this.field);	
-		this.panel.remove(this.submitBtn); 
+        this.panel.removeAll();
+        
 		//get the values from Leaderboard
 		String top3 = this.leaderBoard.getTopThree();
+        System.out.println(top3);
 		//~ String playerTop3 = this.l.getPlayerTopThree();
+        
+        top3 = top3.replace("\n", " <br> ");
+        
 		//add values to JLabels
-		this.topThree.setText(top3);
+        this.heading.setText("High Scores!");
+		this.topThree.setText("<html> " + top3 + "</html>");
+        this.heading.setForeground(Color.white);
+        this.topThree.setForeground(Color.white);
 		//~ this.playersTopThree.setText(playerTop3);
+        
 		//add JLabels to panel
-		this.panel.add(this.topThree);	
-		this.panel.add(this.playersTopThree);	
-		
+        this.panel.add(this.heading);
+		this.panel.add(this.topThree);
+        
+		//this.panel.add(this.playersTopThree);
+        this.frame.revalidate();
+		this.frame.repaint();
 		
 	}
 	
