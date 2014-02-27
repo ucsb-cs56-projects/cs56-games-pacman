@@ -15,26 +15,32 @@ import java.util.Date;
  */
 
 public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
-	private static String filename="pacmanLeaderbaord.ser";
+	private static String filename="pacmanLeaderboard.ser";
 	/**Add function that adds a GamePlayed object to the Leaderboard in the proper spot 
 	* @param g - represents a GamePlayed object that is to be added to the leaderboard
 	* @return boolean - true if added succesfully, false otherwise
 	*/
 
-	 public boolean add(GamePlayed g){
+	@Override
+	public boolean add(GamePlayed g){
 		 int i=0;
-         if (this.isEmpty()) {
-             this.add(0,g);
-             return true;
-         }
+         //~ if (this.isEmpty()) {
+             //~ this.add(0,g);
+             //~ return true;
+         //~ }
 		 for(GamePlayed game: this){
-			 if(game.getScore() < g.getScore()){
+			 if(game.getScore() <= g.getScore()){
 				this.add(i, g);
                  return true;
 			 }
 			i++;
 		 }
-         return false;
+		 if(i!=0){
+			add(i-1, g);
+		}else{
+			add(0,g);
+		}
+		return true;
 	 }
 
 	public boolean add(String name, Date d, int score){
@@ -77,31 +83,40 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
 		String result ="";
 		if(length < 3){
 			for(int i = 0; i < length; i++){
-				result += this.get(i) + "\n";
+				result += this.get(i) + "<br>";
 			}
 		}else{
 			for(int i=0; i< 3; i++){
-				result += this.get(i) + "\n";
+				result += this.get(i) + "<br>";
 			}
 		}
 		return result;
 		
 	}
 	
-	//~ public String getPlayerTopThree(){
-		//~ 
-	//~ }
+	public String getPlayerTopThree(String playerName){
+		int counter = 0;
+		String result ="";
+		for(GamePlayed game: this){
+			if(game.getName().equals(playerName)){
+				//the user played this game
+				result += game + "<br>";
+				counter ++;
+				if(counter == 3){
+					return result;
+				}
+			}
+		}
+		return result;
+	}
 	
 	
     public static void main(String [] args){
-        Leaderboard l = new Leaderboard();
-        Date d = new Date();
-        GamePlayed g = new GamePlayed("Bob", d, 10);
-        l.add(g);
-        l.save();
-        l.clear();
-        l.load();
-        System.out.println(l.get(0).getName());
+		if(args.length == 1){
+			this.filename= args[0];
+		}else if(args.length > 1){
+			System.out.println("Invalid Command Line Arguments--Please enter a single file name, or leave blank for default.");
+		}
     }
 	
 	
