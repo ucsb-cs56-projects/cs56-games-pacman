@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>BA196E5D-F89A-41BC-B957-916A6704ED4D</string>
+	<key>IDESourceControlProjectName</key>
+	<string>pacman2</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>2BF65EE8-7C4E-43D2-B87E-4F684524872A</key>
+		<string>ssh://github.com/dmhartsook/cs56-games-pacman.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>src/edu/ucsb/cs56/projects/games/pacman2/pacman2.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>2BF65EE8-7C4E-43D2-B87E-4F684524872A</key>
+		<string>../../../../../../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/dmhartsook/cs56-games-pacman.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>2BF65EE8-7C4E-43D2-B87E-4F684524872A</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>2BF65EE8-7C4E-43D2-B87E-4F684524872A</string>
+			<key>IDESourceControlWCCName</key>
+			<string>cs56-games-pacman</string>
+		</dict>
+	</array>
+</dict>
+</plist>
