@@ -15,13 +15,19 @@ import java.util.Date;
  */
 
 public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
-	private static String filename="pacmanLeaderboard.ser";
+	private static String filename;
 	
 	/**Setter for filename 
 	 * @param fileName - represents the new filename of the .ser file
 	 */
 	public void setFileName(String fileName){
-		this.filename = fileName;
+		
+		if(fileName == ""){
+			this.filename= "pacmanLeaderboard.ser";
+		}else{ 
+			this.filename = fileName;
+		}
+		System.out.println("this.filename: "+ this.filename);
 	}
 	
 	/**Add function that adds a GamePlayed object to the Leaderboard in the proper spot 
@@ -143,11 +149,8 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
 	
 	
     public static void main(String [] args){
-		//~ if(args.length == 1){
-			//~ this.filename= args[0];
-		//~ }else if(args.length > 1){
-			//~ System.out.println("Invalid Command Line Arguments--Please enter a single file name, or leave blank for default.");
-		//~ }
+		//~ System.out.println("In Main!!");
+		
     }
 	
 	

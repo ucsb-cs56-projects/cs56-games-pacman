@@ -46,15 +46,12 @@ public class LeaderboardGUI{
         this.frame.setSize(250,250);
         this.frame.setVisible(true);
 		
-//TODO: remove this line:
-		//b.add(this.panel);
-
 		//add GameOver label
 		this.gameOver.setText("Game Over!");
         this.gameOver.setForeground(Color.white);
 		this.gameOver.setPreferredSize(new Dimension(200,20));
 		this.gameOver.setHorizontalAlignment(SwingConstants.CENTER);
-		
+				
 		this.field.setText("Enter Your Name Here");
 		this.submitBtn.addActionListener(new submitBtnListener(b.score, d));
    		this.panel.setBackground(new Color(102,0,0));
@@ -139,6 +136,17 @@ public class LeaderboardGUI{
 		
 	}
 	
-	
+	public void setLeaderBoardFileName(String [] args){
+		if(args.length > 1){
+			System.out.println("Invalid Command Line Arguments--Please enter a single file name, or leave blank for default.");
+			return;
+		}
+		if(args.length == 1){
+			leaderBoard.setFileName(args[0]);			
+		}else{
+			leaderBoard.setFileName("");
+		}
+
+	}
 	
 }

@@ -16,13 +16,14 @@ import edu.ucsb.cs56.projects.games.pacman.Board;
 
 public class PacMan extends JFrame
 {
-
     /**
        Constructor for PacMan object       
      */
-    public PacMan()
+    public PacMan(String[] args)
     {
-		add(new Board());
+		Board b = new Board();
+		add(b);
+		b.callLeaderboardMain(args);
 		setTitle("Pacman");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(380, 420);
@@ -34,10 +35,12 @@ public class PacMan extends JFrame
 		if(args.length == 1){
 			//right now leaderBoard is not accessible to PacMan, but it should be:
 			//~ leaderBoard.setFileName(args[0]);
+			new PacMan(args);
+			//~ b.callLeaderboardMain(args);
 		}else if(args.length > 1){
 			System.out.println("Invalid Command Line Arguments--Please enter a single file name, or leave blank for default.");
 		}
 
-		new PacMan();
+		new PacMan(args);
     }
 }
