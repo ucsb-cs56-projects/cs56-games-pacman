@@ -1,5 +1,6 @@
 build/
 *.class
+*.ser
 
 # Package Files #
 *.jar
