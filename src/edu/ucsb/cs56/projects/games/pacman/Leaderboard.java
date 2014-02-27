@@ -44,7 +44,8 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
             out.writeObject(this);
             out.close();
         }catch(IOException io) {
-            io.printStackTrace();
+            //~ io.printStackTrace();
+            System.out.println("COULD NOT SAVE LEADERBOARD");
         }
     }
     
@@ -57,7 +58,9 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
             in.close();
             fileIn.close();
         }catch (Exception e){
-            e.printStackTrace();
+            //~ e.printStackTrace();
+            System.out.println("NO LEADERBOARD FOUND");
+            return;
         }
         this.clear();
         this.addAll(temp);
