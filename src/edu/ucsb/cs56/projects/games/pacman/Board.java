@@ -28,7 +28,9 @@ import java.util.Date;
    @author Dario Castellanos
    @author Brandon Newman
    @author Daniel Ly
-   @version CS56 S13
+   @author Deanna Hartsook
+   @author Kateryna Fomenko
+   @version CS56 W14
  */
 
 public class Board extends JPanel implements ActionListener {

@@ -11,7 +11,9 @@ import edu.ucsb.cs56.projects.games.pacman.Board;
    @author Brian Postma
    @author Jan Bodnar
    @author Dario Castellanos
-   @version CS56 S13
+   @author Deanna Hartsook
+   @author Kateryna Fomenko
+   @version CS56 W14
  */
 
 public class PacMan extends JFrame
