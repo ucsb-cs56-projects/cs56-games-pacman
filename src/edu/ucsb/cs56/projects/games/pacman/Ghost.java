@@ -181,11 +181,12 @@ public class Ghost extends Character{
          double distance = Math.sqrt(dSquared);
          
          /*if( distance <=  100.0){
-         // move properly
-         }*/
+             move properly
+         }
          else {
              moveAI(grid, dx, dy);
-         }
+         }*/
+         moveAI(grid, dx, dy);
      }
     
     /**
