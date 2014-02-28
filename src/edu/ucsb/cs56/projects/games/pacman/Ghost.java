@@ -196,7 +196,8 @@ public class Ghost extends Character{
 		}else{
 			//means ghost is far and should move normally/randomly
 			//~ System.out.println("dx=" + dx[0]+ dx[1]+ dx[2] + " dy: "+ dy[0]+dy[1]+dy[2]);
-			this.moveAI(grid, dx, dy);
+			//this.moveAI(grid, dx, dy);
+			move(0,0);
 		}
 
 	 }
@@ -208,52 +209,52 @@ public class Ghost extends Character{
      * @param dy An array of integers used for randomized movement
      */
     @Override
-    public void moveAI(Grid grid, int[] dx, int[] dy) {	
-        int pos;
-        int count;
+    public void moveAI(Grid grid, int[] dx, int[] dy) {
+    	int pos;
+      int count;
 	
-        if (this.x % grid.blockSize == 0 && this.y % grid.blockSize == 0) {
-	    pos = x / grid.blockSize + grid.nrOfBlocks * (int)(this.y / grid.blockSize);
+      if (this.x % grid.blockSize == 0 && this.y % grid.blockSize == 0) {
+       	pos = x / grid.blockSize + grid.nrOfBlocks * (int)(this.y / grid.blockSize);
 	    
-	    count = 0;
+	   	count = 0;
 	    
-	    if ((grid.screenData[pos] & 1) == 0 && this.dx != 1) {
-		dx[count] = -1;
-		dy[count] = 0;
-		count++;
-	    }
-	    if ((grid.screenData[pos] & 2) == 0 && this.dy != 1) {
-		dx[count] = 0;
-		dy[count] = -1;
-		count++;
-	    }
-	    if ((grid.screenData[pos] & 4) == 0 && this.dx != -1) {
-		dx[count] = 1;
-		dy[count] = 0;
-		count++;
-	    }
-	    if ((grid.screenData[pos] & 8) == 0 && this.dy != -1) {
-		dx[count] = 0;
-		dy[count] = 1;
-		count++;
-	    }
-	    
-	    if (count == 0) {
-		if ((grid.screenData[pos] & 15) == 15) {
-		    this.dx = 0;
-		    this.dy = 0;
-		} else {
-		    this.dx = -this.dx;
-		    this.dy = -this.dy;
+			if ((grid.screenData[pos] & 1) == 0 && this.dx != 1) {
+				dx[count] = -1;
+				dy[count] = 0;
+				count++;
+			}
+			if ((grid.screenData[pos] & 2) == 0 && this.dy != 1) {
+				dx[count] = 0;
+				dy[count] = -1;
+				count++;
+			}
+			if ((grid.screenData[pos] & 4) == 0 && this.dx != -1) {
+				dx[count] = 1;
+				dy[count] = 0;
+				count++;
+			}
+			if ((grid.screenData[pos] & 8) == 0 && this.dy != -1) {
+				dx[count] = 0;
+				dy[count] = 1;
+				count++;
+			}
+			 
+			if (count == 0) {
+				if ((grid.screenData[pos] & 15) == 15) {
+					this.dx = 0;
+					this.dy = 0;
+				} else {
+					this.dx = -this.dx;
+					this.dy = -this.dy;
+				}
+			 } else {
+				count = (int)(Math.random() * count);
+				if (count > 3)
+					count = 3;
+				this.dx = dx[count];
+				this.dy = dy[count];
+			 }
 		}
-	    } else {
-		count = (int)(Math.random() * count);
-		if (count > 3)
-		    count = 3;
-		this.dx = dx[count];
-		this.dy = dy[count];
-	    }
-        }
-	move();
-    }
+		move();
+   }
 }
