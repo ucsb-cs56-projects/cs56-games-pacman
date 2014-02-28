@@ -2,8 +2,9 @@ package edu.ucsb.cs56.projects.games.pacman;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import javax.swing.*;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
 
 //~ import java.awt.BasicStroke;
@@ -478,34 +479,56 @@ public class Board extends JPanel implements ActionListener {
 	      }
 	      else if(key == 'h' || key == 'H'){
 				System.out.println("Help Selected");
-				JFrame readMeFrame = new JFrame();
-				JPanel readMePanel = new JPanel();
-				JLabel readMeLabel = new JLabel("Help");
+				JFrame helpFrame = new JFrame();
+				JPanel helpPanel = new JPanel();
+				JLabel helpLabel = new JLabel("Help");
 				
-				readMeLabel.setForeground(Color.white);
-				readMeLabel.setPreferredSize(new Dimension(200, 20));
-				readMeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+				helpLabel.setForeground(Color.white);
+				helpLabel.setPreferredSize(new Dimension(200, 20));
+				helpLabel.setHorizontalAlignment(SwingConstants.CENTER);
 				
-				JTextArea text = new JTextArea(28, 60);
-				text.setText("BLAH");
+				JTextArea text = new JTextArea(37, 40);
+                String instructions = loadHelpFile("instructions.txt");
+				text.setText(instructions);
 				text.setLineWrap(true);
+                text.setWrapStyleWord(true);
+                text.setCaretPosition(0);
+                text.setEditable(false);
 				
 				JScrollPane scroller = new JScrollPane(text);
 				scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 				scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-				readMePanel.add(readMeLabel);
-				readMePanel.add(scroller);
-				readMePanel.setBackground(new Color(0,32,48));
-				readMePanel.setForeground(Color.white);
-				readMeFrame.getContentPane().add(readMePanel);
-				readMeFrame.setLocationRelativeTo(null);
-				readMeFrame.setSize(800,500);
-				readMeFrame.setVisible(true);
+				helpPanel.add(helpLabel);
+				helpPanel.add(scroller);
+				helpPanel.setBackground(new Color(0,32,48));
+				helpPanel.setForeground(Color.white);
+				helpFrame.getContentPane().add(helpPanel);
+				//helpFrame.setLocationRelativeTo(null);
+				helpFrame.setSize(550,700);
+				helpFrame.setVisible(true);
 				
 				
 		  }
           }
       }
+    }
+    
+    
+    public String loadHelpFile(String filename) {
+        String input = "";
+        try {
+            FileReader reader = new FileReader(filename);
+            BufferedReader bufferedreader = new BufferedReader(reader);
+
+            String textReader = bufferedreader.readLine();
+            while (textReader != null){
+                input += "\n" + textReader;
+                textReader = bufferedreader.readLine();
+            }
+        }catch (IOException ex) {
+            System.out.println("Error: Could not load help file");
+        }
+        return input;
     }
     
     /**
