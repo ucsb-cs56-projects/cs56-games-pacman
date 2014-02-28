@@ -41,20 +41,20 @@ public class LeaderboardTest{
    /** Test case for getTopThree() method of Leaderboard
      * @see Leaderboard#getTopThree
      */
-    @Test
-    public void getTopThree(){
-        Leaderboard l = new Leaderboard();
-        Date d = new Date();
-       	SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-	String date = df.format(d);
-	GamePlayed g1 = new GamePlayed("Barbara", d, 200);
-        GamePlayed g2 = new GamePlayed("Nick", d, 100);
-        GamePlayed g3 = new GamePlayed("Felicity", d, 250);
-        l.add(g1); l.add(g2); l.add(g3);
-	Sring result = String.format("%15s %5d (%10s)\n","Felicity", date, 250);
-	result +=  String.format("%15s %5d (%10s)\n","Barbara", date, 200);
-	result +=  String.format("%15s %5d (%10s)\n","Nick", date, 100);
-        assertEquals(result, l.getTopThree());
+	@Test
+	public void getTopThree(){
+		Leaderboard l = new Leaderboard();
+   	Date d = new Date();
+		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		String date = df.format(d);
+		GamePlayed g1 = new GamePlayed("Barbara", d, 200);
+   	GamePlayed g2 = new GamePlayed("Nick", d, 100);
+   	GamePlayed g3 = new GamePlayed("Felicity", d, 250);
+   	l.add(g1); l.add(g2); l.add(g3);
+		String result = String.format("%15s %5d (%10s)\n","Felicity", date, 250);
+		result +=  String.format("%15s %5d (%10s)\n","Barbara", date, 200);
+		result +=  String.format("%15s %5d (%10s)\n","Nick", date, 100);
+      assertEquals(result, l.getTopThree());
     }
 
    /** Test case for getPlayerTopThree() method of Leaderboard
@@ -62,19 +62,18 @@ public class LeaderboardTest{
     */
     @Test
     public void getPlayerTopThree(){
-	Leaderboard l = new Leaderboard();
-        Date d = new Date();
-	SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-	String date = df.format(d);
-        GamePlayed g1 = new GamePlayed("Barbara", d, 200);
-        GamePlayed g2 = new GamePlayed("Barbara", d, 100);
-        GamePlayed g3 = new GamePlayed("Barbara", d, 250);
-        l.add(g1); l.add(g2); l.add(g3);
-	String result = String.format("%15s %5d (%10s)\n","Barbara", date, 250); 
-	result += String.format("%15s %5d (%10s)\n","Barbara", date, 200);
-	result += String.format("%15s %5d (%10s)\n","Barbara", date, 100);
-	assertEquals(result,l.getPlayerTopThree("Barbara"));
-    
+		Leaderboard l = new Leaderboard();
+      Date d = new Date();
+		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		String date = df.format(d);
+      GamePlayed g1 = new GamePlayed("Barbara", d, 200);
+      GamePlayed g2 = new GamePlayed("Barbara", d, 100);
+      GamePlayed g3 = new GamePlayed("Barbara", d, 250);
+      l.add(g1); l.add(g2); l.add(g3);
+		String result = String.format("%15s %5d (%10s)\n","Barbara", date, 250); 
+		result += String.format("%15s %5d (%10s)\n","Barbara", date, 200);
+		result += String.format("%15s %5d (%10s)\n","Barbara", date, 100);
+		assertEquals(result,l.getPlayerTopThree("Barbara"));  
     }
  
 }
