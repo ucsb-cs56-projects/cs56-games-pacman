@@ -20,11 +20,11 @@ public class LeaderboardTest{
      */
     @Test
     public void test_add(){
-	Leaderboard l = new Leaderboard();
-        Date d = new Date();
-        GamePlayed g = new GamePlayed("Barbara", d, 2000);
-        l.add(g);
-	assertEquals(g, l.get(0));
+		Leaderboard l = new Leaderboard();
+		Date d = new Date();
+		GamePlayed g = new GamePlayed("Barbara", d, 2000);
+		l.add(g);
+		assertEquals(g, l.get(0));
     }
 
     /** Test case for add(String name, Date d, int score) method of Leaderboard
@@ -32,11 +32,11 @@ public class LeaderboardTest{
      */
     @Test
     public void test_add2(){
-	Leaderboard l = new Leaderboard();
-        Date d = new Date();
-        l.add("Terry", d, 50);
-	assertEquals(new GamePlayed("Terry", d, 50), l.get(0));
-}
+		Leaderboard l = new Leaderboard();
+		Date d = new Date();
+		l.add("Terry", d, 50);
+		assertEquals(new GamePlayed("Terry", d, 50), l.get(0));
+	}
 
    /** Test case for getTopThree() method of Leaderboard
      * @see Leaderboard#getTopThree

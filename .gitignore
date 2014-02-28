@@ -3,6 +3,5 @@ build/
 *.ser
 
 # Package Files #
-*.jar
 *.war
 *.ear
