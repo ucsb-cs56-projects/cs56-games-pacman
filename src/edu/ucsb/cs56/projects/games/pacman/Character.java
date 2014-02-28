@@ -25,11 +25,11 @@ public abstract class Character {
      * @param y the starting y coordinate of pacman
      */
     public Character(int x, int y){
-	startX = x;
-	startY = y;
-	playerNum = 1;
-	deathTimer = PacPlayer.PACMAN;
-	alive = true;
+        startX = x;
+        startY = y;
+        playerNum = 1;
+        deathTimer = PacPlayer.PACMAN;
+        alive = true;
         reset();
     }
     
@@ -44,7 +44,7 @@ public abstract class Character {
     	startY = y;
     	this.playerNum = playerNum;
     	deathTimer = 0;
-	alive = true;
+        alive = true;
     	reset();
     }
     
@@ -54,22 +54,22 @@ public abstract class Character {
     public void reset(){
         resetPos();
         deathTimer = 0;
-	lives = 3;
-	alive = true;
+        lives = 3;
+        alive = true;
     }
 
     /**
      * Restores the character's default position
      */
     public void resetPos(){
-	this.x = startX;
-	this.y = startY;
-	dx = 0;
-	dy = 0;
-	reqdx = 0;
-	reqdy = 0;
-	viewdx = -1;
-	viewdy = 0;
+        this.x = startX;
+        this.y = startY;
+        dx = 0;
+        dy = 0;
+        reqdx = 0;
+        reqdy = 0;
+        viewdx = -1;
+        viewdy = 0;
     }
     
     /**
@@ -123,8 +123,8 @@ public abstract class Character {
         y = y + speed * dy;
     }
     
-    public void move(int dx2, int dy2) {
-    	x = x + speed * dx2;
-    	y = y + speed * dy2;
-    }
+//    public void move(int dx2, int dy2) {
+//    	x = x + speed * dx2;
+//    	y = y + speed * dy2;
+//    }
 }

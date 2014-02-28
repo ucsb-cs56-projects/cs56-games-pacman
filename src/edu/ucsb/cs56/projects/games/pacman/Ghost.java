@@ -56,13 +56,13 @@ public class Ghost extends Character{
      */
     @Override
     public void loadImages() {
-	try {
-		if (playerNum == GHOST1) ghost = ImageIO.read(getClass().getResource(assetPath + "ghostred.png"));
-		else if (playerNum == GHOST2) ghost = ImageIO.read(getClass().getResource(assetPath + "ghostblue.png"));
-		else ghost = ImageIO.read(getClass().getResource(assetPath + "ghostred.png"));
-	} catch (IOException e) {
-	    e.printStackTrace();
-	}
+        try {
+            if (playerNum == GHOST1) ghost = ImageIO.read(getClass().getResource(assetPath + "ghostred.png"));
+            else if (playerNum == GHOST2) ghost = ImageIO.read(getClass().getResource(assetPath + "ghostblue.png"));
+            else ghost = ImageIO.read(getClass().getResource(assetPath + "ghostred.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     /**
@@ -71,7 +71,7 @@ public class Ghost extends Character{
      */
     @Override
     public Image getLifeImage() {
-	return ghost;
+        return ghost;
     }
     
     /**
@@ -175,33 +175,19 @@ public class Ghost extends Character{
      * @param dy An array of integers used for randomized movement
 	 */ 
 	 public void moveAI(Grid grid, int ix, int iy, int[] dx, int[] dy){
-		double x = (double) ix;
-		double y = (double) iy;
-		double dSquared = Math.pow(this.x - x, 2.0) + Math.pow(this.y - y, 2.0); 
-		double distance = Math.sqrt(dSquared);
-		
-		if( distance <=  100.0){	    
-			int xDiff = ix - this.x;
-			int yDiff = this.y - iy;
-			int dx1; int dy1;
-			if (xDiff > 0)
-				dx1 = 1;
-			else
-				dx1 = -1;
-			if (yDiff > 0)
-				dy1 = -1;
-			else
-				dy1 = 1;
-			move(dx1, dy1);
-		}else{
-			//means ghost is far and should move normally/randomly
-			//~ System.out.println("dx=" + dx[0]+ dx[1]+ dx[2] + " dy: "+ dy[0]+dy[1]+dy[2]);
-			//this.moveAI(grid, dx, dy);
-			move(0,0);
-		}
-
-	 }
-          
+         double myX = (double) ix;
+         double myY = (double) iy;
+         double dSquared = Math.pow(this.x - myX, 2.0) + Math.pow(this.y - myY, 2.0);
+         double distance = Math.sqrt(dSquared);
+         
+         /*if( distance <=  100.0){
+         // move properly
+         }*/
+         else {
+             moveAI(grid, dx, dy);
+         }
+     }
+    
     /**
      * Moves character's current position with the board's collision
      * @param grid The Grid to be used for collision
@@ -209,52 +195,55 @@ public class Ghost extends Character{
      * @param dy An array of integers used for randomized movement
      */
     @Override
-    public void moveAI(Grid grid, int[] dx, int[] dy) {
-    	int pos;
-      int count;
+    public void moveAI(Grid grid, int[] dx, int[] dy){
+        int pos;
+        int count;
 	
-      if (this.x % grid.blockSize == 0 && this.y % grid.blockSize == 0) {
-       	pos = x / grid.blockSize + grid.nrOfBlocks * (int)(this.y / grid.blockSize);
-	    
-	   	count = 0;
-	    
-			if ((grid.screenData[pos] & 1) == 0 && this.dx != 1) {
-				dx[count] = -1;
-				dy[count] = 0;
-				count++;
-			}
-			if ((grid.screenData[pos] & 2) == 0 && this.dy != 1) {
-				dx[count] = 0;
-				dy[count] = -1;
-				count++;
-			}
-			if ((grid.screenData[pos] & 4) == 0 && this.dx != -1) {
-				dx[count] = 1;
-				dy[count] = 0;
-				count++;
-			}
-			if ((grid.screenData[pos] & 8) == 0 && this.dy != -1) {
-				dx[count] = 0;
-				dy[count] = 1;
-				count++;
-			}
-			 
-			if (count == 0) {
-				if ((grid.screenData[pos] & 15) == 15) {
-					this.dx = 0;
-					this.dy = 0;
-				} else {
-					this.dx = -this.dx;
-					this.dy = -this.dy;
-				}
-			 } else {
-				count = (int)(Math.random() * count);
-				if (count > 3)
-					count = 3;
-				this.dx = dx[count];
-				this.dy = dy[count];
-			 }
-		}
-		move();
+        if (this.x % grid.blockSize == 0 && this.y % grid.blockSize == 0) {
+            pos = x / (int)grid.blockSize + (int)grid.nrOfBlocks * (int)(this.y / (int)grid.blockSize);
+            
+            count = 0;
+            
+                // following block of code randomizes movement (randomizes dx[] and dy[])
+                if ((grid.screenData[pos] & 1) == 0 && this.dx != 1) {
+                    dx[count] = -1;
+                    dy[count] = 0;
+                    count++;
+                }
+                if ((grid.screenData[pos] & 2) == 0 && this.dy != 1) {
+                    dx[count] = 0;
+                    dy[count] = -1;
+                    count++;
+                }
+                if ((grid.screenData[pos] & 4) == 0 && this.dx != -1) {
+                    dx[count] = 1;
+                    dy[count] = 0;
+                    count++;
+                }
+                if ((grid.screenData[pos] & 8) == 0 && this.dy != -1) {
+                    dx[count] = 0;
+                    dy[count] = 1;
+                    count++;
+                }
+                 
+                if (count == 0) {
+                    if ((grid.screenData[pos] & 15) == 15) {
+                        this.dx = 0;
+                        this.dy = 0;
+                        
+                    } else {
+                        this.dx = -this.dx;
+                        this.dy = -this.dy;
+                        
+                    }
+                    
+                 }
+                    count = (int)(Math.random() * count);
+                    if (count > 3)
+                        count = 3;
+                    this.dx = dx[count];
+                    this.dy = dy[count];
+        }
+        move();
    }
 }

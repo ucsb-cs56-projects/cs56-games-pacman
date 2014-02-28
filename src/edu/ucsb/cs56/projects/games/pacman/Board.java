@@ -111,57 +111,57 @@ public class Board extends JPanel implements ActionListener {
      * @param g2d a Graphics 2D object
      */
     public void playGame(Graphics2D g2d) {
-	if (!checkAlive(pacmen)){
-	    gameOver();
-	}	    
-	else {
-	    switch (gameType) {
-	    case SINGLEPLAYER:
-		if (pacman.alive){
-		    pacman.move(grid);
-		    pacman.draw(g2d, this);
-		}
-		for (int i=0; i<nrofghosts; i++){
-		    //~ ghosts[i].moveAI(grid, dx, dy);
-		    ghosts[i].moveAI(grid, pacman.x, pacman.y, dx, dy);
-		    ghosts[i].draw(g2d, this);
-		}
-		detectCollision(ghosts, pacman);
-		break;
-	    case COOPERATIVE:
-		if (pacman.alive){
-		    pacman.move(grid);
-		    pacman.draw(g2d, this);
-		}
-		if (msPacman.alive){
-		    msPacman.move(grid);
-		    msPacman.draw(g2d, this);
-		}
-		for (int i=0; i<nrofghosts; i++){
-		    //~ ghosts[i].moveAI(grid, dx, dy);
-		    ghosts[i].moveAI(grid, pacman.x, pacman.y, dx, dy);
-		    ghosts[i].draw(g2d, this);
-		}
-		detectCollision(ghosts, pacman, msPacman);
-		break;
-	    case VERSUS:
-		if (pacman.alive){
-		    pacman.move(grid);
-		    pacman.draw(g2d, this);
-		}
-		for (Character ghost: playerGhosts){
-		    ghost.move(grid);
-		    ghost.draw(g2d, this);
-		}
-		if (score >= 149){
-		    score = 0;
-		    numBoardsCleared++;
-		    grid.levelInit(numBoardsCleared);
-		    levelContinue();
-		}
-		detectCollision(playerGhosts, pacman);
-		break;
-	}
+        if (!checkAlive(pacmen)){
+                gameOver();
+        }
+        else {
+            switch (gameType) {
+            case SINGLEPLAYER:
+                if (pacman.alive){
+                    pacman.move(grid);
+                    pacman.draw(g2d, this);
+                }
+                for (int i=0; i<nrofghosts; i++){
+                    //~ ghosts[i].moveAI(grid, dx, dy);
+                    ghosts[i].moveAI(grid, pacman.x, pacman.y, dx, dy);
+                    ghosts[i].draw(g2d, this);
+                }
+                detectCollision(ghosts, pacman);
+                break;
+            case COOPERATIVE:
+                if (pacman.alive){
+                    pacman.move(grid);
+                    pacman.draw(g2d, this);
+                }
+                if (msPacman.alive){
+                    msPacman.move(grid);
+                    msPacman.draw(g2d, this);
+                }
+                for (int i=0; i<nrofghosts; i++){
+                    //~ ghosts[i].moveAI(grid, dx, dy);
+                    ghosts[i].moveAI(grid, pacman.x, pacman.y, dx, dy);
+                    ghosts[i].draw(g2d, this);
+                }
+                detectCollision(ghosts, pacman, msPacman);
+                break;
+            case VERSUS:
+                if (pacman.alive){
+                    pacman.move(grid);
+                    pacman.draw(g2d, this);
+                }
+                for (Character ghost: playerGhosts){
+                    ghost.move(grid);
+                    ghost.draw(g2d, this);
+                }
+                if (score >= 149){
+                    score = 0;
+                    numBoardsCleared++;
+                    grid.levelInit(numBoardsCleared);
+                    levelContinue();
+                }
+                detectCollision(playerGhosts, pacman);
+                break;
+            }
             if (grid.checkMaze()){
                 score += 50;
                 numBoardsCleared++;
@@ -188,7 +188,7 @@ public class Board extends JPanel implements ActionListener {
 
         String s = "Press s for single player";
         String d = "Press d for Co-Op";
-	String f = "Press f for Versus";
+        String f = "Press f for Versus";
         Font small = new Font("Helvetica", Font.BOLD, 14);
         FontMetrics metr = this.getFontMetrics(small);
 
@@ -196,7 +196,7 @@ public class Board extends JPanel implements ActionListener {
         g.setFont(small);
         g.drawString(s, (scrsize - metr.stringWidth(s)) / 2, scrsize / 2 - metr.getHeight()/2);
         g.drawString(d, (scrsize - metr.stringWidth(d)) / 2, scrsize / 2 + metr.getHeight()/2);
-	g.drawString(f, (scrsize - metr.stringWidth(f)) / 2, scrsize / 2 + metr.getHeight()*3/2);
+        g.drawString(f, (scrsize - metr.stringWidth(f)) / 2, scrsize / 2 + metr.getHeight()*3/2);
         drawHighScores(g);
     }
 
@@ -206,29 +206,29 @@ public class Board extends JPanel implements ActionListener {
      */
     public void drawScore(Graphics2D g) {
         int i;
-	int pelletsLeft;
+        int pelletsLeft;
         String s;
-	String p;
+        String p;
 
         g.setFont(smallfont);
         g.setColor(new Color(96, 128, 255));
-	if (gameType == VERSUS) {
-	    pelletsLeft = 149 - score;
-	    p = "Pellets left: " + pelletsLeft;
-	    g.drawString(p, scrsize / 2 + 56, scrsize + 16);
-	}
-	else {
-	    s = "Score: " + score;
-	    g.drawString(s, scrsize / 2 + 96, scrsize + 16);
-	}        
-	for (i = 0; i < pacman.lives; i++) {
-            g.drawImage(pacman.getLifeImage(), i * 28 + 8, scrsize + 1, this);
+        if (gameType == VERSUS) {
+            pelletsLeft = 149 - score;
+            p = "Pellets left: " + pelletsLeft;
+            g.drawString(p, scrsize / 2 + 56, scrsize + 16);
         }
-	if (gameType == COOPERATIVE){
-	    for (i = 0; i < msPacman.lives; i++) {
-		g.drawImage(msPacman.getLifeImage(), i * 28 + 108, scrsize + 1, this);
-	    }
-	}
+        else {
+            s = "Score: " + score;
+            g.drawString(s, scrsize / 2 + 96, scrsize + 16);
+        }        
+        for (i = 0; i < pacman.lives; i++) {
+                g.drawImage(pacman.getLifeImage(), i * 28 + 8, scrsize + 1, this);
+            }
+        if (gameType == COOPERATIVE){
+            for (i = 0; i < msPacman.lives; i++) {
+            g.drawImage(msPacman.getLifeImage(), i * 28 + 108, scrsize + 1, this);
+            }
+        }
     }
 
     /**
@@ -368,24 +368,24 @@ public class Board extends JPanel implements ActionListener {
             dx = -dx;
             ghosts[i].speed = validspeeds[random];
         }
-	switch (gameType) {
-	case SINGLEPLAYER:
-	    pacman.resetPos();
-	    break;
-	case COOPERATIVE:
-	    pacman.resetPos();
-	    msPacman.resetPos();
-	    break;
-	case VERSUS:
-	    pacman.resetPos();
-	    for (Character ghost: playerGhosts){
-		ghost.resetPos();
-		if (numBoardsCleared == 3){
-		    ghost.speed = 6;
-		}
-	    }
-	    break;
-	}
+        switch (gameType) {
+            case SINGLEPLAYER:
+                pacman.resetPos();
+                break;
+            case COOPERATIVE:
+                pacman.resetPos();
+                msPacman.resetPos();
+                break;
+            case VERSUS:
+                pacman.resetPos();
+                for (Character ghost: playerGhosts){
+                ghost.resetPos();
+                if (numBoardsCleared == 3){
+                    ghost.speed = 6;
+                }
+                }
+                break;
+        }
     }
 
     /**
