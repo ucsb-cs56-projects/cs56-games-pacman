@@ -274,7 +274,8 @@ public class Board extends JPanel implements ActionListener {
 		ingame = false;
 		numBoardsCleared = 0;
 		Date d = new Date();
-		leaderBoardGui.showEndGameScreen(this, d);		
+		leaderBoardGui.showEndGameScreen(this.score, d);
+        gameInit();
     }
 
     /**

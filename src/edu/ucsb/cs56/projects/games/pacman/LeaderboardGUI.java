@@ -28,18 +28,12 @@ public class LeaderboardGUI{
 	private JLabel playersTopThree = new JLabel();
 
 	private Leaderboard leaderBoard = new Leaderboard();
+	private static submitBtnListener submitListener;
 
-    /**
-     * Draw a box with the Game Over text, that prompts user for his/her name
-     * @param b a Board object
-     */
-	public void showEndGameScreen(Board b, Date d){
-		
-		this.leaderBoard.load();		
-		
-		//clear the panel in between games	
-		this.panel.removeAll();
-		
+	/**Constructor for LeaderboardGui--initializes the JComponents of leaderboardgui
+	 * 
+	 */
+	public LeaderboardGUI(){
         this.frame = new JFrame("Leadboard");
         this.frame.setSize(380, 420);
 		this.frame.setLocationRelativeTo(null);
@@ -52,15 +46,32 @@ public class LeaderboardGUI{
 		this.gameOver.setPreferredSize(new Dimension(200,20));
 		this.gameOver.setHorizontalAlignment(SwingConstants.CENTER);
 				
-		this.field.setText("Enter Your Name Here");
-		this.submitBtn.addActionListener(new submitBtnListener(b.score, d));
    		this.panel.setBackground(new Color(102,0,0));
+		this.frame.setVisible(false);
 
+
+	}
+
+    /**
+     * Draw a box with the Game Over text, that prompts user for his/her name
+     * @param b a Board object
+     */
+	public void showEndGameScreen(int score, Date d){
+		//clear the panel in between games	
+		this.panel.removeAll();
 
 		this.frame.getContentPane().add(this.panel);
         this.panel.add(this.gameOver);
+		this.field.setText("Enter Your Name Here");
 		this.panel.add(this.field);
 		this.panel.add(this.submitBtn);
+
+		this.leaderBoard.load();
+		this.submitListener = new submitBtnListener(score, d);
+		this.submitBtn.addActionListener(this.submitListener);		
+		this.frame.setVisible(true);
+		this.frame.revalidate();
+		this.frame.repaint();
 	 }
 
 	/** submitBtnListener inner class - listens for the submit button to get pressed
@@ -87,6 +98,7 @@ public class LeaderboardGUI{
     */
     
 	private void showLeaderboard(String userName, Date d, int score){
+		submitBtn.removeActionListener(this.submitListener);
 		//add and save new GamePlayed object
 		this.leaderBoard.add(userName, d, score);
 		this.leaderBoard.save();
@@ -96,7 +108,7 @@ public class LeaderboardGUI{
         
 		//get the values from Leaderboard
 		String top3 = this.leaderBoard.getTopThree();
-        System.out.println(top3);
+        //System.out.println(top3);
 		String playerTop3 = this.leaderBoard.getPlayerTopThree(userName);
         
         top3 = top3.replace("\n", " <br> ");
@@ -112,9 +124,7 @@ public class LeaderboardGUI{
 		this.heading.setPreferredSize(new Dimension(200,20));
         this.heading.setHorizontalAlignment(SwingConstants.CENTER);
         this.topThree.setForeground(Color.white);
-        
-     
-		
+        	
 		this.playerScoresHeading.setText("Your Top Scores:");
 		this.playersTopThree.setText("<html> " + playerTop3 + "</html>");		
         this.playerScoresHeading.setForeground(Color.white);

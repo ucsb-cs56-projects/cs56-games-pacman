@@ -37,21 +37,16 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
 	*/
 	@Override
 	public boolean add(GamePlayed g){
-		 int i=0;
-//TODO: FIX BUG HERE!		 
-         //~ if (this.isEmpty()) {
-             //~ this.add(0,g);
-             //~ return true;
-         //~ }
-		 for(GamePlayed game: this){
-			 if(game.getScore() <= g.getScore()){
+		int i=0;
+		for(GamePlayed game: this){
+			if(game.getScore() <= g.getScore()){
 				this.add(i, g);
-                 return true;
-			 }
+				return true;
+			}
 			i++;
-		 }
-		 if(i!=0){
-			add(i-1, g);
+		}
+		if(i!=0){
+			add(i, g);
 		}else{
 			add(0,g);
 		}
