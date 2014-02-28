@@ -18,7 +18,7 @@
    <property name="javadocURL" value="${webBaseURL}/${projectName}/javadoc" /> 
    <property name="javadocLink" value="http://java.sun.com/javase/7/docs/api/" />
    <path id="project.class.path">
-         <pathelement location="build"/>
+         <pathelement location="./build"/>
          <pathelement location="lib/junit-4.8.2.jar"/>
    </path>   
 
