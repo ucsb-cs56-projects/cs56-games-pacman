@@ -1,23 +1,27 @@
 package edu.ucsb.cs56.projects.games.pacman;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
-
-import javax.swing.JPanel;
-import javax.swing.Timer;
+import javax.swing.*;
 import java.util.Date;
+
+//~ import java.awt.BasicStroke;
+//~ import java.awt.Color;
+//~ import java.awt.Dimension;
+//~ import java.awt.Font;
+//~ import java.awt.FontMetrics;
+//~ import java.awt.Graphics;
+//~ import java.awt.Graphics2D;
+//~ import java.awt.Image;
+//~ import java.awt.Toolkit;
+//~ import java.awt.event.ActionEvent;
+//~ import java.awt.event.ActionListener;
+//~ import java.awt.event.KeyAdapter;
+//~ import java.awt.event.KeyEvent;
+//~ import javax.swing.JPanel;
+//~ import javax.swing.Timer;
+
 
 
 /**
@@ -182,21 +186,23 @@ public class Board extends JPanel implements ActionListener {
      */
     public void showIntroScreen(Graphics2D g) {
         g.setColor(new Color(0, 32, 48));
-        g.fillRect(50, scrsize / 2 - 30, scrsize - 100, 65);
+        g.fillRect(50, scrsize / 2 - 50, scrsize - 100, 90);
         g.setColor(Color.white);
-        g.drawRect(50, scrsize / 2 - 30, scrsize - 100, 65);
+        g.drawRect(50, scrsize / 2 - 50, scrsize - 100, 90);
 
         String s = "Press s for single player";
         String d = "Press d for Co-Op";
         String f = "Press f for Versus";
+        String h = "Press h for help";
         Font small = new Font("Helvetica", Font.BOLD, 14);
         FontMetrics metr = this.getFontMetrics(small);
 
         g.setColor(Color.white);
         g.setFont(small);
-        g.drawString(s, (scrsize - metr.stringWidth(s)) / 2, scrsize / 2 - metr.getHeight()/2);
-        g.drawString(d, (scrsize - metr.stringWidth(d)) / 2, scrsize / 2 + metr.getHeight()/2);
-        g.drawString(f, (scrsize - metr.stringWidth(f)) / 2, scrsize / 2 + metr.getHeight()*3/2);
+        g.drawString(s, (scrsize - metr.stringWidth(s)) / 2, scrsize / 2 - metr.getHeight()*3/2);
+        g.drawString(d, (scrsize - metr.stringWidth(d)) / 2, scrsize / 2 - metr.getHeight()/2);
+        g.drawString(f, (scrsize - metr.stringWidth(f)) / 2, scrsize / 2 + metr.getHeight()/2);
+        g.drawString(h, (scrsize - metr.stringWidth(h)) / 2, scrsize / 2 + metr.getHeight()*3/2);
         drawHighScores(g);
     }
 
@@ -456,20 +462,48 @@ public class Board extends JPanel implements ActionListener {
           }
           else {
 	      if (key == 's' || key == 'S') {
-		  ingame=true;
-		  gameType = SINGLEPLAYER;
-		  gameInit();
+			  ingame=true;
+			  gameType = SINGLEPLAYER;
+			  gameInit();
 	      }
 	      else if (key == 'd' || key == 'D') {
-		  ingame=true;
-		  gameType = COOPERATIVE;
-		  gameInit();
+			  ingame=true;
+			  gameType = COOPERATIVE;
+			  gameInit();
 	      }
 	      else if (key == 'f' || key == 'F') {
-		  ingame=true;
-		  gameType = VERSUS;
-		  gameInit();
+			  ingame=true;
+			  gameType = VERSUS;
+			  gameInit();
 	      }
+	      else if(key == 'h' || key == 'H'){
+				System.out.println("Help Selected");
+				JFrame readMeFrame = new JFrame();
+				JPanel readMePanel = new JPanel();
+				JLabel readMeLabel = new JLabel("Help");
+				
+				readMeLabel.setForeground(Color.white);
+				readMeLabel.setPreferredSize(new Dimension(200, 20));
+				readMeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+				
+				JTextArea text = new JTextArea(28, 60);
+				text.setText("BLAH");
+				text.setLineWrap(true);
+				
+				JScrollPane scroller = new JScrollPane(text);
+				scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+				scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+				readMePanel.add(readMeLabel);
+				readMePanel.add(scroller);
+				readMePanel.setBackground(new Color(0,32,48));
+				readMePanel.setForeground(Color.white);
+				readMeFrame.getContentPane().add(readMePanel);
+				readMeFrame.setLocationRelativeTo(null);
+				readMeFrame.setSize(800,500);
+				readMeFrame.setVisible(true);
+				
+				
+		  }
           }
       }
     }
