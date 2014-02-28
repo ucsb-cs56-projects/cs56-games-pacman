@@ -456,7 +456,7 @@ public class Board extends JPanel implements ActionListener {
               ingame=false;
 	      numBoardsCleared = 0;
             }
-            else if (key == KeyEvent.VK_PAUSE) {
+            else if (key == KeyEvent.VK_PAUSE || key == 'p' || key == 'P') {
                 if (timer.isRunning())
                     timer.stop();
                 else timer.start();
