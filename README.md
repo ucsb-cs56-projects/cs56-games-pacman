@@ -49,4 +49,4 @@ CONTROLS
 			Numpad 6 - Move Right
 **How to Run**<br>
 For normal running (serialized file saved as "pacmanLeaderboard.ser"): `ant run`<br>
-To set the serialized file, use command line arguments: `ant run-args Darg0="filename"`
+To set the serialized file, use command line arguments: `ant run-args -Darg0=filename`
