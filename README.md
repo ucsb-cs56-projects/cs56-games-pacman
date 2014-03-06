@@ -47,8 +47,3 @@ CONTROLS
 			Numpad 5 - Move Down
 			Numpad 4 - Move Left
 			Numpad 6 - Move Right
-
-
-**How to Run**
- For normal running (serialized file saved as "pacmanLeaderboard.ser"): ant run
- To set the serialized file, use command line arguments: ant run-args Darg0=<filename> 
