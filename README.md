@@ -49,7 +49,7 @@ CONTROLS
 			Numpad 6 - Move Right
 			
 **Documentation**
-* Pacman.java contains the main function and is the JFrame that displays the game
+* Pacman.java contains the `main` function and is the JFrame that displays the game
 * The layout of each level is determined in Grid.java with arrays, where each number represents an element of the board. For example, level 1:
 ```java
  final short leveldata1[] =
@@ -70,6 +70,7 @@ CONTROLS
       9,  8,  8,  8,  8,  8,  8,  8,  8,  8,  25, 24, 24, 24, 28 };
 ```
 * Most of the basic game functionality (start game, end game, detect collision, etc.) is in Board.java, which is the main JPanel where the game is displayed
+
 			
 **How to Run**<br>
 For normal running (serialized file saved as "pacmanLeaderboard.ser"): `ant run`<br>
