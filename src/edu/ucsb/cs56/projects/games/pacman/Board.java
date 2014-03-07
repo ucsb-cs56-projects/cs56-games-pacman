@@ -84,23 +84,23 @@ public class Board extends JPanel implements ActionListener {
      * Constructor for Board object
      */
     public Board() {
-        addKeyListener(new TAdapter());
-        grid = new Grid();
-        pacman = new PacPlayer(7 * blocksize, 11 * blocksize, PacPlayer.PACMAN);
-        msPacman = new PacPlayer(7 * blocksize, 11 * blocksize, PacPlayer.MSPACMAN);
+		addKeyListener(new TAdapter());
+		grid = new Grid();
+		pacman = new PacPlayer(7 * blocksize, 11 * blocksize, PacPlayer.PACMAN);
+		msPacman = new PacPlayer(7 * blocksize, 11 * blocksize, PacPlayer.MSPACMAN);
 		ghost1 = new Ghost(4 * blocksize, 4 * blocksize, 4, Ghost.GHOST1);
 		ghost2 = new Ghost(4 * blocksize, 4 * blocksize, 4, Ghost.GHOST2);
-        setFocusable(true);
+		setFocusable(true);
 
-        d = new Dimension(400, 400);
+		d = new Dimension(400, 400);
 
-        setBackground(Color.black);
-        setDoubleBuffered(true);
-        ghosts = new Ghost[maxghosts];
-        dx = new int[4];
-        dy = new int[4];
-        timer = new Timer(40, this);
-        timer.start();
+		setBackground(Color.black);
+		setDoubleBuffered(true);
+		ghosts = new Ghost[maxghosts];
+		dx = new int[4];
+		dy = new int[4];
+		timer = new Timer(40, this);
+		timer.start();
     }
     
     /**
@@ -238,35 +238,35 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    /**
-     * Displays a list of scores on the bottom of the screen
-     * @param g a Graphics2D object
-     */
-    public void drawHighScores(Graphics2D g) {
-    	ArrayList<Integer> scores = sl.loadScores();
-    	g.setFont(smallfont);
-    	FontMetrics fm = this.getFontMetrics(smallfont);
-    	
-    	g.setColor(new Color(0, 32, 48));
-        g.fillRect((int) scrsize / 4 , (int) scrsize - (scrsize / 3) - fm.getAscent(), (int) (scrsize / 2), blocksize * 4);
-        g.setColor(Color.white);
-        g.drawRect((int) scrsize / 4, (int) scrsize - (scrsize / 3) - fm.getAscent(), (int) (scrsize / 2), blocksize * 4);
-        
-        g.setColor(new Color(96, 128, 255));
-    	for (int i = 0; i < scores.size(); i++) {
-    		if (i < 5)
-    			g.drawString((i + 1) + ": " + scores.get(i), (int) scrsize / 4 + blocksize, 
-				     (int) (scrsize - (scrsize / 3) + (i * fm.getHeight())));
-    		else if (i < 10)
-    			g.drawString((i + 1) + ": " + scores.get(i), (int) scrsize / 2 + blocksize, 
-				     (int) (scrsize - (scrsize / 3) + ((i - 5) * fm.getHeight())));
-    	}
+	/**
+	* Displays a list of scores on the bottom of the screen
+	* @param g a Graphics2D object
+	*/
+   public void drawHighScores(Graphics2D g) {
+		ArrayList<Integer> scores = sl.loadScores();
+		g.setFont(smallfont);
+		FontMetrics fm = this.getFontMetrics(smallfont);
+
+		g.setColor(new Color(0, 32, 48));
+		g.fillRect((int) scrsize / 4 , (int) scrsize - (scrsize / 3) - fm.getAscent(), (int) (scrsize / 2), blocksize * 4);
+		g.setColor(Color.white);
+		g.drawRect((int) scrsize / 4, (int) scrsize - (scrsize / 3) - fm.getAscent(), (int) (scrsize / 2), blocksize * 4);
+
+		g.setColor(new Color(96, 128, 255));
+		for (int i = 0; i < scores.size(); i++) {
+		if (i < 5)
+		g.drawString((i + 1) + ": " + scores.get(i), (int) scrsize / 4 + blocksize, 
+		(int) (scrsize - (scrsize / 3) + (i * fm.getHeight())));
+		else if (i < 10)
+		g.drawString((i + 1) + ": " + scores.get(i), (int) scrsize / 2 + blocksize, 
+		(int) (scrsize - (scrsize / 3) + ((i - 5) * fm.getHeight())));
+		}
     }
 
-    /**
-     * End the game if remaining lives reaches 0.
-     */
-    public void gameOver() {
+	/**
+	* End the game if remaining lives reaches 0.
+	*/
+	public void gameOver() {
 		if(gameType != VERSUS) {
 			if (score  > 1)
 			sl.writeScore(score);
@@ -275,125 +275,125 @@ public class Board extends JPanel implements ActionListener {
 		numBoardsCleared = 0;
 		Date d = new Date();
 		leaderBoardGui.showEndGameScreen(this.score, d);
-        gameInit();
-    }
+		gameInit();
+	}
 
     /**
      * Detects when ghosts and pacman collide
      * @param ghosts An array of Ghost
      * @param pacmen Characters controlled by player
      */
-    public void detectCollision(Character[] ghosts, Character... pacmen) {
-    	for (Character pacman: pacmen){
-	    if (gameType == VERSUS){
-		for (Character ghost: ghosts){
-		    if (pacman.x > (ghost.x - 12) && pacman.x < (ghost.x + 12) &&
-			pacman.y > (ghost.y - 12) && pacman.y < (ghost.y + 12) &&
-			ingame) {
-
-			pacman.death();
-		    }
-		}
-	    }
-	    else {
-		for(int i = 0; i < nrofghosts; i++) {
-		    if (pacman.x > (ghosts[i].x - 12) && pacman.x < (ghosts[i].x + 12) &&
-			pacman.y > (ghosts[i].y - 12) && pacman.y < (ghosts[i].y + 12) &&
-			ingame) {
-			
-			pacman.death();
-		    }
-		}
-	    }
-	}	
-    }
-
-    /**
-     * Returns true if any pacman is alive, returns false if they
-     * are all dead
-     * @param pacmen Any number of characters to check
-     * @return true if any surviving, false if all dead
-     */
-    public boolean checkAlive(Character... pacmen) {
-	int nAlive = 0;
-	for (Character pacman: pacmen) {
-	    if (pacman.alive)
-		nAlive++;
+	public void detectCollision(Character[] ghosts, Character... pacmen) {
+		for (Character pacman: pacmen){
+			if (gameType == VERSUS){
+				for (Character ghost: ghosts){
+					if (pacman.x > (ghost.x - 12) && pacman.x < (ghost.x + 12) &&
+						pacman.y > (ghost.y - 12) && pacman.y < (ghost.y + 12) &&
+						ingame) {
+							pacman.death();
+					}
+				}
+			}
+			else {
+				for(int i = 0; i < nrofghosts; i++) {
+					if (pacman.x > (ghosts[i].x - 12) && pacman.x < (ghosts[i].x + 12) &&
+						pacman.y > (ghosts[i].y - 12) && pacman.y < (ghosts[i].y + 12) &&
+						ingame) {
+	
+							pacman.death();
+					}
+				}
+			}
+		}	
 	}
-	if (nAlive == 0)
-	    return false;
-	else
-	    return true;
-    }
-    /**
-     * Initialize game variables
-     */
-    public void gameInit() {
-	switch (gameType) {
-	case SINGLEPLAYER:
-	    pacmen = new Character[1];
-	    pacmen[0] = pacman;
-	    pacman.reset();
-	    break;
-	case COOPERATIVE:
-	    pacmen = new Character[2];
-	    pacmen[0] = pacman;
-	    pacmen[1] = msPacman;
-	    pacman.reset();
-	    msPacman.reset();
-	    break;
-	case VERSUS:
-	    pacmen = new Character[1];
-	    pacmen[0] = pacman;
-	    pacman.reset();
-	    playerGhosts = new Character[2];
-	    playerGhosts[0] = ghost1;
-	    playerGhosts[1] = ghost2;
-	    ghost1.reset();
-	    ghost2.reset();
-	    break;
-	}
-        grid.levelInit(numBoardsCleared);
-        levelContinue();
-        score = 0;
-        nrofghosts = 6;
-        currentspeed = 3;
+
+	/**
+	* Returns true if any pacman is alive, returns false if they
+	* are all dead
+	* @param pacmen Any number of characters to check
+	* @return true if any surviving, false if all dead
+	*/
+   public boolean checkAlive(Character... pacmen) {
+		int nAlive = 0;
+		for (Character pacman: pacmen) {
+			if (pacman.alive)
+				nAlive++;
+			}
+			if (nAlive == 0)
+				return false;
+			else
+				return true;
+		}
+
+	/**
+	* Initialize game variables
+	*/
+   public void gameInit() {
+		switch (gameType) {
+		case SINGLEPLAYER:
+			 pacmen = new Character[1];
+			 pacmen[0] = pacman;
+			 pacman.reset();
+			 break;
+		case COOPERATIVE:
+			 pacmen = new Character[2];
+			 pacmen[0] = pacman;
+			 pacmen[1] = msPacman;
+			 pacman.reset();
+			 msPacman.reset();
+			 break;
+		case VERSUS:
+			 pacmen = new Character[1];
+			 pacmen[0] = pacman;
+			 pacman.reset();
+			 playerGhosts = new Character[2];
+			 playerGhosts[0] = ghost1;
+			 playerGhosts[1] = ghost2;
+			 ghost1.reset();
+			 ghost2.reset();
+			 break;
+		}
+     grid.levelInit(numBoardsCleared);
+     levelContinue();
+     score = 0;
+     nrofghosts = 6;
+     currentspeed = 3;
     }
     
-    /**
-     * Initialize Pacman and ghost position/direction
-     */
-    public void levelContinue() {
-    	int dx = 1;
-        int random;
-        
-        for (short i = 0; i < nrofghosts; i++) {
-        	random = (int)(Math.random() * (currentspeed + 1));
-            if (random > currentspeed)
-            	random = currentspeed;
-        	ghosts[i] = new Ghost(4 * blocksize, 4 * blocksize, random);
-        	ghosts[i].dx = dx;
-            dx = -dx;
-            ghosts[i].speed = validspeeds[random];
-        }
-        switch (gameType) {
-            case SINGLEPLAYER:
-                pacman.resetPos();
-                break;
-            case COOPERATIVE:
-                pacman.resetPos();
-                msPacman.resetPos();
-                break;
-            case VERSUS:
-                pacman.resetPos();
-                for (Character ghost: playerGhosts){
-                ghost.resetPos();
-                if (numBoardsCleared == 3){
-                    ghost.speed = 6;
-                }
-                }
-                break;
-        }
+	/**
+	* Initialize Pacman and ghost position/direction
+	*/
+   public void levelContinue() {
+		int dx = 1;
+		int random;
+     
+     for (short i = 0; i < nrofghosts; i++) {
+			random = (int)(Math.random() * (currentspeed + 1));
+         if (random > currentspeed)
+         	random = currentspeed;
+				ghosts[i] = new Ghost(4 * blocksize, 4 * blocksize, random);
+				ghosts[i].dx = dx;
+				dx = -dx;
+				ghosts[i].speed = validspeeds[random];
+     }
+     switch (gameType) {
+         case SINGLEPLAYER:
+            pacman.resetPos();
+            break;
+         case COOPERATIVE:
+            pacman.resetPos();
+            msPacman.resetPos();
+            break;
+         case VERSUS:
+            pacman.resetPos();
+            for (Character ghost: playerGhosts){
+            ghost.resetPos();
+            if (numBoardsCleared == 3){
+                 ghost.speed = 6;
+            }
+            }
+            break;
+     }
     }
 
     /**
@@ -437,20 +437,20 @@ public class Board extends JPanel implements ActionListener {
 
           if (ingame)
           {
-      		switch (gameType) {
-			case SINGLEPLAYER:
-			    pacman.keyPressed(key);
-			    break;
-			case COOPERATIVE:
-			    pacman.keyPressed(key);
-			    msPacman.keyPressed(key);
-			    break;
-			case VERSUS:
-			    pacman.keyPressed(key);
-			    ghost1.keyPressed(key);
-			    ghost2.keyPressed(key);
-			    break;
-		}
+		   	switch (gameType) {
+				case SINGLEPLAYER:
+					 pacman.keyPressed(key);
+					 break;
+				case COOPERATIVE:
+					 pacman.keyPressed(key);
+					 msPacman.keyPressed(key);
+					 break;
+				case VERSUS:
+					 pacman.keyPressed(key);
+					 ghost1.keyPressed(key);
+					 ghost2.keyPressed(key);
+					 break;
+			}
         	
             if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
               ingame=false;
