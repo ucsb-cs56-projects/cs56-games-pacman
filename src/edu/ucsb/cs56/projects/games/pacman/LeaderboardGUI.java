@@ -18,12 +18,12 @@ import java.awt.event.ActionListener;
 
 public class LeaderboardGUI{
 	private JLabel gameOver = new JLabel();
-    private JFrame frame;
+	private JFrame frame;
 	private JPanel panel = new JPanel();
 	private JTextField field = new JTextField();
 	private	JButton submitBtn = new JButton("Submit");
-    private JLabel heading = new JLabel();
-    private JLabel playerScoresHeading = new JLabel();
+	private JLabel heading = new JLabel();
+	private JLabel playerScoresHeading = new JLabel();
 	private JLabel topThree = new JLabel();
 	private JLabel playersTopThree = new JLabel();
 
@@ -34,19 +34,19 @@ public class LeaderboardGUI{
 	 * 
 	 */
 	public LeaderboardGUI(){
-        this.frame = new JFrame("Leadboard");
-        this.frame.setSize(380, 420);
+		this.frame = new JFrame("Leadboard");
+		this.frame.setSize(380, 420);
 		this.frame.setLocationRelativeTo(null);
-        this.frame.setSize(250,250);
-        this.frame.setVisible(true);
-		
+		this.frame.setSize(250,250);
+		this.frame.setVisible(true);
+
 		//add GameOver label
 		this.gameOver.setText("Game Over!");
-        this.gameOver.setForeground(Color.white);
+		this.gameOver.setForeground(Color.white);
 		this.gameOver.setPreferredSize(new Dimension(200,20));
 		this.gameOver.setHorizontalAlignment(SwingConstants.CENTER);
-				
-   		this.panel.setBackground(new Color(102,0,0));
+	
+		this.panel.setBackground(new Color(102,0,0));
 		this.frame.setVisible(false);
 
 
@@ -61,7 +61,7 @@ public class LeaderboardGUI{
 		this.panel.removeAll();
 
 		this.frame.getContentPane().add(this.panel);
-        this.panel.add(this.gameOver);
+		this.panel.add(this.gameOver);
 		this.field.setText("Enter Your Name Here");
 		this.panel.add(this.field);
 		this.panel.add(this.submitBtn);
@@ -102,54 +102,53 @@ public class LeaderboardGUI{
 		//add and save new GamePlayed object
 		this.leaderBoard.add(userName, d, score);
 		this.leaderBoard.save();
-        
+
 		//removes old textField and submitBtn
-        this.panel.removeAll();
-        
+		this.panel.removeAll();
+
 		//get the values from Leaderboard
 		String top3 = this.leaderBoard.getTopThree();
-        //System.out.println(top3);
+		//System.out.println(top3);
 		String playerTop3 = this.leaderBoard.getPlayerTopThree(userName);
-        
-        top3 = top3.replace("\n", " <br> ");
-        playerTop3 = playerTop3.replace("\n", " <br> ");
-        
-		//~ System.out.println("top3"+ top3);
-        //~ System.out.println("playerTop3"+ playerTop3);
-        
 
-        this.heading.setText("High Scores!");
+		top3 = top3.replace("\n", " <br> ");
+		playerTop3 = playerTop3.replace("\n", " <br> ");
+
+		//~ System.out.println("top3"+ top3);
+		//~ System.out.println("playerTop3"+ playerTop3);
+
+
+		this.heading.setText("High Scores!");
 		this.topThree.setText("<html> " + top3 + "</html>");
-        this.heading.setForeground(Color.white);
+		this.heading.setForeground(Color.white);
 		this.heading.setPreferredSize(new Dimension(200,20));
-        this.heading.setHorizontalAlignment(SwingConstants.CENTER);
-        this.topThree.setForeground(Color.white);
-        	
+		this.heading.setHorizontalAlignment(SwingConstants.CENTER);
+		this.topThree.setForeground(Color.white);
+
 		this.playerScoresHeading.setText("Your Top Scores:");
 		this.playersTopThree.setText("<html> " + playerTop3 + "</html>");		
-        this.playerScoresHeading.setForeground(Color.white);
+		this.playerScoresHeading.setForeground(Color.white);
 		this.playerScoresHeading.setPreferredSize(new Dimension(200,20));
 		this.playerScoresHeading.setHorizontalAlignment(SwingConstants.CENTER);
-        this.playersTopThree.setForeground(Color.white);
-        
+		this.playersTopThree.setForeground(Color.white);
+
 		//add JLabels to panel
-        this.panel.add(this.heading);
+		this.panel.add(this.heading);
 		this.panel.add(this.topThree);
-		
-        this.panel.add(this.playerScoresHeading);
-   		this.panel.add(this.playersTopThree);
+
+		this.panel.add(this.playerScoresHeading);
+		this.panel.add(this.playersTopThree);
 
 		//this.panel.add(this.playersTopThree);
-        this.frame.revalidate();
+		this.frame.revalidate();
 		this.frame.repaint();
-		
+
 	}
 	/** setLeaderBoardFileName method- sets the fileName in the instance of the leaderboard class
 	* @param args - a string version of the command line arguments
 	*/
 	public void setLeaderBoardFileName(String args){
 		leaderBoard.setFileName(args);
-
 	}
 	
 }
