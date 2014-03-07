@@ -51,9 +51,9 @@ public class LeaderboardTest{
    	GamePlayed g2 = new GamePlayed("Nick", d, 100);
    	GamePlayed g3 = new GamePlayed("Felicity", d, 250);
    	l.add(g1); l.add(g2); l.add(g3);
-		String result = String.format("%15s %5d (%10s)\n","Felicity", date, 250);
-		result +=  String.format("%15s %5d (%10s)\n","Barbara", date, 200);
-		result +=  String.format("%15s %5d (%10s)\n","Nick", date, 100);
+		String result = String.format("%15s %5s (%10s)\n","Felicity", date, 250);
+		result +=  String.format("%15s %5s (%10s)\n","Barbara", date, 200);
+		result +=  String.format("%15s %5s (%10s)\n","Nick", date, 100);
       assertEquals(result, l.getTopThree());
     }
 
@@ -70,9 +70,9 @@ public class LeaderboardTest{
       GamePlayed g2 = new GamePlayed("Barbara", d, 100);
       GamePlayed g3 = new GamePlayed("Barbara", d, 250);
       l.add(g1); l.add(g2); l.add(g3);
-		String result = String.format("%15s %5d (%10s)\n","Barbara", date, 250); 
-		result += String.format("%15s %5d (%10s)\n","Barbara", date, 200);
-		result += String.format("%15s %5d (%10s)\n","Barbara", date, 100);
+		String result = String.format("%15s %5s (%10s)\n","Barbara", date, 250); 
+		result += String.format("%15s %5s (%10s)\n","Barbara", date, 200);
+		result += String.format("%15s %5s (%10s)\n","Barbara", date, 100);
 		assertEquals(result,l.getPlayerTopThree("Barbara"));  
     }
  
