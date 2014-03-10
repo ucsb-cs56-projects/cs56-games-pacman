@@ -37,7 +37,7 @@ public class PacPlayer extends Character{
     public PacPlayer(int x, int y){
     	super(x,y);
     	speed = pacmanspeed;
-	lives = 3;
+        lives = 3;
 		assetPath = "assets/pacman/";
     	loadImages();
     }
@@ -51,10 +51,10 @@ public class PacPlayer extends Character{
     public PacPlayer(int x, int y, int playerNum){
     	super(x,y, playerNum);
     	speed = pacmanspeed;
-	lives = 3;
-	if (playerNum == PACMAN) assetPath = "assets/pacman/";
-	else if (playerNum == MSPACMAN) assetPath = "assets/mspacman/";
-    	loadImages();
+        lives = 3;
+        if (playerNum == PACMAN) assetPath = "assets/pacman/";
+        else if (playerNum == MSPACMAN) assetPath = "assets/mspacman/";
+            loadImages();
     }
     
     public void death() {
@@ -63,9 +63,9 @@ public class PacPlayer extends Character{
     		deathTimer = 40;
     		resetPos();
     	}
-	if (lives <= 0) {
-	    alive = false;
-	}
+        if (lives <= 0) {
+            alive = false;
+        }
     }
 
     /**

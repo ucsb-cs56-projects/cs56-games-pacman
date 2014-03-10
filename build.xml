@@ -18,7 +18,7 @@
    <property name="javadocURL" value="${webBaseURL}/${projectName}/javadoc" /> 
    <property name="javadocLink" value="http://java.sun.com/javase/7/docs/api/" />
    <path id="project.class.path">
-         <pathelement location="build"/>
+         <pathelement location="./build"/>
          <pathelement location="lib/junit-4.8.2.jar"/>
    </path>   
 
@@ -36,6 +36,13 @@
 
   <target name="run" depends="compile" description="run Pacman game">
     <java classpath="build" classname="${projectPackage}.PacMan" fork="true"/>
+  </target>
+
+  <target name="run-args" depends="compile" description="run Pacman game">
+    <java classpath="build" classname="${projectPackage}.PacMan" fork="true">
+		<arg value="${arg0}"/>
+		<arg value="${arg1}"/>
+	</java>
   </target>
 
  <target name="javadoc" depends="compile" description="publish javadoc"> 
@@ -63,6 +70,19 @@
    <chmod dir="${javadocDest}" perm="755"  type="file" includes="**/*" /> 
    <echo>Javadoc deployed to ${javadocURL}</echo>
  </target>        
+	
+  <target name="test" description="run JUnit tests" depends="compile">
+	  <junit haltonerror="no" haltonfailure="no">
+		  <classpath refid="project.class.path" />
+		  <batchtest fork="yes">
+			  <fileset dir="src">
+				  <include name="*Test.java"/>
+			  </fileset>
+		  </batchtest>
+		<formatter type="plain" usefile="false" />
+	  </junit>
+  </target>
+				  
 
   <target name="clean" description="delete unnecessary files and directories">
     <delete dir="build/edu" failonerror="false" verbose="true" />

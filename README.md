@@ -13,6 +13,7 @@ CONTROLS
 		F - Start Versus
 	While In-Game:
 		Esc - Return to title screen
+		P - Pause/Unpause the game
 	Single Player:
 		Pacman:
 			W - Move Up
