@@ -33,9 +33,11 @@ public class LeaderboardGUI{
 	private JLabel scoreLabel = new JLabel();
 	private BufferedImage pacmanImage;
 	private JLabel picLabel;
+    private JButton playAgain = new JButton("Play Again");
 	
 	private Leaderboard leaderBoard = new Leaderboard();
 	private static submitBtnListener submitListener;
+    private playAgainBtnListener playAgainListener;
     
     private int WIDTH = 380;
     private int HEIGHT = 420;
@@ -131,6 +133,13 @@ public class LeaderboardGUI{
 			LeaderboardGUI.this.showLeaderboard(userName, this.d, this.score);
 		}
 	}
+    
+    
+    private class playAgainBtnListener implements ActionListener {
+        public void actionPerformed(ActionEvent ev) {
+            frame.dispose();
+        }
+    }
 	
     /**
      * Add GamePlayed to leaderboard and display the highest scores
@@ -172,6 +181,9 @@ public class LeaderboardGUI{
         this.playerScoresHeading.setForeground(new Color(0,51,0));
         this.topThree.setForeground(new Color(0,51,0));
         this.playersTopThree.setForeground(new Color(0,51,0));
+        
+        playAgainListener = new playAgainBtnListener();
+		playAgain.addActionListener(playAgainListener);
 		
 
 		//add JLabels to panel
@@ -184,6 +196,9 @@ public class LeaderboardGUI{
 		this.panel.add(this.playerScoresHeading);
         this.panel.add(Box.createRigidArea(new Dimension(0,10)));
 		this.panel.add(this.playersTopThree);
+        
+        this.panel.add(Box.createRigidArea(new Dimension(0,10)));
+        panel.add(playAgain);
 
 		//this.panel.add(this.playersTopThree);
 		this.frame.revalidate();
