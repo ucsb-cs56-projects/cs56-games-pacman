@@ -36,6 +36,9 @@ public class LeaderboardGUI{
 	
 	private Leaderboard leaderBoard = new Leaderboard();
 	private static submitBtnListener submitListener;
+    
+    private int WIDTH = 380;
+    private int HEIGHT = 420;
 
 	/**Constructor for LeaderboardGui--initializes the JComponents of leaderboardgui
 	 * 
@@ -50,9 +53,9 @@ public class LeaderboardGUI{
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
-		
+        
 		this.frame = new JFrame("Leadboard");
-		this.frame.setSize(380, 420);
+		this.frame.setSize(WIDTH, HEIGHT);
 		this.frame.setLocationRelativeTo(null);
 		this.frame.setVisible(true);
 
@@ -147,35 +150,39 @@ public class LeaderboardGUI{
 
 		//get the values from Leaderboard
 		String top3 = this.leaderBoard.getTopThree();
-		//System.out.println(top3);
 		String playerTop3 = this.leaderBoard.getPlayerTopThree(userName);
 
 		top3 = top3.replace("\n", " <br> ");
 		playerTop3 = playerTop3.replace("\n", " <br> ");
 
-		//~ System.out.println("top3"+ top3);
-		//~ System.out.println("playerTop3"+ playerTop3);
-
-
 		this.heading.setText("High Scores!");
-		this.topThree.setText("<html> " + top3 + "</html>");
-		this.heading.setForeground(Color.white);
-		this.heading.setPreferredSize(new Dimension(200,20));
-		this.heading.setHorizontalAlignment(SwingConstants.CENTER);
-		this.topThree.setForeground(Color.white);
-
-		this.playerScoresHeading.setText("Your Top Scores:");
-		this.playersTopThree.setText("<html> " + playerTop3 + "</html>");		
-		this.playerScoresHeading.setForeground(Color.white);
-		this.playerScoresHeading.setPreferredSize(new Dimension(200,20));
-		this.playerScoresHeading.setHorizontalAlignment(SwingConstants.CENTER);
-		this.playersTopThree.setForeground(Color.white);
+        this.topThree.setText("<html>" + top3 + "</html>");
+        this.playerScoresHeading.setText("Your Top Scores:");
+		this.playersTopThree.setText("<html> " + playerTop3 + "</html>");
+        
+        heading.setFont(new Font("Serif", Font.PLAIN, 36));
+        topThree.setFont(new Font("Serif", Font.PLAIN, 24));
+        playerScoresHeading.setFont(new Font("Serif", Font.PLAIN, 36));
+        playersTopThree.setFont(new Font("Serif", Font.PLAIN, 24));
+        
+        topThree.setHorizontalAlignment(SwingConstants.CENTER);
+        playersTopThree.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		this.heading.setForeground(new Color(0,51,0));
+        this.playerScoresHeading.setForeground(new Color(0,51,0));
+        this.topThree.setForeground(new Color(0,51,0));
+        this.playersTopThree.setForeground(new Color(0,51,0));
+		
 
 		//add JLabels to panel
+        this.panel.add(Box.createRigidArea(new Dimension(0,20)));
 		this.panel.add(this.heading);
+        this.panel.add(Box.createRigidArea(new Dimension(0,10)));
 		this.panel.add(this.topThree);
+        this.panel.add(Box.createRigidArea(new Dimension(0,10)));
 
 		this.panel.add(this.playerScoresHeading);
+        this.panel.add(Box.createRigidArea(new Dimension(0,10)));
 		this.panel.add(this.playersTopThree);
 
 		//this.panel.add(this.playersTopThree);
