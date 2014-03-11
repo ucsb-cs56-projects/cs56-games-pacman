@@ -6,6 +6,10 @@ import java.awt.*;
 import java.util.Date;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.IOException;
+
 //~ import java.awt.Color;
 
 
@@ -20,13 +24,16 @@ public class LeaderboardGUI{
 	private JLabel gameOver = new JLabel();
 	private JFrame frame;
 	private JPanel panel = new JPanel();
-	private JTextField field = new JTextField();
+	private JTextField field = new JTextField(20);
 	private	JButton submitBtn = new JButton("Submit");
 	private JLabel heading = new JLabel();
 	private JLabel playerScoresHeading = new JLabel();
 	private JLabel topThree = new JLabel();
 	private JLabel playersTopThree = new JLabel();
-
+	private JLabel scoreLabel = new JLabel();
+	private BufferedImage pacmanImage;
+	private JLabel picLabel;
+	
 	private Leaderboard leaderBoard = new Leaderboard();
 	private static submitBtnListener submitListener;
 
@@ -34,19 +41,30 @@ public class LeaderboardGUI{
 	 * 
 	 */
 	public LeaderboardGUI(){
+		try{
+			pacmanImage = ImageIO.read(getClass().getResource("assets/pacman/right2.png"));
+			int width = 5*pacmanImage.getWidth();
+			int height = 5*pacmanImage.getHeight();
+			Image pac = pacmanImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+			picLabel = new JLabel(new ImageIcon(pac));
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
 		this.frame = new JFrame("Leadboard");
 		this.frame.setSize(380, 420);
 		this.frame.setLocationRelativeTo(null);
-		this.frame.setSize(250,250);
 		this.frame.setVisible(true);
 
 		//add GameOver label
 		this.gameOver.setText("Game Over!");
-		this.gameOver.setForeground(Color.white);
-		this.gameOver.setPreferredSize(new Dimension(200,20));
-		this.gameOver.setHorizontalAlignment(SwingConstants.CENTER);
+		this.gameOver.setFont(new Font("Serif", Font.PLAIN, 45));
+		this.gameOver.setForeground(Color.black);
+		this.gameOver.setAlignmentX(this.gameOver.CENTER_ALIGNMENT);
+		
 	
-		this.panel.setBackground(new Color(102,0,0));
+		this.panel.setBackground(new Color(224,224,224));
+		this.panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
 		this.frame.setVisible(false);
 
 
@@ -61,14 +79,35 @@ public class LeaderboardGUI{
 		this.panel.removeAll();
 
 		this.frame.getContentPane().add(this.panel);
+		this.scoreLabel.setText("Your Score: "+ score);
+		this.scoreLabel.setFont(new Font("Serif", Font.PLAIN, 24));
+		this.scoreLabel.setForeground(Color.black);
+		this.scoreLabel.setAlignmentX(this.scoreLabel.CENTER_ALIGNMENT);
+		
+		//add spacer
+		this.panel.add(Box.createRigidArea(new Dimension(0,15)));
 		this.panel.add(this.gameOver);
+		//add spacer
+		this.panel.add(Box.createRigidArea(new Dimension(0,10)));
+		this.panel.add(this.scoreLabel);
+		//add spacer
+		this.panel.add(Box.createRigidArea(new Dimension(0,10)));
 		this.field.setText("Enter Your Name Here");
+		this.field.setMaximumSize( this.field.getPreferredSize() );	
 		this.panel.add(this.field);
+		//add spacer
+		this.panel.add(Box.createRigidArea(new Dimension(0,10)));
 		this.panel.add(this.submitBtn);
+		//add spacer
+		this.panel.add(Box.createRigidArea(new Dimension(0,30)));
+		
+		picLabel.setAlignmentX(picLabel.CENTER_ALIGNMENT);		
+		this.panel.add(picLabel);
 
 		this.leaderBoard.load();
 		this.submitListener = new submitBtnListener(score, d);
 		this.submitBtn.addActionListener(this.submitListener);		
+		this.submitBtn.setAlignmentX(this.submitBtn.CENTER_ALIGNMENT);		
 		this.frame.setVisible(true);
 		this.frame.revalidate();
 		this.frame.repaint();
