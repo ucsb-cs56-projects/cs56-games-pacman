@@ -1,6 +1,7 @@
 build/
 *.class
 *.ser
+highScores.txt
 
 # Package Files #
 *.war

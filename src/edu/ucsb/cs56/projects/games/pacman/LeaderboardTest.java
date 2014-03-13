@@ -44,17 +44,17 @@ public class LeaderboardTest{
 	@Test
 	public void getTopThree(){
 		Leaderboard l = new Leaderboard();
-   	Date d = new Date();
+        Date d = new Date();
 		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		String date = df.format(d);
 		GamePlayed g1 = new GamePlayed("Barbara", d, 200);
-   	GamePlayed g2 = new GamePlayed("Nick", d, 100);
-   	GamePlayed g3 = new GamePlayed("Felicity", d, 250);
-   	l.add(g1); l.add(g2); l.add(g3);
-		String result = String.format("%15s %5s (%10s)\n","Felicity", date, 250);
-		result +=  String.format("%15s %5s (%10s)\n","Barbara", date, 200);
-		result +=  String.format("%15s %5s (%10s)\n","Nick", date, 100);
-      assertEquals(result, l.getTopThree());
+        GamePlayed g2 = new GamePlayed("Nick", d, 100);
+        GamePlayed g3 = new GamePlayed("Felicity", d, 250);
+        l.add(g1); l.add(g2); l.add(g3);
+		String result = String.format("%15s %5s (%10s)\n","Felicity", 250, date);
+		result +=  String.format("%15s %5s (%10s)\n","Barbara", 200, date);
+		result +=  String.format("%15s %5s (%10s)\n","Nick", 100, date);
+        assertEquals(result, l.getTopThree());
     }
 
    /** Test case for getPlayerTopThree() method of Leaderboard
@@ -63,16 +63,16 @@ public class LeaderboardTest{
     @Test
     public void getPlayerTopThree(){
 		Leaderboard l = new Leaderboard();
-      Date d = new Date();
+        Date d = new Date();
 		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		String date = df.format(d);
-      GamePlayed g1 = new GamePlayed("Barbara", d, 200);
-      GamePlayed g2 = new GamePlayed("Barbara", d, 100);
-      GamePlayed g3 = new GamePlayed("Barbara", d, 250);
-      l.add(g1); l.add(g2); l.add(g3);
-		String result = String.format("%15s %5s (%10s)\n","Barbara", date, 250); 
-		result += String.format("%15s %5s (%10s)\n","Barbara", date, 200);
-		result += String.format("%15s %5s (%10s)\n","Barbara", date, 100);
+        GamePlayed g1 = new GamePlayed("Barbara", d, 200);
+        GamePlayed g2 = new GamePlayed("Barbara", d, 100);
+        GamePlayed g3 = new GamePlayed("Barbara", d, 250);
+        l.add(g1); l.add(g2); l.add(g3);
+		String result = String.format("%15s %5s (%10s)\n","Barbara", 250, date);
+		result += String.format("%15s %5s (%10s)\n","Barbara", 200, date);
+		result += String.format("%15s %5s (%10s)\n","Barbara", 100, date);
 		assertEquals(result,l.getPlayerTopThree("Barbara"));  
     }
  
