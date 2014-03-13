@@ -97,7 +97,7 @@ public class LeaderboardGUI{
 		this.panel.add(this.scoreLabel);
 		//add spacer
 		this.panel.add(Box.createRigidArea(new Dimension(0,10)));
-		this.field.setText("Enter Your Name Here");
+		this.field.setText("Your Name Here");
 		this.field.setMaximumSize( this.field.getPreferredSize() );	
 		this.panel.add(this.field);
 		//add spacer
@@ -164,45 +164,48 @@ public class LeaderboardGUI{
 		top3 = top3.replace("\n", " <br> ");
 		playerTop3 = playerTop3.replace("\n", " <br> ");
 
-		this.heading.setText("High Scores!");
-        this.topThree.setText("<html>" + top3 + "</html>");
-        this.playerScoresHeading.setText("Your Top Scores:");
-		this.playersTopThree.setText("<html> " + playerTop3 + "</html>");
+		heading.setText("High Scores!");
+      topThree.setText("<html>" + top3 + "</html>");
+      playerScoresHeading.setText("Your Top Scores:");
+		playersTopThree.setText("<html> " + playerTop3 + "</html>");
         
-        heading.setFont(new Font("Serif", Font.PLAIN, 36));
-        topThree.setFont(new Font("Serif", Font.PLAIN, 24));
-        playerScoresHeading.setFont(new Font("Serif", Font.PLAIN, 36));
-        playersTopThree.setFont(new Font("Serif", Font.PLAIN, 24));
-        
-        topThree.setHorizontalAlignment(SwingConstants.CENTER);
-        playersTopThree.setHorizontalAlignment(SwingConstants.CENTER);
+      heading.setFont(new Font("Serif", Font.PLAIN, 32));
+      topThree.setFont(new Font("Serif", Font.PLAIN, 18));
+      playerScoresHeading.setFont(new Font("Serif", Font.PLAIN, 32));
+      playersTopThree.setFont(new Font("Serif", Font.PLAIN, 18));
 		
-		this.heading.setForeground(new Color(0,51,0));
-        this.playerScoresHeading.setForeground(new Color(0,51,0));
-        this.topThree.setForeground(new Color(0,51,0));
-        this.playersTopThree.setForeground(new Color(0,51,0));
+		heading.setForeground(new Color(0,51,0));
+      playerScoresHeading.setForeground(new Color(0,51,0));
+      topThree.setForeground(new Color(0,51,0));
+      playersTopThree.setForeground(new Color(0,51,0));
         
-        playAgainListener = new playAgainBtnListener();
+      playAgainListener = new playAgainBtnListener();
 		playAgain.addActionListener(playAgainListener);
 		
 
 		//add JLabels to panel
-        this.panel.add(Box.createRigidArea(new Dimension(0,20)));
-		this.panel.add(this.heading);
-        this.panel.add(Box.createRigidArea(new Dimension(0,10)));
-		this.panel.add(this.topThree);
-        this.panel.add(Box.createRigidArea(new Dimension(0,10)));
+		JPanel headingPanel = new JPanel();
+		headingPanel.add(heading);
+		panel.add(headingPanel);
+      
+      JPanel topThreePanel = new JPanel();
+		topThreePanel.add(topThree);
+		panel.add(topThreePanel);
 
-		this.panel.add(this.playerScoresHeading);
-        this.panel.add(Box.createRigidArea(new Dimension(0,10)));
-		this.panel.add(this.playersTopThree);
-        
-        this.panel.add(Box.createRigidArea(new Dimension(0,10)));
-        panel.add(playAgain);
+		JPanel PlayerHeadingPanel = new JPanel();
+		PlayerHeadingPanel.add(playerScoresHeading);
+		panel.add(PlayerHeadingPanel);
+      
+      JPanel playerThreePanel = new JPanel();
+		playerThreePanel.add(playersTopThree);
+		panel.add(playerThreePanel);
+      
+      JPanel buttonPanel = new JPanel();
+      buttonPanel.add(playAgain);
+      panel.add(buttonPanel);
 
-		//this.panel.add(this.playersTopThree);
-		this.frame.revalidate();
-		this.frame.repaint();
+		frame.revalidate();
+		frame.repaint();
 
 	}
 	/** setLeaderBoardFileName method- sets the fileName in the instance of the leaderboard class
