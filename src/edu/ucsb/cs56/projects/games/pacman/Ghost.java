@@ -81,47 +81,47 @@ public class Ghost extends Character{
     @Override
     public void keyPressed(int key) {
     	if (playerNum == GHOST1){
-	    switch (key){
-	    case KeyEvent.VK_LEFT:
-		reqdx=-1;
-		reqdy=0;
-		break;
-	    case KeyEvent.VK_RIGHT:
-		reqdx=1;
-		reqdy=0;
-		break;
-	    case KeyEvent.VK_UP:
-		reqdx=0;
-		reqdy=-1;
-		break;
-	    case KeyEvent.VK_DOWN:
-		reqdx=0;
-		reqdy=1;
-		break;
-	    default: break;
-	    }
-        }
+			switch (key){
+				case KeyEvent.VK_A:
+					reqdx=-1;
+					reqdy=0;
+					break;
+				 case KeyEvent.VK_D:
+					reqdx=1;
+					reqdy=0;
+				 	break;
+				 case KeyEvent.VK_W:
+					reqdx=0;
+					reqdy=-1;
+					break;
+				 case KeyEvent.VK_S:
+					reqdx=0;
+					reqdy=1;
+					break;
+				 default: break;
+			}
+      }
     	else if (playerNum == GHOST2){
-	    switch (key){
-	    case KeyEvent.VK_NUMPAD4:
-		reqdx=-1;
-		reqdy=0;
-		break;
-	    case KeyEvent.VK_NUMPAD6:
-		reqdx=1;
-		reqdy=0;
-		break;
-	    case KeyEvent.VK_NUMPAD8:
-		reqdx=0;
-		reqdy=-1;
-		break;
-	    case KeyEvent.VK_NUMPAD5:
-		reqdx=0;
-		reqdy=1;
-		break;
-	    default: break;
-	    }
-        }
+			switch (key){
+				case KeyEvent.VK_NUMPAD4:
+					reqdx=-1;
+					reqdy=0;
+					break;
+				case KeyEvent.VK_NUMPAD6:
+					reqdx=1;
+					reqdy=0;
+					break;
+				case KeyEvent.VK_NUMPAD8:
+					reqdx=0;
+					reqdy=-1;
+					break;
+				case KeyEvent.VK_NUMPAD5:
+					reqdx=0;
+					reqdy=1;
+					break;
+				default: break;
+			}
+		}
     }
     
     /**
