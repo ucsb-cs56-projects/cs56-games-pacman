@@ -45,7 +45,7 @@ public class LeaderboardTest{
 	public void getTopThree(){
 		Leaderboard l = new Leaderboard();
         Date d = new Date();
-		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		String date = df.format(d);
 		GamePlayed g1 = new GamePlayed("Barbara", d, 200);
         GamePlayed g2 = new GamePlayed("Nick", d, 100);
@@ -64,7 +64,7 @@ public class LeaderboardTest{
     public void getPlayerTopThree(){
 		Leaderboard l = new Leaderboard();
         Date d = new Date();
-		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		String date = df.format(d);
         GamePlayed g1 = new GamePlayed("Barbara", d, 200);
         GamePlayed g2 = new GamePlayed("Barbara", d, 100);
