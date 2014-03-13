@@ -17,32 +17,35 @@ CONTROLS
 		P - Pause/Unpause the game
 	Single Player:
 		Pacman:
-			W - Move Up
-			S - Move Down
-			A - Move Left
-			D - Move Right
+			Up Arrow - Move Up
+			Down Arrow - Move Down
+			Left Arrow - Move Left
+			Right Arrow - Move Right
 	Co-op:
 		Pacman:
-			W - Move Up
-			S - Move Down
-			A - Move Left
-			D - Move Right
-		Ms. Pacman:
 			Up Arrow - Move Up
 			Down Arrow - Move Down
 			Left Arrow - Move Left
 			Right Arrow - Move Right
+	
+		Ms. Pacman:
+			W - Move Up
+			S - Move Down
+			A - Move Left
+			D - Move Right
+
 	Versus:
 		Pacman:
-			W - Move Up
-			S - Move Down
-			A - Move Left
-			D - Move Right
-		Ghost 1:
 			Up Arrow - Move Up
 			Down Arrow - Move Down
 			Left Arrow - Move Left
 			Right Arrow - Move Right
+
+		Ghost 1:
+			W - Move Up
+			S - Move Down
+			A - Move Left
+			D - Move Right
 		Ghost 2:
 			Numpad 8 - Move Up
 			Numpad 5 - Move Down
