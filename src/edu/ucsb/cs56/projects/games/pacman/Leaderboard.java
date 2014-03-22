@@ -110,11 +110,11 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
 		String result ="";
 		if(length < 3){
 			for(int i = 0; i < length; i++){
-				result += this.get(i) + "<br>";
+				result += this.get(i) + "\n";
 			}
 		}else{
 			for(int i=0; i< 3; i++){
-				result += this.get(i) + "<br>";
+				result += this.get(i) + "\n";
 			}
 		}
 		return result;
@@ -134,7 +134,7 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
 		for(GamePlayed game: this){
 			if(game.getName().equals(playerName)){
 				//the user played this game
-				result += game + "<br>";
+				result += game + "\n";
 				counter ++;
 				if(counter == 3){
 					return result;

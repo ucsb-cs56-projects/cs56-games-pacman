@@ -31,7 +31,7 @@ public class GamePlayed implements Serializable{
      */
     @Override
     public String toString(){
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		String date = dateFormat.format(this.d);
 
 		String result = String.format("%15s %5d (%10s)", this.name, this.score, date);
