@@ -7,6 +7,13 @@ Pacman game, starting with code from http://zetcode.com/tutorials/javagamestutor
 
 ![ScreenShot Of Pacman Main Menu](http://i.imgur.com/7vp2yM8.png)
 
+
+project history
+===============
+```
+ W14 | bkiefer13 4pm | katfom, dmhartsook | (ianvernon) Pacman game, starting with code from http://zetcode.com/tutorials/javagamestutorial/pacman/, and improving
+```
+
 _____________________
 CONTROLS
 
