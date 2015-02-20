@@ -86,11 +86,10 @@ public class PacPlayer extends Character {
             viewdy = dy;
         }
         if (x % grid.blockSize == 0 && y % grid.blockSize == 0) {
-            pos = x / grid.blockSize + grid.nrOfBlocks * (int) (y / grid.blockSize);
-            ch = grid.screenData[pos];
+            ch = grid.screenData[y / grid.blockSize][x / grid.blockSize];
 
             if ((ch & 16) != 0) {
-                grid.screenData[pos] = (short) (ch & 15);
+                grid.screenData[y / grid.blockSize][x / grid.blockSize] = (short) (ch & 15);
                 Board.score++;
             }
 
@@ -233,8 +232,6 @@ public class PacPlayer extends Character {
      * Moves character's current position with the board's collision
      *
      * @param grid The Grid to be used for collision
-     * @param dx   An array of integers used for randomized movement
-     * @param dy   An array of integers used for randomized movement
      */
     @Override
     public void moveAI(Grid grid) {

@@ -12,7 +12,8 @@ import java.io.IOException;
  *
  * @author Dario Castellanos Anaya
  * @author Daniel Ly
- * @version CS56, S13
+ * @author Kelvin Yang
+ * @version CS56, W15
  */
 public class Ghost extends Character {
     public static final int GHOST1 = 1;
@@ -144,14 +145,11 @@ public class Ghost extends Character {
             viewdy = dy;
         }
         if (x % grid.blockSize == 0 && y % grid.blockSize == 0) {
-            pos = x / grid.blockSize + grid.nrOfBlocks * (int) (y / grid.blockSize);
-            ch = grid.screenData[pos];
+            ch = grid.screenData[y / grid.blockSize][x / grid.blockSize];
 
             if (reqdx != 0 || reqdy != 0) {
-                if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) ||
-                        (reqdx == 1 && reqdy == 0 && (ch & 4) != 0) ||
-                        (reqdx == 0 && reqdy == -1 && (ch & 2) != 0) ||
-                        (reqdx == 0 && reqdy == 1 && (ch & 8) != 0))) {
+                if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) || (reqdx == 1 && reqdy == 0 && (ch & 4) != 0) ||
+                        (reqdx == 0 && reqdy == -1 && (ch & 2) != 0) || (reqdx == 0 && reqdy == 1 && (ch & 8) != 0))) {
                     dx = reqdx;
                     dy = reqdy;
                     viewdx = dx;
@@ -160,10 +158,8 @@ public class Ghost extends Character {
             }
 
             // Check for standstill
-            if ((dx == -1 && dy == 0 && (ch & 1) != 0) ||
-                    (dx == 1 && dy == 0 && (ch & 4) != 0) ||
-                    (dx == 0 && dy == -1 && (ch & 2) != 0) ||
-                    (dx == 0 && dy == 1 && (ch & 8) != 0)) {
+            if ((dx == -1 && dy == 0 && (ch & 1) != 0) || (dx == 1 && dy == 0 && (ch & 4) != 0) ||
+                    (dx == 0 && dy == -1 && (ch & 2) != 0) || (dx == 0 && dy == 1 && (ch & 8) != 0)) {
                 dx = 0;
                 dy = 0;
             }
@@ -175,84 +171,73 @@ public class Ghost extends Character {
      * For ghosts that are close to pacman, have them follow pacman
      *
      * @param grid The Grid to be used for the collision
-     * @param ix   pacman's x position in integer form
-     * @param iy   pacman's y position in integer form
-     * @param dx   An array of integers used for randomized movement
-     * @param dy   An array of integers used for randomized movement
+     * @param px   pacman's x position in integer form
+     * @param py   pacman's y position in integer form
      */
-    public void moveAI(Grid grid, int ix, int iy) {
-        double myX = (double) ix;
-        double myY = (double) iy;
-        double dSquared = Math.pow(this.x - myX, 2.0) + Math.pow(this.y - myY, 2.0);
-        double distance = Math.sqrt(dSquared);
-         
-         /*if( distance <=  100.0){
-             move properly
-         }
-         else {
-             moveAI(grid, dx, dy);
-         }*/
-        moveAI(grid);
+    public void moveAI(Grid grid, int px, int py) {
+        double distance = Math.sqrt(Math.pow(this.x - px, 2.0) + Math.pow(this.y - py, 2.0));
+
+        if(distance < 100.0)
+        {
+            //CHASE
+            moveAI(grid);
+        }
+        else
+        {
+            moveAI(grid);
+        }
     }
 
     /**
      * Moves character's current position with the board's collision
      *
      * @param grid The Grid to be used for collision
-     * @param dx   An array of integers used for randomized movement
-     * @param dy   An array of integers used for randomized movement
      */
     @Override
     public void moveAI(Grid grid) {
-        int pos;
+        int block;
         int count;
-        int[] dx = new int[4];
-        int[] dy = new int[4];
+        int[][] d = new int[4][2];
 
         if (this.x % grid.blockSize == 0 && this.y % grid.blockSize == 0) {
-            pos = x / (int) grid.blockSize + (int) grid.nrOfBlocks * (int) (this.y / (int) grid.blockSize);
+            block = grid.screenData[y / grid.blockSize][x / grid.blockSize];
 
             count = 0;
 
             // following block of code randomizes movement (randomizes dx[] and dy[])
-            if ((grid.screenData[pos] & 1) == 0 && this.dx != 1) {
-                dx[count] = -1;
-                dy[count] = 0;
+            // First condition prevents checks collision with wall
+            // Second condition prevents switching direction abruptly (left -> right) (up -> down)
+            if ((block & 1) == 0 && this.dx != 1) {
+                d[count][0] = -1;
                 count++;
             }
-            if ((grid.screenData[pos] & 2) == 0 && this.dy != 1) {
-                dx[count] = 0;
-                dy[count] = -1;
+            if ((block & 2) == 0 && this.dy != 1) {
+                d[count][1] = -1;
                 count++;
             }
-            if ((grid.screenData[pos] & 4) == 0 && this.dx != -1) {
-                dx[count] = 1;
-                dy[count] = 0;
+            if ((block & 4) == 0 && this.dx != -1) {
+                d[count][0] = 1;
                 count++;
             }
-            if ((grid.screenData[pos] & 8) == 0 && this.dy != -1) {
-                dx[count] = 0;
-                dy[count] = 1;
+            if ((block & 8) == 0 && this.dy != -1) {
+                d[count][1] = 1;
                 count++;
             }
 
             if (count == 0) {
-                if ((grid.screenData[pos] & 15) == 15) {
+                if ((block & 15) == 15) {
                     this.dx = 0;
                     this.dy = 0;
-
-                } else {
+                }
+                else {
                     this.dx = -this.dx;
                     this.dy = -this.dy;
-
                 }
-
             }
-            count = (int) (Math.random() * count);
-            if (count > 3)
-                count = 3;
-            this.dx = dx[count];
-            this.dy = dy[count];
+
+            count = (int) (Math.random() * count); //randomly pick a move
+            this.dx = d[count][0];
+            this.dy = d[count][1];
         }
         move();
     }

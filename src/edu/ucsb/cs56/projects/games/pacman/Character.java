@@ -117,10 +117,8 @@ public abstract class Character {
      * Moves character's current position with the board's collision
      *
      * @param grid The Grid to be used for collision
-     * @param dx   An array of integers used for randomized movement
-     * @param dy   An array of integers used for randomized movement
      */
-    public abstract void moveAI(Grid grid);//, int[] dx, int[] dy);
+    public abstract void moveAI(Grid grid);
 
     /**
      * Moves character's current position
@@ -129,9 +127,4 @@ public abstract class Character {
         x = x + speed * dx;
         y = y + speed * dy;
     }
-
-//    public void move(int dx2, int dy2) {
-//    	x = x + speed * dx2;
-//    	y = y + speed * dy2;
-//    }
 }
