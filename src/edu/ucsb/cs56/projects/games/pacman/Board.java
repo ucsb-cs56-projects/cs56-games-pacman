@@ -50,7 +50,7 @@ public class Board extends JPanel implements ActionListener {
 
     public static int score;
     final int blocksize = 24;
-    final int nrofblocks = 15;
+    final int nrofblocks = 17;
     final int scrsize = nrofblocks * blocksize;
     final int maxghosts = 12;
     final int validspeeds[] = {1, 2, 3, 4, 6, 8};
@@ -218,7 +218,7 @@ public class Board extends JPanel implements ActionListener {
             g.drawString(p, scrsize / 2 + 56, scrsize + 16);
         } else {
             s = "Score: " + score;
-            g.drawString(s, scrsize / 2 + 96, scrsize + 16);
+            g.drawString(s, scrsize / 2 + 136, scrsize + 16);
         }
         for (i = 0; i < pacman.lives; i++) {
             g.drawImage(pacman.getLifeImage(), i * 28 + 8, scrsize + 1, this);
