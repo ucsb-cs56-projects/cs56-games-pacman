@@ -12,7 +12,8 @@ import javax.swing.*;
  * @author Dario Castellanos
  * @author Deanna Hartsook
  * @author Kateryna Fomenko
- * @version CS56 W14
+ * @author Yuxiang Zhu
+ * @version CS56 W15
  */
 
 public class PacMan extends JFrame {
