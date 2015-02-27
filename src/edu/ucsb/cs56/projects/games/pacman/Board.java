@@ -74,6 +74,7 @@ public class Board extends JPanel implements ActionListener {
     int numBoardsCleared = 0;
     Ghost[] ghosts;
     int currentspeed = 3;
+    int numPellet;
     Timer timer;
 
     /**
@@ -103,6 +104,7 @@ public class Board extends JPanel implements ActionListener {
     public void addNotify() {
         super.addNotify();
         gameInit();
+        numPellet = grid.getPelletNum();
     }
 
     /**
@@ -150,11 +152,14 @@ public class Board extends JPanel implements ActionListener {
                         ghost.move(grid);
                         ghost.draw(g2d, this);
                     }
-                    if (score >= 149) {
+
+                    if (score >= numPellet) {
                         score = 0;
                         numBoardsCleared++;
                         grid.levelInit(numBoardsCleared);
+                        numPellet = grid.getPelletNum();
                         levelContinue();
+
                     }
                     detectCollision(playerGhosts, pacman);
                     break;
@@ -214,9 +219,9 @@ public class Board extends JPanel implements ActionListener {
         g.setFont(smallfont);
         g.setColor(new Color(96, 128, 255));
         if (gameType == VERSUS) {
-            pelletsLeft = 149 - score;
+            pelletsLeft = numPellet - score;
             p = "Pellets left: " + pelletsLeft;
-            g.drawString(p, scrsize / 2 + 56, scrsize + 16);
+            g.drawString(p, scrsize / 2 + 96, scrsize + 16);
         } else {
             s = "Score: " + score;
             g.drawString(s, scrsize / 2 + 136, scrsize + 16);

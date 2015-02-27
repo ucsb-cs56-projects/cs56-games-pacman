@@ -98,7 +98,7 @@ public class Grid {
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
     };
 
-    final short leveldata3[][] = new short[][]{
+    final short[][] leveldata3 = new short[][]{
             {19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22, 0, 0},
             {17, 16, 24, 24, 16, 16, 16, 16, 16, 24, 24, 24, 24, 16, 20, 0, 0},
             {17, 20, 0, 0, 17, 16, 16, 16, 20, 0, 0, 0, 0, 17, 20, 0, 0},
@@ -186,6 +186,23 @@ public class Grid {
         }
         return true;
     }
+
+    /**
+     * Count the number of pellets left for Pacman to eat
+     *
+     * @return An int indicating how many pellets are left
+     */
+    public int getPelletNum() {
+        int numOfPellet = 0;
+        for (int i = 0; i < nrOfBlocks; i++) {
+            for (int j = 0; j < nrOfBlocks; j++) {
+                if ((screenData[i][j] & 16) != 0)
+                    numOfPellet+=1;
+            }
+        }
+        return numOfPellet;
+    }
+
 
     /**
      * Initialize level
