@@ -209,15 +209,15 @@ public class Grid {
      */
     public void levelInit(int numBoardsCleared) {
         for (int i = 0; i < nrOfBlocks; i++) {
-            if (numBoardsCleared % 3 == 0)
+            if (numBoardsCleared % 5 == 0)
                 screenData[i] = Arrays.copyOf(leveldata1[i], nrOfBlocks);
-            else if (numBoardsCleared % 3 == 1)
+            else if (numBoardsCleared % 5 == 1)
                 screenData[i] = Arrays.copyOf(leveldata2[i], nrOfBlocks);
-            else if (numBoardsCleared % 3 == 2)
+            else if (numBoardsCleared % 5 == 2)
                 screenData[i] = Arrays.copyOf(leveldata3[i], nrOfBlocks);
             else if (numBoardsCleared % 5 == 3)
                 screenData[i] = Arrays.copyOf(leveldata4[i], nrOfBlocks);
-            else if (numBoardsCleared % 3 == 4)
+            else if (numBoardsCleared % 5 == 4)
                 screenData[i] = Arrays.copyOf(leveldata5[i], nrOfBlocks);
         }
     }

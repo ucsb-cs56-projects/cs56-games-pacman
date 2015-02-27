@@ -83,7 +83,7 @@ public class Board extends JPanel implements ActionListener {
     public Board() {
         addKeyListener(new TAdapter());
         grid = new Grid();
-        pacman = new PacPlayer(7 * blocksize, 11 * blocksize, PacPlayer.PACMAN);
+        pacman = new PacPlayer(8 * blocksize, 11 * blocksize, PacPlayer.PACMAN);
         msPacman = new PacPlayer(7 * blocksize, 11 * blocksize, PacPlayer.MSPACMAN);
         ghost1 = new Ghost(4 * blocksize, 4 * blocksize, 4, Ghost.GHOST1);
         ghost2 = new Ghost(4 * blocksize, 4 * blocksize, 4, Ghost.GHOST2);
