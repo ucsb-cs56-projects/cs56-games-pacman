@@ -12,7 +12,8 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Kateryna Fomenko
  * @author Deanna Hartsook
- * @version CS56, Winter 2014
+ * @author Kelvin Yang
+ * @version CS56, Winter 2015
  * @see Leaderboard
  */
 
@@ -28,7 +29,7 @@ public class LeaderboardTest {
         Date d = new Date();
         GamePlayed g = new GamePlayed("Barbara", d, 2000);
         l.add(g);
-        assertEquals(g, l.get(0));
+        assertEquals(g, l.first());
     }
 
     /**
@@ -41,7 +42,7 @@ public class LeaderboardTest {
         Leaderboard l = new Leaderboard();
         Date d = new Date();
         l.add("Terry", d, 50);
-        assertEquals(new GamePlayed("Terry", d, 50), l.get(0));
+        assertEquals(new GamePlayed("Terry", d, 50), l.first());
     }
 
     /**
@@ -57,10 +58,12 @@ public class LeaderboardTest {
         String date = df.format(d);
         GamePlayed g1 = new GamePlayed("Barbara", d, 200);
         GamePlayed g2 = new GamePlayed("Nick", d, 100);
-        GamePlayed g3 = new GamePlayed("Felicity", d, 250);
+		GamePlayed g3 = new GamePlayed("John", d, 75);
+        GamePlayed g4 = new GamePlayed("Felicity", d, 250);
         l.add(g1);
         l.add(g2);
         l.add(g3);
+		l.add(g4);
         String result = String.format("%15s %5s (%10s)\n", "Felicity", 250, date);
         result += String.format("%15s %5s (%10s)\n", "Barbara", 200, date);
         result += String.format("%15s %5s (%10s)\n", "Nick", 100, date);
@@ -81,9 +84,13 @@ public class LeaderboardTest {
         GamePlayed g1 = new GamePlayed("Barbara", d, 200);
         GamePlayed g2 = new GamePlayed("Barbara", d, 100);
         GamePlayed g3 = new GamePlayed("Barbara", d, 250);
+		GamePlayed g4 = new GamePlayed("NotBarbara", d, 9000);
+		GamePlayed g5 = new GamePlayed("NotBarbara", d, 1);
         l.add(g1);
         l.add(g2);
         l.add(g3);
+		l.add(g4);
+		l.add(g5);
         String result = String.format("%15s %5s (%10s)\n", "Barbara", 250, date);
         result += String.format("%15s %5s (%10s)\n", "Barbara", 200, date);
         result += String.format("%15s %5s (%10s)\n", "Barbara", 100, date);

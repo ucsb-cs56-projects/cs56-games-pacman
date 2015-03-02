@@ -1,7 +1,7 @@
 package edu.ucsb.cs56.projects.games.pacman;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.util.TreeSet;
 import java.util.Date;
 
 /**
@@ -10,10 +10,12 @@ import java.util.Date;
  *
  * @author Kateryna Fomenko
  * @author Deanna Hartsook
- * @version CS56, Winter 2014
+ * @author Kelvin Yang
+ * @version CS56, Winter 2015
  */
 
-public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
+ //extend TreeSet (Auto-sort) will simplify many of the methods...
+public class Leaderboard extends TreeSet<GamePlayed> implements Serializable {
     private static String filename;
 
     /**
@@ -33,30 +35,6 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
     }
 
     /**
-     * Add function that adds a GamePlayed object to the Leaderboard in the proper spot
-     *
-     * @param g - represents a GamePlayed object that is to be added to the leaderboard
-     * @return boolean - true if added succesfully, false otherwise
-     */
-    @Override
-    public boolean add(GamePlayed g) {
-        int i = 0;
-        for (GamePlayed game : this) {
-            if (game.getScore() <= g.getScore()) {
-                this.add(i, g);
-                return true;
-            }
-            i++;
-        }
-        if (i != 0) {
-            add(i, g);
-        } else {
-            add(0, g);
-        }
-        return true;
-    }
-
-    /**
      * Add function that creates a GamePlayed object and adds it to the Leaderboard in the proper spot
      *
      * @param name  - represents the name of the player
@@ -67,7 +45,6 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
     public boolean add(String name, Date d, int score) {
         GamePlayed g = new GamePlayed(name, d, score);
         return this.add(g);
-
     }
 
     /**
@@ -115,19 +92,15 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
      * Katie   29 10/15/2013"
      */
     public String getTopThree() {
-        int length = this.size();
         String result = "";
-        if (length < 3) {
-            for (int i = 0; i < length; i++) {
-                result += this.get(i) + "\n";
-            }
-        } else {
-            for (int i = 0; i < 3; i++) {
-                result += this.get(i) + "\n";
-            }
-        }
+		int counter = 0;
+		for(GamePlayed game : this)
+		{
+			result += game + "\n";
+			if(++counter >= 3)
+				return result;
+		}
         return result;
-
     }
 
     /**
@@ -139,17 +112,15 @@ public class Leaderboard extends ArrayList<GamePlayed> implements Serializable {
      * Barbara 30 12/1/2013
      * Barbara 29 10/15/2013"
      */
-    public String getPlayerTopThree(String playerName) {
+    public String getPlayerTopThree(String playerName) { //MIGHT BE SIMPLIFIED
         int counter = 0;
         String result = "";
         for (GamePlayed game : this) {
             if (game.getName().equals(playerName)) {
                 //the user played this game
                 result += game + "\n";
-                counter++;
-                if (counter == 3) {
-                    return result;
-                }
+                if (++counter >= 3)
+					return result;
             }
         }
         return result;
