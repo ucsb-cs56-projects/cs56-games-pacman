@@ -93,26 +93,26 @@ public class Leaderboard extends TreeSet<GamePlayed> implements Serializable {
      */
     public String getTopThree() {
         String result = "";
-		int counter = 0;
-		for(GamePlayed game : this)
-		{
-			result += game + "\n";
-			if(++counter >= 3)
-				return result;
-		}
+        int counter = 0;
+        for(GamePlayed game : this)
+        {
+            result += game + "\n";
+            if(++counter >= 3)
+                return result;
+        }
         return result;
     }
 
     /**
      * returns a formatted string of the top three scores for a player
      *
-     * @param name of the player
+     * @param playerName of the player
      * @return formatted string of scores
      * e.g. "Barbara 50 09/18/2013
      * Barbara 30 12/1/2013
      * Barbara 29 10/15/2013"
      */
-    public String getPlayerTopThree(String playerName) { //MIGHT BE SIMPLIFIED
+    public String getPlayerTopThree(String playerName) {
         int counter = 0;
         String result = "";
         for (GamePlayed game : this) {
@@ -120,7 +120,7 @@ public class Leaderboard extends TreeSet<GamePlayed> implements Serializable {
                 //the user played this game
                 result += game + "\n";
                 if (++counter >= 3)
-					return result;
+                    return result;
             }
         }
         return result;

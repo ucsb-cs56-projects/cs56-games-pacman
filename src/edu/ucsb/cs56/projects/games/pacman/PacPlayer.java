@@ -234,7 +234,7 @@ public class PacPlayer extends Character {
      * @param grid The Grid to be used for collision
      */
     @Override
-    public void moveAI(Grid grid) {
+    public void moveAI(Grid grid, int tx, int ty) {
     }
 
     /**

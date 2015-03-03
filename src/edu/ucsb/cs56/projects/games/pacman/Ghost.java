@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.PriorityQueue;
 
 /**
  * Class representing enemy ghosts in single player mode
@@ -44,7 +46,7 @@ public class Ghost extends Character {
     /**
      * Draws the ghost
      *
-     * @param g2d    a Graphics2D object
+     * @param g a Graphics2D object
      * @param canvas A Jcomponent object to be drawn on
      */
     @Override
@@ -135,7 +137,6 @@ public class Ghost extends Character {
      */
     @Override
     public void move(Grid grid) {
-        int pos;
         short ch;
 
         if (reqdx == -dx && reqdy == -dy) {
@@ -175,15 +176,17 @@ public class Ghost extends Character {
      * @param px   pacman's x position in integer form
      * @param py   pacman's y position in integer form
      */
+    @Override
     public void moveAI(Grid grid, int px, int py) {
         double distance = Math.sqrt(Math.pow(this.x - px, 2.0) + Math.pow(this.y - py, 2.0));
 
-        if(distance < 100.0 && Math.random() < 0.6)
+        if(distance < 100.0)// && Math.random() < 0.6)
         {
             //Makes sure ghost is in a grid and not in movement
             if (this.x % grid.blockSize == 0 && this.y % grid.blockSize == 0)
             {
-                int[][] d = moveList(grid);
+                //Weaker AI
+                /*int[][] d = moveList(grid);
                 int count = d[0][0];
                 int[] best = new int[3];
 
@@ -198,24 +201,102 @@ public class Ghost extends Character {
                     }
                 }
                 dx = best[1];
-                dy = best[2];
+                dy = best[2];*/
+
+                //Stronger AI
+                Node bestDir = pathFind(grid, px / grid.blockSize, py / grid.blockSize);
+                //TODO: dont run pathfinding unless ghost has decision to make (at an intersection)
+
+                if(bestDir.x - this.x / grid.blockSize == 0 && bestDir.y - this.y / grid.blockSize == 0) //ghost on pacman
+                    moveRandom(grid);
+                else
+                {
+                    dx = bestDir.x - this.x / grid.blockSize;
+                    dy = bestDir.y - this.y / grid.blockSize;
+                }
             }
-            move();
         }
         else
         {
-            moveAI(grid);
+            moveRandom(grid);
         }
+        move();
+    }
+
+    /**
+     * A* pathfinding algorithm
+     *
+     * @param grid the grid to be used for pathfinding
+     * @param x target x coordinate in grid form
+     * @param y target y coordinate in grid form
+     */
+    public Node pathFind(Grid grid, int x, int y)
+    {
+        //Set target x, y
+        Node.tx = x;
+        Node.ty = y;
+
+        Node current = null, temp;
+        int block;
+
+        PriorityQueue<Node> opened = new PriorityQueue<>();
+        HashSet<Node> closed = new HashSet<>();
+
+        temp = new Node(this.x / grid.blockSize, this.y / grid.blockSize, 0); //current location of ghost
+        temp.setDir(dx, dy);
+        opened.offer(temp);
+
+        while(!opened.isEmpty())
+        {
+            current = opened.poll(); //get best node
+            closed.add(current); //add node to closed set (visited)
+
+            if(current.hCost == 0) //if future cost is 0, then it is target node
+                break;
+
+            block = grid.screenData[current.y][current.x];
+
+            //If can move, not abrupt, and unvisited, add to opened
+            if((block & 1) == 0 && current.dir != 3) //Can move
+            {
+                temp = current.getChild(-1, 0); //get child node
+                if(!closed.contains(temp)) //Unvisited
+                    opened.add(temp);
+            }
+            if((block & 2) == 0 && current.dir != 4)
+            {
+                temp = current.getChild(0, -1);
+                if(!closed.contains(temp))
+                    opened.add(temp);
+            }
+            if((block & 4) == 0 && current.dir != 1)
+            {
+                temp = current.getChild(1, 0);
+                if(!closed.contains(temp))
+                    opened.add(temp);
+            }
+            if((block & 8) == 0 && current.dir != 2)
+            {
+                temp = current.getChild(0, 1);
+                if(!closed.contains(temp))
+                    opened.add(temp);
+            }
+        }
+
+        //if current.parent == null, then ghost is on pacman.  Handle it by moving randomly?
+        //current.parent.parent == null, then current best next move
+        while(current.parent != null && current.parent.parent != null)
+            current = current.parent;
+        return current;
     }
 
     /**
      * Moves character's current position with the board's collision
-     * More of a move random rather than "AI"
      *
      * @param grid The Grid to be used for collision
      */
-    @Override
-    public void moveAI(Grid grid) {
+    public void moveRandom(Grid grid)
+    {
         int[][] d;
         int count;
 
@@ -224,24 +305,11 @@ public class Ghost extends Character {
             d = moveList(grid);
             count = d[0][0];
 
-            // What does this even do?
-            if (count == 0) {
-                if ((grid.screenData[y / grid.blockSize][x / grid.blockSize] & 15) == 15) {
-                    this.dx = 0;
-                    this.dy = 0;
-                }
-                else {
-                    this.dx = -this.dx;
-                    this.dy = -this.dy;
-                }
-            }
-
             //randomly pick an available move
             count = (int) (Math.random() * count) + 1;
             this.dx = d[count][0];
             this.dy = d[count][1];
         }
-        move();
     }
 
     /**

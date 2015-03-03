@@ -117,8 +117,10 @@ public abstract class Character {
      * Moves character's current position with the board's collision
      *
      * @param grid The Grid to be used for collision
+     * @param tx target x coordinate
+     * @param ty target y coordinate
      */
-    public abstract void moveAI(Grid grid);
+    public abstract void moveAI(Grid grid, int tx, int ty);
 
     /**
      * Moves character's current position

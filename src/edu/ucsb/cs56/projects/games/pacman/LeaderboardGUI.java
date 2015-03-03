@@ -77,7 +77,8 @@ public class LeaderboardGUI {
     /**
      * Draw a box with the Game Over text, that prompts user for his/her name
      *
-     * @param b a Board object
+     * @param score the player's score
+     * @param d the date of the game
      */
     public void showEndGameScreen(int score, Date d) {
         //clear the panel in between games
@@ -121,7 +122,7 @@ public class LeaderboardGUI {
     /**
      * Add GamePlayed to leaderboard and display the highest scores
      *
-     * @param username the player's name
+     * @param userName the player's name
      * @param d        the date of the game
      * @param score    the player's score
      */
