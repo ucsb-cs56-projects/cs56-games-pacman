@@ -145,16 +145,16 @@ public class PacPlayer extends Character {
     public void drawPacManUp(Graphics2D g2d, JComponent canvas) {
         switch (pacmananimpos) {
             case 1:
-                g2d.drawImage(pacman2up, x + 1, y + 1, canvas);
+                g2d.drawImage(pacman2up, x + 4, y + 4, canvas);
                 break;
             case 2:
-                g2d.drawImage(pacman3up, x + 1, y + 1, canvas);
+                g2d.drawImage(pacman3up, x + 4, y + 4, canvas);
                 break;
             case 3:
-                g2d.drawImage(pacman4up, x + 1, y + 1, canvas);
+                g2d.drawImage(pacman4up, x + 4, y + 4, canvas);
                 break;
             default:
-                g2d.drawImage(pacman1up, x + 1, y + 1, canvas);
+                g2d.drawImage(pacman1up, x + 4, y + 4, canvas);
                 break;
         }
     }
@@ -168,16 +168,16 @@ public class PacPlayer extends Character {
     public void drawPacManDown(Graphics2D g2d, JComponent canvas) {
         switch (pacmananimpos) {
             case 1:
-                g2d.drawImage(pacman2down, x + 1, y + 1, canvas);
+                g2d.drawImage(pacman2down, x + 4, y + 4, canvas);
                 break;
             case 2:
-                g2d.drawImage(pacman3down, x + 1, y + 1, canvas);
+                g2d.drawImage(pacman3down, x + 4, y + 4, canvas);
                 break;
             case 3:
-                g2d.drawImage(pacman4down, x + 1, y + 1, canvas);
+                g2d.drawImage(pacman4down, x + 4, y + 4, canvas);
                 break;
             default:
-                g2d.drawImage(pacman1down, x + 1, y + 1, canvas);
+                g2d.drawImage(pacman1down, x + 4, y + 4, canvas);
                 break;
         }
     }
@@ -191,16 +191,16 @@ public class PacPlayer extends Character {
     public void drawPacManLeft(Graphics2D g2d, JComponent canvas) {
         switch (pacmananimpos) {
             case 1:
-                g2d.drawImage(pacman2left, x + 1, y + 1, canvas);
+                g2d.drawImage(pacman2left, x + 4, y + 4, canvas);
                 break;
             case 2:
-                g2d.drawImage(pacman3left, x + 1, y + 1, canvas);
+                g2d.drawImage(pacman3left, x + 4, y + 4, canvas);
                 break;
             case 3:
-                g2d.drawImage(pacman4left, x + 1, y + 1, canvas);
+                g2d.drawImage(pacman4left, x + 4, y + 4, canvas);
                 break;
             default:
-                g2d.drawImage(pacman1left, x + 1, y + 1, canvas);
+                g2d.drawImage(pacman1left, x + 4, y + 4, canvas);
                 break;
         }
     }
@@ -214,16 +214,16 @@ public class PacPlayer extends Character {
     public void drawPacManRight(Graphics2D g2d, JComponent canvas) {
         switch (pacmananimpos) {
             case 1:
-                g2d.drawImage(pacman2right, x + 1, y + 1, canvas);
+                g2d.drawImage(pacman2right, x + 4, y + 4, canvas);
                 break;
             case 2:
-                g2d.drawImage(pacman3right, x + 1, y + 1, canvas);
+                g2d.drawImage(pacman3right, x + 4, y + 4, canvas);
                 break;
             case 3:
-                g2d.drawImage(pacman4right, x + 1, y + 1, canvas);
+                g2d.drawImage(pacman4right, x + 4, y + 4, canvas);
                 break;
             default:
-                g2d.drawImage(pacman1right, x + 1, y + 1, canvas);
+                g2d.drawImage(pacman1right, x + 4, y + 4, canvas);
                 break;
         }
     }

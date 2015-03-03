@@ -49,7 +49,7 @@ public class Ghost extends Character {
      */
     @Override
     public void draw(Graphics2D g, JComponent canvas) {
-        g.drawImage(ghost, x + 1, y + 1, canvas);
+        g.drawImage(ghost, x + 4, y + 4, canvas);
     }
 
     /**

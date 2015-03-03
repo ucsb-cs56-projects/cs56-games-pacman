@@ -269,8 +269,8 @@ public class Grid {
         g2d.setStroke(new BasicStroke(2));
         for (int i = 0; i < nrOfBlocks; i++) {
             for (int j = 0; j < nrOfBlocks; j++) {
-                y = i * blockSize;
-                x = j * blockSize;
+                y = i * blockSize + 3;
+                x = j * blockSize + 3;
 
                 g2d.setColor(mazeColor);
                 
