@@ -25,8 +25,9 @@ public class Node extends Point implements Comparable<Node>
      */
     public Node(int x, int y, int gCost)
     {
-        this.x = x;
-        this.y = y;
+        //should help to prevent some crashes
+        this.x = x % Board.NUMBLOCKS;
+        this.y = y % Board.NUMBLOCKS;
         this.gCost = gCost;
         hCost = (int)Math.sqrt(Math.pow(x - tx, 2.0) + Math.pow(y - ty, 2.0));
         fCost = gCost + hCost;

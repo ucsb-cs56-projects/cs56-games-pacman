@@ -100,14 +100,8 @@ public class PacPlayer extends Character {
         if (x % Board.BLOCKSIZE == 0 && y % Board.BLOCKSIZE == 0) {
 
             //Tunnel effect
-            if(y / Board.BLOCKSIZE >= Board.NUMBLOCKS)
-                y = 0;
-            else if(y / Board.BLOCKSIZE < 0)
-                y = (Board.NUMBLOCKS - 1) * Board.BLOCKSIZE;
-            if(x / Board.BLOCKSIZE >= Board.NUMBLOCKS)
-                x = 0;
-            else if(x / Board.BLOCKSIZE < 0)
-                x = (Board.NUMBLOCKS - 1) * Board.BLOCKSIZE;
+            x = ((x / Board.BLOCKSIZE) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
+            y = ((y / Board.BLOCKSIZE) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 
             ch = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
 

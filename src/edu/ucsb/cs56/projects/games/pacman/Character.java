@@ -130,7 +130,7 @@ public abstract class Character
     public void move() {
         x = x + speed * dx;
         y = y + speed * dy;
-        //Tunnel effect
+        //Tunnel effect (For some reason mod method doesn't work here)
         if(y / Board.BLOCKSIZE >= Board.NUMBLOCKS)
             y = 0;
         else if(y / Board.BLOCKSIZE < 0)
