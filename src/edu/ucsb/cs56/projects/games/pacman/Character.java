@@ -9,15 +9,19 @@ import java.awt.*;
  *
  * @author Dario Castellanos Anaya
  * @author Daniel Ly
- * @version CS56, S13
+ * @author Kelvin Yang
+ * @version CS56, W15
  */
-public abstract class Character {
+public abstract class Character
+{
     public boolean alive;
     public String assetPath;
     public int playerNum, lives;
     public int deathTimer; // Used for invincibility after reviving
-    public int startX, startY;
-    public int x, y, dx, dy, viewdx, viewdy, reqdx, reqdy, speed;
+    public int startX, startY, speed;
+    public int x, y; //x, y coordinates
+    public int dx, dy; //change in x/y per move (eg left = -1, 0)
+    public int reqdx, reqdy; //requested change input by keys, gets passed to dx, dy when in grid
 
     /**
      * Constructor for Character class
@@ -70,8 +74,6 @@ public abstract class Character {
         dy = 0;
         reqdx = 0;
         reqdy = 0;
-        viewdx = -1;
-        viewdy = 0;
     }
 
     /**
@@ -128,5 +130,14 @@ public abstract class Character {
     public void move() {
         x = x + speed * dx;
         y = y + speed * dy;
+        //Tunnel effect
+        if(y / Board.BLOCKSIZE >= Board.NUMBLOCKS)
+            y = 0;
+        else if(y / Board.BLOCKSIZE < 0)
+            y = (Board.NUMBLOCKS - 1) * Board.BLOCKSIZE;
+        if(x / Board.BLOCKSIZE >= Board.NUMBLOCKS)
+            x = 0;
+        else if(x / Board.BLOCKSIZE < 0)
+            x = (Board.NUMBLOCKS - 1) * Board.BLOCKSIZE;
     }
 }

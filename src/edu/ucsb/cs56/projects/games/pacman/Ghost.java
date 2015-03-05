@@ -133,6 +133,8 @@ public class Ghost extends Character {
     /**
      * Moves character's current position with the board's collision
      *
+     * see PacPlayer.java for code explanation
+     *
      * @param grid The Grid to be used for collision
      */
     @Override
@@ -142,19 +144,25 @@ public class Ghost extends Character {
         if (reqdx == -dx && reqdy == -dy) {
             dx = reqdx;
             dy = reqdy;
-            viewdx = dx;
-            viewdy = dy;
         }
-        if (x % grid.blockSize == 0 && y % grid.blockSize == 0) {
-            ch = grid.screenData[y / grid.blockSize][x / grid.blockSize];
+        if (x % Board.BLOCKSIZE == 0 && y % Board.BLOCKSIZE == 0) {
+            //Tunnel effect
+            if(y / Board.BLOCKSIZE >= Board.NUMBLOCKS)
+                y = 0;
+            else if(y / Board.BLOCKSIZE < 0)
+                y = (Board.NUMBLOCKS - 1) * Board.BLOCKSIZE;
+            if(x / Board.BLOCKSIZE >= Board.NUMBLOCKS)
+                x = 0;
+            else if(x / Board.BLOCKSIZE < 0)
+                x = (Board.NUMBLOCKS - 1) * Board.BLOCKSIZE;
+
+            ch = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
 
             if (reqdx != 0 || reqdy != 0) {
                 if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) || (reqdx == 1 && reqdy == 0 && (ch & 4) != 0) ||
                         (reqdx == 0 && reqdy == -1 && (ch & 2) != 0) || (reqdx == 0 && reqdy == 1 && (ch & 8) != 0))) {
                     dx = reqdx;
                     dy = reqdy;
-                    viewdx = dx;
-                    viewdy = dy;
                 }
             }
 
@@ -178,12 +186,13 @@ public class Ghost extends Character {
      */
     @Override
     public void moveAI(Grid grid, int px, int py) {
+        move();
         double distance = Math.sqrt(Math.pow(this.x - px, 2.0) + Math.pow(this.y - py, 2.0));
 
         if(distance < 100.0)// && Math.random() < 0.6)
         {
             //Makes sure ghost is in a grid and not in movement
-            if (this.x % grid.blockSize == 0 && this.y % grid.blockSize == 0)
+            if (this.x % Board.BLOCKSIZE == 0 && this.y % Board.BLOCKSIZE == 0)
             {
                 //Weaker AI
                 /*int[][] d = moveList(grid);
@@ -204,15 +213,15 @@ public class Ghost extends Character {
                 dy = best[2];*/
 
                 //Stronger AI
-                Node bestDir = pathFind(grid, px / grid.blockSize, py / grid.blockSize);
+                Node bestDir = pathFind(grid, px / Board.BLOCKSIZE, py / Board.BLOCKSIZE);
                 //TODO: dont run pathfinding unless ghost has decision to make (at an intersection)
 
-                if(bestDir.x - this.x / grid.blockSize == 0 && bestDir.y - this.y / grid.blockSize == 0) //ghost on pacman
+                if(bestDir.x - this.x / Board.BLOCKSIZE == 0 && bestDir.y - this.y / Board.BLOCKSIZE == 0) //ghost on pacman
                     moveRandom(grid);
                 else
                 {
-                    dx = bestDir.x - this.x / grid.blockSize;
-                    dy = bestDir.y - this.y / grid.blockSize;
+                    dx = bestDir.x - this.x / Board.BLOCKSIZE;
+                    dy = bestDir.y - this.y / Board.BLOCKSIZE;
                 }
             }
         }
@@ -220,7 +229,6 @@ public class Ghost extends Character {
         {
             moveRandom(grid);
         }
-        move();
     }
 
     /**
@@ -242,7 +250,7 @@ public class Ghost extends Character {
         PriorityQueue<Node> opened = new PriorityQueue<>();
         HashSet<Node> closed = new HashSet<>();
 
-        temp = new Node(this.x / grid.blockSize, this.y / grid.blockSize, 0); //current location of ghost
+        temp = new Node(this.x / Board.BLOCKSIZE, this.y / Board.BLOCKSIZE, 0); //current location of ghost
         temp.setDir(dx, dy);
         opened.offer(temp);
 
@@ -301,7 +309,7 @@ public class Ghost extends Character {
         int count;
 
         //Makes sure ghost is in a grid and not in movement
-        if (this.x % grid.blockSize == 0 && this.y % grid.blockSize == 0) {
+        if (this.x % Board.BLOCKSIZE == 0 && this.y % Board.BLOCKSIZE == 0) {
             d = moveList(grid);
             count = d[0][0];
 
@@ -322,7 +330,7 @@ public class Ghost extends Character {
     {
         int[][] moves = new int[5][2];
         int count = 1;
-        int block = grid.screenData[y / grid.blockSize][x / grid.blockSize];
+        int block = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
 
         // following block of code randomizes movement (randomizes dx[] and dy[])
         // First condition prevents checks collision with wall

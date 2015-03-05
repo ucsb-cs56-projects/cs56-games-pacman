@@ -28,7 +28,7 @@ public class PacMan extends JFrame {
         b.callLeaderboardMain(args);
         setTitle("Pacman");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(420, 460);
+        setSize(420, 465);
 //        setSize(380, 420);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -38,7 +38,7 @@ public class PacMan extends JFrame {
     /**
      * Main function for PacMan Class that tests to see if there are command line arguments
      *
-     * @param args[] -- the command line arguments
+     * @param args -- the command line arguments
      */
     public static void main(String[] args) {
 

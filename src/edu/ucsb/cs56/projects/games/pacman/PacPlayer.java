@@ -11,7 +11,8 @@ import java.io.IOException;
  *
  * @author Dario Castellanos
  * @author Daniel Ly
- * @version CS56 S13
+ * @author Kelvin Yang
+ * @version CS56 W15
  */
 public class PacPlayer extends Character {
     public final static int PACMAN = 1;
@@ -23,6 +24,11 @@ public class PacPlayer extends Character {
     int pacanimcount = pacanimdelay;
     int pacanimdir = 1;
     int pacmananimpos = 0;
+
+    // need these so that when pacman collides with wall and stops moving
+    // he keeps facing wall instead of facing default position
+    public int viewdx, viewdy;
+
     private Image pacman1up, pacman1left, pacman1right, pacman1down,
             pacman2up, pacman2left, pacman2right, pacman2down,
             pacman3up, pacman3down, pacman3left, pacman3right, pacman4up,
@@ -58,6 +64,13 @@ public class PacPlayer extends Character {
         loadImages();
     }
 
+    public void resetPos()
+    {
+        super.resetPos();
+        viewdx = -1;
+        viewdy = 0;
+    }
+
     public void death() {
         if (deathTimer <= 0) {
             lives--;
@@ -76,36 +89,48 @@ public class PacPlayer extends Character {
      */
     public void move(Grid grid) {
         if (deathTimer > 0) deathTimer--;
-        int pos;
         short ch;
 
+        //allows you to switch directions even when you are not in a grid
         if (reqdx == -dx && reqdy == -dy) {
-            dx = reqdx;
-            dy = reqdy;
-            viewdx = dx;
-            viewdy = dy;
+            viewdx = dx = reqdx;
+            viewdy = dy = reqdy;
         }
-        if (x % grid.blockSize == 0 && y % grid.blockSize == 0) {
-            ch = grid.screenData[y / grid.blockSize][x / grid.blockSize];
 
+        if (x % Board.BLOCKSIZE == 0 && y % Board.BLOCKSIZE == 0) {
+
+            //Tunnel effect
+            if(y / Board.BLOCKSIZE >= Board.NUMBLOCKS)
+                y = 0;
+            else if(y / Board.BLOCKSIZE < 0)
+                y = (Board.NUMBLOCKS - 1) * Board.BLOCKSIZE;
+            if(x / Board.BLOCKSIZE >= Board.NUMBLOCKS)
+                x = 0;
+            else if(x / Board.BLOCKSIZE < 0)
+                x = (Board.NUMBLOCKS - 1) * Board.BLOCKSIZE;
+
+            ch = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
+
+            //if pellet, eat and increase score
             if ((ch & 16) != 0) {
-                grid.screenData[y / grid.blockSize][x / grid.blockSize] = (short) (ch & 15);
+                //THIS WILL NOT WORK IF OTHER BITS ARE IMPORTANT TOO
+                //IT REMOVES ALL OTHER BITS BESIDES 4 LSB
+                grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch & 15);
                 Board.score++;
             }
 
-            if (reqdx != 0 || reqdy != 0) {
-                if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) ||
-                        (reqdx == 1 && reqdy == 0 && (ch & 4) != 0) ||
-                        (reqdx == 0 && reqdy == -1 && (ch & 2) != 0) ||
-                        (reqdx == 0 && reqdy == 1 && (ch & 8) != 0))) {
-                    dx = reqdx;
-                    dy = reqdy;
-                    viewdx = dx;
-                    viewdy = dy;
-                }
+            //TODO: implement fruits here.  Very easy just like pellet
+
+            //passes key commands to movement
+            if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) ||
+                    (reqdx == 1 && reqdy == 0 && (ch & 4) != 0) ||
+                    (reqdx == 0 && reqdy == -1 && (ch & 2) != 0) ||
+                    (reqdx == 0 && reqdy == 1 && (ch & 8) != 0))) {
+                viewdx = dx = reqdx;
+                viewdy = dy = reqdy;
             }
 
-            // Check for standstill
+            // Check for standstill, stop movement if hit wall
             if ((dx == -1 && dy == 0 && (ch & 1) != 0) ||
                     (dx == 1 && dy == 0 && (ch & 4) != 0) ||
                     (dx == 0 && dy == -1 && (ch & 2) != 0) ||

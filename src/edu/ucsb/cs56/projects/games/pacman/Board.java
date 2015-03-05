@@ -41,18 +41,21 @@ import java.util.Date;
  * @author Deanna Hartsook
  * @author Kateryna Fomenko
  * @author Yuxiang Zhu
+ * @author Kelvin Yang
  * @version CS56 W15
  */
 
 public class Board extends JPanel implements ActionListener {
-    public final static int SINGLEPLAYER = 1;
-    public final static int COOPERATIVE = 2;
-    public final static int VERSUS = 3;
+    public static final int SINGLEPLAYER = 1;
+    public static final int COOPERATIVE = 2;
+    public static final int VERSUS = 3;
+    public static final int BLOCKSIZE = 24;
+    public static final int NUMBLOCKS = 17;
+    public static final int SCRSIZE = NUMBLOCKS * BLOCKSIZE;
+
 
     public static int score;
-    final int blocksize = 24;
-    final int nrofblocks = 17;
-    final int scrsize = nrofblocks * blocksize;
+
     final int maxghosts = 12;
     final int validspeeds[] = {1, 2, 3, 4, 6, 8};
     final int maxspeed = 6;
@@ -61,13 +64,9 @@ public class Board extends JPanel implements ActionListener {
     Grid grid;
     Dimension d;
     Font smallfont = new Font("Helvetica", Font.BOLD, 14);
-    FontMetrics fmsmall, fmlarge;
     Image ii;
-    Color dotcolor = new Color(192, 192, 0);
-    Color mazecolor;
     int gameType;
     boolean ingame = false;
-    boolean dying = false;
     Character pacman, msPacman, ghost1, ghost2;
     Character[] pacmen, playerGhosts;
     int nrofghosts = 6;
@@ -83,10 +82,10 @@ public class Board extends JPanel implements ActionListener {
     public Board() {
         addKeyListener(new TAdapter());
         grid = new Grid();
-        pacman = new PacPlayer(8 * blocksize, 11 * blocksize, PacPlayer.PACMAN);
-        msPacman = new PacPlayer(7 * blocksize, 11 * blocksize, PacPlayer.MSPACMAN);
-        ghost1 = new Ghost(8 * blocksize, 7 * blocksize, 4, Ghost.GHOST1);
-        ghost2 = new Ghost(8 * blocksize, 7 * blocksize, 4, Ghost.GHOST2);
+        pacman = new PacPlayer(8 * BLOCKSIZE, 11 * BLOCKSIZE, PacPlayer.PACMAN);
+        msPacman = new PacPlayer(7 * BLOCKSIZE, 11 * BLOCKSIZE, PacPlayer.MSPACMAN);
+        ghost1 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 4, Ghost.GHOST1);
+        ghost2 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 4, Ghost.GHOST2);
         setFocusable(true);
 
         d = new Dimension(400, 400);
@@ -185,9 +184,9 @@ public class Board extends JPanel implements ActionListener {
      */
     public void showIntroScreen(Graphics2D g) {
         g.setColor(new Color(0, 32, 48));
-        g.fillRect(50, scrsize / 2 - 50, scrsize - 100, 90);
+        g.fillRect(50, SCRSIZE / 2 - 50, SCRSIZE - 100, 90);
         g.setColor(Color.white);
-        g.drawRect(50, scrsize / 2 - 50, scrsize - 100, 90);
+        g.drawRect(50, SCRSIZE / 2 - 50, SCRSIZE - 100, 90);
 
         String s = "Press s for single player";
         String d = "Press d for Co-Op";
@@ -198,10 +197,10 @@ public class Board extends JPanel implements ActionListener {
 
         g.setColor(Color.white);
         g.setFont(small);
-        g.drawString(s, (scrsize - metr.stringWidth(s)) / 2, scrsize / 2 - metr.getHeight() * 3 / 2);
-        g.drawString(d, (scrsize - metr.stringWidth(d)) / 2, scrsize / 2 - metr.getHeight() / 2);
-        g.drawString(f, (scrsize - metr.stringWidth(f)) / 2, scrsize / 2 + metr.getHeight() / 2);
-        g.drawString(h, (scrsize - metr.stringWidth(h)) / 2, scrsize / 2 + metr.getHeight() * 3 / 2);
+        g.drawString(s, (SCRSIZE - metr.stringWidth(s)) / 2, SCRSIZE / 2 - metr.getHeight() * 3 / 2);
+        g.drawString(d, (SCRSIZE - metr.stringWidth(d)) / 2, SCRSIZE / 2 - metr.getHeight() / 2);
+        g.drawString(f, (SCRSIZE - metr.stringWidth(f)) / 2, SCRSIZE / 2 + metr.getHeight() / 2);
+        g.drawString(h, (SCRSIZE - metr.stringWidth(h)) / 2, SCRSIZE / 2 + metr.getHeight() * 3 / 2);
         drawHighScores(g);
     }
 
@@ -221,17 +220,17 @@ public class Board extends JPanel implements ActionListener {
         if (gameType == VERSUS) {
             pelletsLeft = numPellet - score;
             p = "Pellets left: " + pelletsLeft;
-            g.drawString(p, scrsize / 2 + 96, scrsize + 16);
+            g.drawString(p, SCRSIZE / 2 + 96, SCRSIZE + 16);
         } else {
             s = "Score: " + score;
-            g.drawString(s, scrsize / 2 + 136, scrsize + 16);
+            g.drawString(s, SCRSIZE / 2 + 136, SCRSIZE + 16);
         }
         for (i = 0; i < pacman.lives; i++) {
-            g.drawImage(pacman.getLifeImage(), i * 28 + 8, scrsize + 1, this);
+            g.drawImage(pacman.getLifeImage(), i * 28 + 8, SCRSIZE + 1, this);
         }
         if (gameType == COOPERATIVE) {
             for (i = 0; i < msPacman.lives; i++) {
-                g.drawImage(msPacman.getLifeImage(), i * 28 + 108, scrsize + 1, this);
+                g.drawImage(msPacman.getLifeImage(), i * 28 + 108, SCRSIZE + 1, this);
             }
         }
     }
@@ -247,18 +246,18 @@ public class Board extends JPanel implements ActionListener {
         FontMetrics fm = this.getFontMetrics(smallfont);
 
         g.setColor(new Color(0, 32, 48));
-        g.fillRect((int) scrsize / 4, (int) scrsize - (scrsize / 3) - fm.getAscent(), (int) (scrsize / 2), blocksize * 4);
+        g.fillRect(SCRSIZE / 4, SCRSIZE - (SCRSIZE / 3) - fm.getAscent(), (int) (SCRSIZE / 2), BLOCKSIZE * 4);
         g.setColor(Color.white);
-        g.drawRect((int) scrsize / 4, (int) scrsize - (scrsize / 3) - fm.getAscent(), (int) (scrsize / 2), blocksize * 4);
+        g.drawRect(SCRSIZE / 4, SCRSIZE - (SCRSIZE / 3) - fm.getAscent(), (int) (SCRSIZE / 2), BLOCKSIZE * 4);
 
         g.setColor(new Color(96, 128, 255));
         for (int i = 0; i < scores.size(); i++) {
             if (i < 5)
-                g.drawString((i + 1) + ": " + scores.get(i), (int) scrsize / 4 + blocksize,
-                        (int) (scrsize - (scrsize / 3) + (i * fm.getHeight())));
+                g.drawString((i + 1) + ": " + scores.get(i), SCRSIZE / 4 + BLOCKSIZE,
+                        (int) (SCRSIZE - (SCRSIZE / 3) + (i * fm.getHeight())));
             else if (i < 10)
-                g.drawString((i + 1) + ": " + scores.get(i), (int) scrsize / 2 + blocksize,
-                        (int) (scrsize - (scrsize / 3) + ((i - 5) * fm.getHeight())));
+                g.drawString((i + 1) + ": " + scores.get(i), SCRSIZE / 2 + BLOCKSIZE,
+                        (int) (SCRSIZE - (SCRSIZE / 3) + ((i - 5) * fm.getHeight())));
         }
     }
 
@@ -371,7 +370,7 @@ public class Board extends JPanel implements ActionListener {
             random = (int) (Math.random() * (currentspeed + 1));
             if (random > currentspeed)
                 random = currentspeed;
-            ghosts[i] = new Ghost(4 * blocksize, 4 * blocksize, random);
+            ghosts[i] = new Ghost(4 * BLOCKSIZE, 4 * BLOCKSIZE, random);
             ghosts[i].dx = dx;
             dx = -dx;
             ghosts[i].speed = validspeeds[random];

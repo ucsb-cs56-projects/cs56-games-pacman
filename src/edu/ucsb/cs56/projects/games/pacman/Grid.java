@@ -10,36 +10,33 @@ import java.util.Arrays;
  * @version CS56, W15
  */
 
-public class Grid {
-    final int blockSize = 24;
-    final int nrOfBlocks = 17;
-    final int scrSize = nrOfBlocks * blockSize;
-
+public class Grid
+{
     /*
      check this link to implement the ghost AI movement at intersection.
      Revise the level 1 data to classic pacman for intersection detection
      http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior
      */
     final short leveldata1[][] = new short[][]{
-            {19, 26, 26, 18, 26, 26, 26, 22, 0, 19, 26, 26, 26, 18, 26, 26, 22},
-            {21, 0, 0, 21, 0, 0, 0, 21, 0, 21, 0, 0, 0, 21, 0, 0, 21},
+            {19, 26, 26, 18, 26, 26, 26, 22,  0, 19, 26, 26, 26, 18, 26, 26, 22},
+            {21,  0,  0, 21,  0,  0,  0, 21,  0, 21,  0,  0,  0, 21,  0,  0, 21},
             {17, 26, 26, 16, 26, 18, 26, 24, 26, 24, 26, 18, 26, 16, 26, 26, 20},
-            {25, 26, 26, 20, 0, 25, 26, 22, 0, 19, 26, 28, 0, 17, 26, 26, 28},
-            {0, 0, 0, 21, 0, 0, 0, 21, 0, 21, 0, 0, 0, 21, 0, 0, 0},
-            {0, 0, 0, 21, 0, 19, 26, 24, 26, 24, 26, 22, 0, 21, 0, 0, 0},
-            {27, 26, 26, 16, 26, 20, 0, 0, 0, 0, 0, 17, 26, 16, 26, 26, 30},
+            {25, 26, 26, 20,  0, 25, 26, 22,  0, 19, 26, 28,  0, 17, 26, 26, 28},
+            { 0,  0,  0, 21,  0,  0,  0, 21,  0, 21,  0,  0,  0, 21,  0,  0,  0},
+            { 0,  0,  0, 21,  0, 19, 26, 24, 26, 24, 26, 22,  0, 21,  0,  0,  0},
+            {26, 26, 26, 16, 26, 20,  0,  0,  0,  0,  0, 17, 26, 16, 26, 26, 26},
 //    change line above to  {26, 26, 26, 16, 26, 20, 0 , 0 , 0 , 0 , 0 ,17, 26, 16, 26, 26, 26},
 //    we can implement the feature of transport from left to right or from right to left
-            {0, 0, 0, 21, 0, 17, 26, 26, 26, 26, 26, 20, 0, 21, 0, 0, 0},
-            {0, 0, 0, 21, 0, 21, 0, 0, 0, 0, 0, 21, 0, 21, 0, 0, 0},
-            {19, 26, 26, 16, 26, 24, 26, 22, 0, 19, 26, 24, 26, 16, 26, 26, 22},
-            {21, 0, 0, 21, 0, 0, 0, 21, 0, 21, 0, 0, 0, 21, 0, 0, 21},
-            {25, 22, 0, 21, 0, 0, 0, 17, 2, 20, 0, 0, 0, 21, 0, 19, 28}, // "2" in this line stands for where the pacman spawn
-            {0, 21, 0, 17, 26, 26, 18, 24, 24, 24, 18, 26, 26, 20, 0, 21, 0},
-            {19, 24, 26, 28, 0, 0, 25, 18, 26, 18, 28, 0, 0, 25, 26, 24, 22},
-            {21, 0, 0, 0, 0, 0, 0, 21, 0, 21, 0, 0, 0, 0, 0, 0, 21},
-            {25, 26, 26, 26, 26, 26, 26, 24, 26, 24, 26, 26, 26, 26, 26,26, 28},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            { 0,  0,  0, 21,  0, 17, 26, 26, 26, 26, 26, 20,  0, 21,  0,  0,  0},
+            { 0,  0,  0, 21,  0, 21,  0,  0,  0,  0,  0, 21,  0, 21,  0,  0,  0},
+            {19, 26, 26, 16, 26, 24, 26, 22,  0, 19, 26, 24, 26, 16, 26, 26, 22},
+            {21,  0,  0, 21,  0,  0,  0, 21,  0, 21,  0,  0,  0, 21,  0,  0, 21},
+            {25, 22,  0, 21,  0,  0,  0, 17,  2, 20,  0,  0,  0, 21,  0, 19, 28}, // "2" in this line stands for where the pacman spawn
+            { 0, 21,  0, 17, 26, 26, 18, 24, 24, 24, 18, 26, 26, 20,  0, 21,  0},
+            {19, 24, 26, 28,  0,  0, 25, 18, 26, 18, 28,  0,  0, 25, 26, 24, 22},
+            {21,  0,  0,  0,  0,  0,  0, 21,  0, 21,  0,  0,  0,  0,  0,  0, 21},
+            {25, 26, 26, 26, 26, 26, 26, 24, 26, 24, 26, 26, 26, 26, 26, 26, 28},
+            { 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
     };
 
 
@@ -183,7 +180,7 @@ public class Grid {
      * Constructor for Board object
      */
     public Grid() {
-        screenData = new short[nrOfBlocks][nrOfBlocks];
+        screenData = new short[Board.NUMBLOCKS][Board.NUMBLOCKS];
         mazeColor = new Color(5, 100, 5);
         dotColor = new Color(192, 192, 0);
     }
@@ -195,8 +192,8 @@ public class Grid {
      * @return A boolean indicating whether or not the maze is finished
      */
     public boolean checkMaze() {
-        for (int i = 0; i < nrOfBlocks; i++) {
-            for (int j = 0; j < nrOfBlocks; j++) {
+        for (int i = 0; i < Board.NUMBLOCKS; i++) {
+            for (int j = 0; j < Board.NUMBLOCKS; j++) {
                 if ((screenData[i][j] & 48) != 0)
                     return false;
             }
@@ -211,8 +208,8 @@ public class Grid {
      */
     public int getPelletNum() {
         int numOfPellet = 0;
-        for (int i = 0; i < nrOfBlocks; i++) {
-            for (int j = 0; j < nrOfBlocks; j++) {
+        for (int i = 0; i < Board.NUMBLOCKS; i++) {
+            for (int j = 0; j < Board.NUMBLOCKS; j++) {
                 if ((screenData[i][j] & 16) != 0)
                     numOfPellet+=1;
             }
@@ -225,17 +222,17 @@ public class Grid {
      * Initialize level
      */
     public void levelInit(int numBoardsCleared) {
-        for (int i = 0; i < nrOfBlocks; i++) {
+        for (int i = 0; i < Board.NUMBLOCKS; i++) {
             if (numBoardsCleared % 3 == 0)
-                screenData[i] = Arrays.copyOf(leveldata1[i], nrOfBlocks);
+                screenData[i] = Arrays.copyOf(leveldata1[i], Board.NUMBLOCKS);
             else if (numBoardsCleared % 3 == 1)
-                screenData[i] = Arrays.copyOf(leveldata2[i], nrOfBlocks);
+                screenData[i] = Arrays.copyOf(leveldata2[i], Board.NUMBLOCKS);
             else if (numBoardsCleared % 3 == 2)
-                screenData[i] = Arrays.copyOf(leveldata3[i], nrOfBlocks);
+                screenData[i] = Arrays.copyOf(leveldata3[i], Board.NUMBLOCKS);
             else if (numBoardsCleared % 3 == 3)
-                screenData[i] = Arrays.copyOf(leveldata4[i], nrOfBlocks);
+                screenData[i] = Arrays.copyOf(leveldata4[i], Board.NUMBLOCKS);
             else if (numBoardsCleared % 3 == 4)
-                screenData[i] = Arrays.copyOf(leveldata5[i], nrOfBlocks);
+                screenData[i] = Arrays.copyOf(leveldata5[i], Board.NUMBLOCKS);
         }
     }
 
@@ -248,10 +245,10 @@ public class Grid {
         int x, y;
 
         g2d.setStroke(new BasicStroke(2));
-        for (int i = 0; i < nrOfBlocks; i++) {
-            for (int j = 0; j < nrOfBlocks; j++) {
-                y = i * blockSize + 3;
-                x = j * blockSize + 3;
+        for (int i = 0; i < Board.NUMBLOCKS; i++) {
+            for (int j = 0; j < Board.NUMBLOCKS; j++) {
+                y = i * Board.BLOCKSIZE + 3;
+                x = j * Board.BLOCKSIZE + 3;
 
                 g2d.setColor(mazeColor);
                 
@@ -265,13 +262,13 @@ public class Grid {
                  */
 
                 if ((screenData[i][j] & 1) != 0) // draws left
-                    g2d.drawLine(x, y, x, y + blockSize - 1);
+                    g2d.drawLine(x, y, x, y + Board.BLOCKSIZE - 1);
                 if ((screenData[i][j] & 2) != 0) // draws top
-                    g2d.drawLine(x, y, x + blockSize - 1, y);
+                    g2d.drawLine(x, y, x + Board.BLOCKSIZE - 1, y);
                 if ((screenData[i][j] & 4) != 0) // draws right
-                    g2d.drawLine(x + blockSize - 1, y, x + blockSize - 1, y + blockSize - 1);
+                    g2d.drawLine(x + Board.BLOCKSIZE - 1, y, x + Board.BLOCKSIZE - 1, y + Board.BLOCKSIZE - 1);
                 if ((screenData[i][j] & 8) != 0) // draws bottom
-                    g2d.drawLine(x, y + blockSize - 1, x + blockSize - 1, y + blockSize - 1);
+                    g2d.drawLine(x, y + Board.BLOCKSIZE - 1, x + Board.BLOCKSIZE - 1, y + Board.BLOCKSIZE - 1);
 
                 g2d.setColor(dotColor);
                 if ((screenData[i][j] & 16) != 0) // draws point
