@@ -122,7 +122,7 @@ public class Board extends JPanel implements ActionListener {
                         pacman.draw(g2d, this);
                     }
                     for (int i = 0; i < nrofghosts; i++) {
-                        ghosts[i].moveAI(grid, pacman.x, pacman.y);
+                        ghosts[i].moveAI(grid, pacmen);
                         ghosts[i].draw(g2d, this);
                     }
                     detectCollision(ghosts, pacman);
@@ -137,7 +137,7 @@ public class Board extends JPanel implements ActionListener {
                         msPacman.draw(g2d, this);
                     }
                     for (int i = 0; i < nrofghosts; i++) {
-                        ghosts[i].moveAI(grid, pacman.x, pacman.y);
+                        ghosts[i].moveAI(grid, pacmen);
                         ghosts[i].draw(g2d, this);
                     }
                     detectCollision(ghosts, pacman, msPacman);

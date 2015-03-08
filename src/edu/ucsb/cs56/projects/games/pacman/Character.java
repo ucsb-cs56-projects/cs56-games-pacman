@@ -119,10 +119,9 @@ public abstract class Character
      * Moves character's current position with the board's collision
      *
      * @param grid The Grid to be used for collision
-     * @param tx target x coordinate
-     * @param ty target y coordinate
+     * @param c Array of target Characters
      */
-    public abstract void moveAI(Grid grid, int tx, int ty);
+    public abstract void moveAI(Grid grid, Character[] c);
 
     /**
      * Moves character's current position
@@ -130,14 +129,11 @@ public abstract class Character
     public void move() {
         x = x + speed * dx;
         y = y + speed * dy;
-        //Tunnel effect (For some reason mod method doesn't work here)
-        if(y / Board.BLOCKSIZE >= Board.NUMBLOCKS)
-            y = 0;
-        else if(y / Board.BLOCKSIZE < 0)
-            y = (Board.NUMBLOCKS - 1) * Board.BLOCKSIZE;
-        if(x / Board.BLOCKSIZE >= Board.NUMBLOCKS)
-            x = 0;
-        else if(x / Board.BLOCKSIZE < 0)
-            x = (Board.NUMBLOCKS - 1) * Board.BLOCKSIZE;
+
+        if (x % Board.BLOCKSIZE == 0 && y % Board.BLOCKSIZE == 0)
+        {
+            x = ((x / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
+            y = ((y / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
+        }
     }
 }

@@ -147,8 +147,8 @@ public class Ghost extends Character {
         }
         if (x % Board.BLOCKSIZE == 0 && y % Board.BLOCKSIZE == 0) {
             //Tunnel effect
-            x = ((x / Board.BLOCKSIZE) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
-            y = ((y / Board.BLOCKSIZE) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
+            x = ((x / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
+            y = ((y / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 
             ch = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
 
@@ -175,42 +175,45 @@ public class Ghost extends Character {
      * with a specified probability
      *
      * @param grid The Grid to be used for the collision
-     * @param px   pacman's x position in integer form
-     * @param py   pacman's y position in integer form
+     * @param c    Array of pacmen to chase
      */
     @Override
-    public void moveAI(Grid grid, int px, int py) {
+    public void moveAI(Grid grid, Character[] c)
+    {
         move();
-        double distance = Math.sqrt(Math.pow(this.x - px, 2.0) + Math.pow(this.y - py, 2.0));
+        if(c.length == 0) //Nothing to chase.  Should never happen
+            return;
 
-        if(distance < 100.0)// && Math.random() < 0.6)
+        int[][] coord = new int[c.length][2];
+        int count = 0;
+
+        for(Character p : c)
+        {
+            double distance = Math.sqrt(Math.pow(this.x - p.x, 2.0) + Math.pow(this.y - p.y, 2.0));
+            if(p.alive && distance < 100.0)// && Math.random() < 0.6)
+            {
+                coord[count][0] = p.x;
+                coord[count][1] = p.y;
+                count++;
+            }
+        }
+
+        if(count > 0)
         {
             //Makes sure ghost is in a grid and not in movement
             if (this.x % Board.BLOCKSIZE == 0 && this.y % Board.BLOCKSIZE == 0)
             {
-                //Weaker AI
-                /*int[][] d = moveList(grid);
-                int count = d[0][0];
-                int[] best = new int[3];
-
-                for(int i = 1; i <= count; i++)
-                {
-                    distance = Math.sqrt(Math.pow(this.x - px - d[i][0], 2.0) + Math.pow(this.y - py - d[i][1], 2.0));
-                    if(distance > best[0]) //I honestly don't know why it's > but it works...
-                    {
-                        best[0] = (int)distance;
-                        best[1] = d[i][0];
-                        best[2] = d[i][1];
-                    }
-                }
-                dx = best[1];
-                dy = best[2];*/
-
-                //Stronger AI
-                Node bestDir = pathFind(grid, px / Board.BLOCKSIZE, py / Board.BLOCKSIZE);
                 //TODO: dont run pathfinding unless ghost has decision to make (at an intersection)
+                Node bestDir = pathFind(grid, coord[0][0] / Board.BLOCKSIZE, coord[0][1] / Board.BLOCKSIZE);
+                Node tempDir;
+                for(int i = 1; i < count; i++) //Loop through each pacman
+                {
+                    tempDir = pathFind(grid, coord[i][0] / Board.BLOCKSIZE, coord[i][1] / Board.BLOCKSIZE);
+                    if(tempDir.distance.value < bestDir.distance.value) //If new path is shorter
+                        bestDir = tempDir;
+                }
 
-                if(bestDir.x - this.x / Board.BLOCKSIZE == 0 && bestDir.y - this.y / Board.BLOCKSIZE == 0) //ghost on pacman
+                if (bestDir.x - this.x / Board.BLOCKSIZE == 0 && bestDir.y - this.y / Board.BLOCKSIZE == 0) //ghost on pacman
                     moveRandom(grid);
                 else
                 {
@@ -245,6 +248,7 @@ public class Ghost extends Character {
         HashSet<Node> closed = new HashSet<>();
 
         temp = new Node(this.x / Board.BLOCKSIZE, this.y / Board.BLOCKSIZE, 0); //current location of ghost
+        temp.init();
         temp.setDir(dx, dy);
         opened.offer(temp);
 
@@ -259,7 +263,7 @@ public class Ghost extends Character {
             block = grid.screenData[current.y][current.x];
 
             //If can move, not abrupt, and unvisited, add to opened
-            if((block & 1) == 0 && current.dir != 3) //Can move
+            if((block & 1) == 0 && current.dir != 3) //Can move and not abrupt
             {
                 temp = current.getChild(-1, 0); //get child node
                 if(!closed.contains(temp)) //Unvisited
@@ -285,10 +289,11 @@ public class Ghost extends Character {
             }
         }
 
-        //if current.parent == null, then ghost is on pacman.  Handle it by moving randomly?
-        //current.parent.parent == null, then current best next move
+        //if current.parent == null, then ghost is on pacman.  Handle it by moving randomly
+        //current.parent.parent == null, then current is best next move
         while(current.parent != null && current.parent.parent != null)
             current = current.parent;
+
         return current;
     }
 

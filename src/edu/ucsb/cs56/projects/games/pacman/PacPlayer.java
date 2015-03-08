@@ -100,8 +100,8 @@ public class PacPlayer extends Character {
         if (x % Board.BLOCKSIZE == 0 && y % Board.BLOCKSIZE == 0) {
 
             //Tunnel effect
-            x = ((x / Board.BLOCKSIZE) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
-            y = ((y / Board.BLOCKSIZE) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
+            x = ((x / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
+            y = ((y / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 
             ch = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
 
@@ -253,7 +253,7 @@ public class PacPlayer extends Character {
      * @param grid The Grid to be used for collision
      */
     @Override
-    public void moveAI(Grid grid, int tx, int ty) {
+    public void moveAI(Grid grid, Character[] c) {
     }
 
     /**

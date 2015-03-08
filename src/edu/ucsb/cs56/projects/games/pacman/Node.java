@@ -7,6 +7,11 @@ import java.awt.*;
  * Algorithm used: A*
  * Read more: http://en.wikipedia.org/wiki/A*_search_algorithm
  *
+ * Currently, the hCost is NOT admissable for going through tunnels
+ * since it will evaluate the cartesian distance and overestimate.
+ * In order for ghosts to consider tunnels, you need to modify hCost
+ * heuristic to be admissable.
+ *
  * @author Kelvin Yang
  * @version CS56, W15
  */
@@ -15,6 +20,7 @@ public class Node extends Point implements Comparable<Node>
     public static int tx, ty;
     public int gCost, hCost, fCost, dir;
     public Node parent;
+    public MutableInt distance;
 
     /**
      * Constructor for node
@@ -25,12 +31,20 @@ public class Node extends Point implements Comparable<Node>
      */
     public Node(int x, int y, int gCost)
     {
-        //should help to prevent some crashes
-        this.x = x % Board.NUMBLOCKS;
-        this.y = y % Board.NUMBLOCKS;
+        //should help to prevent crashes when tunneling
+        this.x = (x + Board.NUMBLOCKS) % Board.NUMBLOCKS;
+        this.y = (y + Board.NUMBLOCKS) % Board.NUMBLOCKS;
         this.gCost = gCost;
         hCost = (int)Math.sqrt(Math.pow(x - tx, 2.0) + Math.pow(y - ty, 2.0));
         fCost = gCost + hCost;
+    }
+
+    /**
+     * Initializes distance for a path. Only do it once
+     */
+    public void init()
+    {
+        distance = new MutableInt();
     }
 
     /**
@@ -48,7 +62,8 @@ public class Node extends Point implements Comparable<Node>
         Node n = new Node(x + dx, y + dy, gCost + 1);
         n.parent = this;
         n.setDir(dx, dy);
-
+        n.distance = distance;
+        distance.plus();
         return n;
     }
 
@@ -83,5 +98,15 @@ public class Node extends Point implements Comparable<Node>
             return fCost - n.fCost;
         else
             return hCost - n.hCost;
+    }
+
+    /**
+     * Need for distance so it can be used as a reference
+     * but is also mutable
+     */
+    class MutableInt
+    {
+        int value = 0;
+        public void plus() { ++value; }
     }
 }
