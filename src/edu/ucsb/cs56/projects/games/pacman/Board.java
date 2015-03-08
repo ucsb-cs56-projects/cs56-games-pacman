@@ -12,22 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
-//~ import java.awt.BasicStroke;
-//~ import java.awt.Color;
-//~ import java.awt.Dimension;
-//~ import java.awt.Font;
-//~ import java.awt.FontMetrics;
-//~ import java.awt.Graphics;
-//~ import java.awt.Graphics2D;
-//~ import java.awt.Image;
-//~ import java.awt.Toolkit;
-//~ import java.awt.event.ActionEvent;
-//~ import java.awt.event.ActionListener;
-//~ import java.awt.event.KeyAdapter;
-//~ import java.awt.event.KeyEvent;
-//~ import javax.swing.JPanel;
-//~ import javax.swing.Timer;
-
 
 /**
  * Playing field for a Pacman arcade game remake that keeps track of all relevant data and handles game logic.<p>
@@ -44,37 +28,33 @@ import java.util.Date;
  * @author Kelvin Yang
  * @version CS56 W15
  */
+public class Board extends JPanel implements ActionListener
+{
+    enum GameType {
+        INTRO, SINGLEPLAYER, COOPERATIVE, VERSUS, LEADERBOARD
+    }
 
-public class Board extends JPanel implements ActionListener {
-    public static final int SINGLEPLAYER = 1;
-    public static final int COOPERATIVE = 2;
-    public static final int VERSUS = 3;
     public static final int BLOCKSIZE = 24;
     public static final int NUMBLOCKS = 17;
     public static final int SCRSIZE = NUMBLOCKS * BLOCKSIZE;
 
+    private final int MAX_GHOSTS = 12;
+    private final int MAX_SPEED = 6;
+
 
     public static int score;
-
-    final int maxghosts = 12;
-    final int validspeeds[] = {1, 2, 3, 4, 6, 8};
-    final int maxspeed = 6;
-    ScoreLoader sl = new ScoreLoader("highScores.txt");
-    LeaderboardGUI leaderBoardGui = new LeaderboardGUI();
-    Grid grid;
-    Dimension d;
-    Font smallfont = new Font("Helvetica", Font.BOLD, 14);
-    Image ii;
-    int gameType;
-    boolean ingame = false;
-    Character pacman, msPacman, ghost1, ghost2;
-    Character[] pacmen, playerGhosts;
-    int nrofghosts = 6;
-    int numBoardsCleared = 0;
-    Ghost[] ghosts;
-    int currentspeed = 3;
-    int numPellet;
-    Timer timer;
+    private ScoreLoader sl = new ScoreLoader("highScores.txt");
+    private LeaderboardGUI leaderBoardGui = new LeaderboardGUI();
+    private Grid grid;
+    private Font smallFont = new Font("Helvetica", Font.BOLD, 14);
+    private GameType gt;
+    private Character pacman, msPacman, ghost1, ghost2;
+    private Character[] pacmen, playerGhosts;
+    private Ghost[] ghosts;
+    private int numGhosts = 6, numBoardsCleared = 0;
+    private int curSpeed = 3;
+    private int numPellet;
+    private Timer timer;
 
     /**
      * Constructor for Board object
@@ -88,11 +68,9 @@ public class Board extends JPanel implements ActionListener {
         ghost2 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 4, Ghost.GHOST2);
         setFocusable(true);
 
-        d = new Dimension(400, 400);
-
         setBackground(Color.black);
         setDoubleBuffered(true);
-        ghosts = new Ghost[maxghosts];
+        ghosts = new Ghost[MAX_GHOSTS];
         timer = new Timer(40, this);
         timer.start();
     }
@@ -102,6 +80,7 @@ public class Board extends JPanel implements ActionListener {
      */
     public void addNotify() {
         super.addNotify();
+        gt = GameType.INTRO;
         gameInit();
         numPellet = grid.getPelletNum();
     }
@@ -112,47 +91,49 @@ public class Board extends JPanel implements ActionListener {
      * @param g2d a Graphics 2D object
      */
     public void playGame(Graphics2D g2d) {
-        if (!checkAlive(pacmen)) {
+        if (!checkAlive())
+        {
             gameOver();
-        } else {
-            switch (gameType) {
+        }
+        else
+        {
+            if (pacman.alive)
+            {
+                pacman.move(grid);
+                pacman.draw(g2d, this);
+            }
+            switch (gt)
+            {
                 case SINGLEPLAYER:
-                    if (pacman.alive) {
-                        pacman.move(grid);
-                        pacman.draw(g2d, this);
-                    }
-                    for (int i = 0; i < nrofghosts; i++) {
+                    for (int i = 0; i < numGhosts; i++)
+                    {
                         ghosts[i].moveAI(grid, pacmen);
                         ghosts[i].draw(g2d, this);
                     }
-                    detectCollision(ghosts, pacman);
+                    detectCollision(ghosts);
                     break;
                 case COOPERATIVE:
-                    if (pacman.alive) {
-                        pacman.move(grid);
-                        pacman.draw(g2d, this);
-                    }
-                    if (msPacman.alive) {
+                    if (msPacman.alive)
+                    {
                         msPacman.move(grid);
                         msPacman.draw(g2d, this);
                     }
-                    for (int i = 0; i < nrofghosts; i++) {
+                    for (int i = 0; i < numGhosts; i++)
+                    {
                         ghosts[i].moveAI(grid, pacmen);
                         ghosts[i].draw(g2d, this);
                     }
-                    detectCollision(ghosts, pacman, msPacman);
+                    detectCollision(ghosts);
                     break;
                 case VERSUS:
-                    if (pacman.alive) {
-                        pacman.move(grid);
-                        pacman.draw(g2d, this);
-                    }
-                    for (Character ghost : playerGhosts) {
+                    for (Character ghost : playerGhosts)
+                    {
                         ghost.move(grid);
                         ghost.draw(g2d, this);
                     }
 
-                    if (score >= numPellet) {
+                    if (score >= numPellet)
+                    {
                         score = 0;
                         numBoardsCleared++;
                         grid.levelInit(numBoardsCleared);
@@ -160,17 +141,16 @@ public class Board extends JPanel implements ActionListener {
                         levelContinue();
 
                     }
-                    detectCollision(playerGhosts, pacman);
+                    detectCollision(playerGhosts);
                     break;
             }
-            if (grid.checkMaze()) {
+            if (grid.checkMaze())
+            {
                 score += 50;
                 numBoardsCleared++;
 
-                if (nrofghosts < maxghosts)
-                    nrofghosts++;
-                if (currentspeed < maxspeed)
-                    currentspeed++;
+                numGhosts = (numGhosts + 1) % MAX_GHOSTS;
+                curSpeed = (curSpeed + 1) % MAX_SPEED;
                 grid.levelInit(numBoardsCleared);
                 levelContinue();
             }
@@ -215,9 +195,9 @@ public class Board extends JPanel implements ActionListener {
         String s;
         String p;
 
-        g.setFont(smallfont);
+        g.setFont(smallFont);
         g.setColor(new Color(96, 128, 255));
-        if (gameType == VERSUS) {
+        if (gt == GameType.VERSUS) {
             pelletsLeft = numPellet - score;
             p = "Pellets left: " + pelletsLeft;
             g.drawString(p, SCRSIZE / 2 + 96, SCRSIZE + 16);
@@ -228,7 +208,7 @@ public class Board extends JPanel implements ActionListener {
         for (i = 0; i < pacman.lives; i++) {
             g.drawImage(pacman.getLifeImage(), i * 28 + 8, SCRSIZE + 1, this);
         }
-        if (gameType == COOPERATIVE) {
+        if (gt == GameType.COOPERATIVE) {
             for (i = 0; i < msPacman.lives; i++) {
                 g.drawImage(msPacman.getLifeImage(), i * 28 + 108, SCRSIZE + 1, this);
             }
@@ -240,24 +220,25 @@ public class Board extends JPanel implements ActionListener {
      *
      * @param g a Graphics2D object
      */
-    public void drawHighScores(Graphics2D g) {
+    public void drawHighScores(Graphics2D g)
+    {
         ArrayList<Integer> scores = sl.loadScores();
-        g.setFont(smallfont);
-        FontMetrics fm = this.getFontMetrics(smallfont);
+        g.setFont(smallFont);
+        FontMetrics fm = this.getFontMetrics(smallFont);
 
         g.setColor(new Color(0, 32, 48));
-        g.fillRect(SCRSIZE / 4, SCRSIZE - (SCRSIZE / 3) - fm.getAscent(), (int) (SCRSIZE / 2), BLOCKSIZE * 4);
+        g.fillRect(SCRSIZE / 4, SCRSIZE - (SCRSIZE / 3) - fm.getAscent(), SCRSIZE / 2, BLOCKSIZE * 4);
         g.setColor(Color.white);
-        g.drawRect(SCRSIZE / 4, SCRSIZE - (SCRSIZE / 3) - fm.getAscent(), (int) (SCRSIZE / 2), BLOCKSIZE * 4);
+        g.drawRect(SCRSIZE / 4, SCRSIZE - (SCRSIZE / 3) - fm.getAscent(), SCRSIZE / 2, BLOCKSIZE * 4);
 
         g.setColor(new Color(96, 128, 255));
         for (int i = 0; i < scores.size(); i++) {
             if (i < 5)
                 g.drawString((i + 1) + ": " + scores.get(i), SCRSIZE / 4 + BLOCKSIZE,
-                        (int) (SCRSIZE - (SCRSIZE / 3) + (i * fm.getHeight())));
+                             SCRSIZE - (SCRSIZE / 3) + (i * fm.getHeight()));
             else if (i < 10)
                 g.drawString((i + 1) + ": " + scores.get(i), SCRSIZE / 2 + BLOCKSIZE,
-                        (int) (SCRSIZE - (SCRSIZE / 3) + ((i - 5) * fm.getHeight())));
+                             SCRSIZE - (SCRSIZE / 3) + ((i - 5) * fm.getHeight()));
         }
     }
 
@@ -265,11 +246,11 @@ public class Board extends JPanel implements ActionListener {
      * End the game if remaining lives reaches 0.
      */
     public void gameOver() {
-        if (gameType != VERSUS) {
+        if (gt != GameType.VERSUS) {
             if (score > 1)
                 sl.writeScore(score);
         }
-        ingame = false;
+        gt = GameType.INTRO;
         numBoardsCleared = 0;
         Date d = new Date();
         leaderBoardGui.showEndGameScreen(this.score, d);
@@ -280,26 +261,21 @@ public class Board extends JPanel implements ActionListener {
      * Detects when ghosts and pacman collide
      *
      * @param ghosts An array of Ghost
-     * @param pacmen Characters controlled by player
      */
-    public void detectCollision(Character[] ghosts, Character... pacmen) {
+    public void detectCollision(Character[] ghosts)
+    {
         for (Character pacman : pacmen) {
-            if (gameType == VERSUS) {
+            if (gt == GameType.VERSUS) {
                 for (Character ghost : ghosts) {
                     if (pacman.x > (ghost.x - 12) && pacman.x < (ghost.x + 12) &&
-                            pacman.y > (ghost.y - 12) && pacman.y < (ghost.y + 12) &&
-                            ingame) {
+                            pacman.y > (ghost.y - 12) && pacman.y < (ghost.y + 12) && gt != GameType.INTRO)
                         pacman.death();
-                    }
                 }
             } else {
-                for (int i = 0; i < nrofghosts; i++) {
+                for (int i = 0; i < numGhosts; i++) {
                     if (pacman.x > (ghosts[i].x - 12) && pacman.x < (ghosts[i].x + 12) &&
-                            pacman.y > (ghosts[i].y - 12) && pacman.y < (ghosts[i].y + 12) &&
-                            ingame) {
-
+                            pacman.y > (ghosts[i].y - 12) && pacman.y < (ghosts[i].y + 12) && gt != GameType.INTRO)
                         pacman.death();
-                    }
                 }
             }
         }
@@ -309,26 +285,23 @@ public class Board extends JPanel implements ActionListener {
      * Returns true if any pacman is alive, returns false if they
      * are all dead
      *
-     * @param pacmen Any number of characters to check
      * @return true if any surviving, false if all dead
      */
-    public boolean checkAlive(Character... pacmen) {
-        int nAlive = 0;
-        for (Character pacman : pacmen) {
+    public boolean checkAlive()
+    {
+        for (Character pacman : pacmen)
+        {
             if (pacman.alive)
-                nAlive++;
+                return true;
         }
-        if (nAlive == 0)
-            return false;
-        else
-            return true;
+        return false;
     }
 
     /**
      * Initialize game variables
      */
     public void gameInit() {
-        switch (gameType) {
+        switch (gt) {
             case SINGLEPLAYER:
                 pacmen = new Character[1];
                 pacmen[0] = pacman;
@@ -355,8 +328,8 @@ public class Board extends JPanel implements ActionListener {
         grid.levelInit(numBoardsCleared);
         levelContinue();
         score = 0;
-        nrofghosts = 6;
-        currentspeed = 3;
+        numGhosts = 6;
+        curSpeed = 3;
     }
 
     /**
@@ -366,16 +339,14 @@ public class Board extends JPanel implements ActionListener {
         int dx = 1;
         int random;
 
-        for (short i = 0; i < nrofghosts; i++) {
-            random = (int) (Math.random() * (currentspeed + 1));
-            if (random > currentspeed)
-                random = currentspeed;
+        for (short i = 0; i < numGhosts; i++)
+        {
+            random = (int) (Math.random() * curSpeed) + 1;
             ghosts[i] = new Ghost(4 * BLOCKSIZE, 4 * BLOCKSIZE, random);
             ghosts[i].dx = dx;
             dx = -dx;
-            ghosts[i].speed = validspeeds[random];
         }
-        switch (gameType) {
+        switch (gt) {
             case SINGLEPLAYER:
                 pacman.resetPos();
                 break;
@@ -385,11 +356,11 @@ public class Board extends JPanel implements ActionListener {
                 break;
             case VERSUS:
                 pacman.resetPos();
-                for (Character ghost : playerGhosts) {
+                for (Character ghost : playerGhosts)
+                {
                     ghost.resetPos();
-                    if (numBoardsCleared == 3) {
+                    if (numBoardsCleared == 3)
                         ghost.speed = 6;
-                    }
                 }
                 break;
         }
@@ -405,17 +376,33 @@ public class Board extends JPanel implements ActionListener {
 
         Graphics2D g2d = (Graphics2D) g;
 
-        g2d.setColor(Color.black);
-        g2d.fillRect(0, 0, d.width, d.height);
-
         grid.drawMaze(g2d);
         drawScore(g2d);
-        if (ingame)
-            playGame(g2d);
-        else
+        if (gt == GameType.INTRO)
             showIntroScreen(g2d);
+        else //Won't be true if leaderboard is integrted
+            playGame(g2d);
 
-        g.drawImage(ii, 5, 5, this);
+        if(!timer.isRunning())
+        {
+            g.setColor(new Color(0, 32, 48));
+            g.fillRect(50, SCRSIZE / 2 - 50, SCRSIZE - 100, 90);
+            g.setColor(Color.white);
+            g.drawRect(50, SCRSIZE / 2 - 50, SCRSIZE - 100, 90);
+
+            String a = "Game Paused...";
+            String b = "Press 'p' or 'Pause' to continue";
+            Font big = new Font("Helvetica", Font.BOLD, 20);
+            Font small = new Font("Helvetica", Font.BOLD, 12);
+            FontMetrics metr1 = this.getFontMetrics(big);
+            FontMetrics metr2 = this.getFontMetrics(small);
+
+            g.setColor(Color.white);
+            g.setFont(big);
+            g.drawString(a, (SCRSIZE - metr1.stringWidth(a)) / 2, SCRSIZE / 2 - metr1.getHeight() / 2);
+            g.setFont(small);
+            g.drawString(b, (SCRSIZE - metr2.stringWidth(b)) / 2, SCRSIZE / 2 + metr2.getHeight() / 2);
+        }
         Toolkit.getDefaultToolkit().sync();
         g.dispose();
     }
@@ -471,8 +458,57 @@ public class Board extends JPanel implements ActionListener {
 
             int key = e.getKeyCode();
 
-            if (ingame) {
-                switch (gameType) {
+            if (gt == GameType.INTRO)
+            {
+                switch(key)
+                {
+                    case KeyEvent.VK_S:
+                        gt = GameType.SINGLEPLAYER;
+                        gameInit();
+                        break;
+                    case KeyEvent.VK_D:
+                        gt = GameType.COOPERATIVE;
+                        gameInit();
+                        break;
+                    case KeyEvent.VK_F:
+                        gt = GameType.VERSUS;
+                        gameInit();
+                        break;
+                    case KeyEvent.VK_H:
+                        System.out.println("Help Selected");
+                        JFrame helpFrame = new JFrame();
+                        JPanel helpPanel = new JPanel();
+                        JLabel helpLabel = new JLabel("Help");
+
+                        helpLabel.setForeground(Color.white);
+                        helpLabel.setPreferredSize(new Dimension(200, 20));
+                        helpLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+                        JTextArea text = new JTextArea(37, 40);
+                        String instructions = loadHelpFile("instructions.txt");
+                        text.setText(instructions);
+                        text.setLineWrap(true);
+                        text.setWrapStyleWord(true);
+                        text.setCaretPosition(0);
+                        text.setEditable(false);
+
+                        JScrollPane scroller = new JScrollPane(text);
+                        scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+                        scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+                        helpPanel.add(helpLabel);
+                        helpPanel.add(scroller);
+                        helpPanel.setBackground(new Color(0, 32, 48));
+                        helpPanel.setForeground(Color.white);
+                        helpFrame.getContentPane().add(helpPanel);
+                        helpFrame.setSize(550, 700);
+                        helpFrame.setVisible(true);
+                        break;
+                }
+            }
+            else
+            {
+                switch (gt)
+                {
                     case SINGLEPLAYER:
                         pacman.keyPressed(key);
                         break;
@@ -487,58 +523,24 @@ public class Board extends JPanel implements ActionListener {
                         break;
                 }
 
-                if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
-                    ingame = false;
-                    numBoardsCleared = 0;
-                } else if (key == KeyEvent.VK_PAUSE || key == 'p' || key == 'P') {
-                    if (timer.isRunning())
-                        timer.stop();
-                    else timer.start();
-                }
-            } else {
-                if (key == 's' || key == 'S') {
-                    ingame = true;
-                    gameType = SINGLEPLAYER;
-                    gameInit();
-                } else if (key == 'd' || key == 'D') {
-                    ingame = true;
-                    gameType = COOPERATIVE;
-                    gameInit();
-                } else if (key == 'f' || key == 'F') {
-                    ingame = true;
-                    gameType = VERSUS;
-                    gameInit();
-                } else if (key == 'h' || key == 'H') {
-                    System.out.println("Help Selected");
-                    JFrame helpFrame = new JFrame();
-                    JPanel helpPanel = new JPanel();
-                    JLabel helpLabel = new JLabel("Help");
-
-                    helpLabel.setForeground(Color.white);
-                    helpLabel.setPreferredSize(new Dimension(200, 20));
-                    helpLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
-                    JTextArea text = new JTextArea(37, 40);
-                    String instructions = loadHelpFile("instructions.txt");
-                    text.setText(instructions);
-                    text.setLineWrap(true);
-                    text.setWrapStyleWord(true);
-                    text.setCaretPosition(0);
-                    text.setEditable(false);
-
-                    JScrollPane scroller = new JScrollPane(text);
-                    scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-                    scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-                    helpPanel.add(helpLabel);
-                    helpPanel.add(scroller);
-                    helpPanel.setBackground(new Color(0, 32, 48));
-                    helpPanel.setForeground(Color.white);
-                    helpFrame.getContentPane().add(helpPanel);
-                    //helpFrame.setLocationRelativeTo(null);
-                    helpFrame.setSize(550, 700);
-                    helpFrame.setVisible(true);
-
-
+                switch(key)
+                {
+                    case KeyEvent.VK_PAUSE:case KeyEvent.VK_P:
+                        if (timer.isRunning())
+                        {
+                            timer.stop();
+                            repaint();
+                        }
+                        else
+                            timer.start();
+                        break;
+                    case KeyEvent.VK_ESCAPE:
+                        if(timer.isRunning())
+                        {
+                            gt = GameType.INTRO;
+                            numBoardsCleared = 0;
+                        }
+                        break;
                 }
             }
         }
