@@ -29,10 +29,7 @@ public class PacPlayer extends Character {
     // he keeps facing wall instead of facing default position
     public int viewdx, viewdy;
 
-    private Image pacman1up, pacman1left, pacman1right, pacman1down,
-            pacman2up, pacman2left, pacman2right, pacman2down,
-            pacman3up, pacman3down, pacman3left, pacman3right, pacman4up,
-            pacman4down, pacman4left, pacman4right;
+    private Image[] pacmanUp, pacmanDown, pacmanLeft, pacmanRight;
 
     /**
      * Constructor for PacPlayer class
@@ -146,105 +143,13 @@ public class PacPlayer extends Character {
         if (deathTimer % 5 > 3) return; // Flicker while invincibile
         doAnim();
         if (viewdx == -1)
-            drawPacManLeft(g2d, canvas);
+            g2d.drawImage(pacmanLeft[pacmananimpos], x + 4, y + 4, canvas);
         else if (viewdx == 1)
-            drawPacManRight(g2d, canvas);
+            g2d.drawImage(pacmanRight[pacmananimpos], x + 4, y + 4, canvas);
         else if (viewdy == -1)
-            drawPacManUp(g2d, canvas);
+            g2d.drawImage(pacmanUp[pacmananimpos], x + 4, y + 4, canvas);
         else
-            drawPacManDown(g2d, canvas);
-    }
-
-    /**
-     * Draws Pacman facing up
-     *
-     * @param g2d    a Graphics2D object
-     * @param canvas A JComponent object to be drawn on
-     */
-    public void drawPacManUp(Graphics2D g2d, JComponent canvas) {
-        switch (pacmananimpos) {
-            case 1:
-                g2d.drawImage(pacman2up, x + 4, y + 4, canvas);
-                break;
-            case 2:
-                g2d.drawImage(pacman3up, x + 4, y + 4, canvas);
-                break;
-            case 3:
-                g2d.drawImage(pacman4up, x + 4, y + 4, canvas);
-                break;
-            default:
-                g2d.drawImage(pacman1up, x + 4, y + 4, canvas);
-                break;
-        }
-    }
-
-    /**
-     * Draws Pacman facing down
-     *
-     * @param g2d    a Graphics2D object
-     * @param canvas A JComponent object to be drawn on
-     */
-    public void drawPacManDown(Graphics2D g2d, JComponent canvas) {
-        switch (pacmananimpos) {
-            case 1:
-                g2d.drawImage(pacman2down, x + 4, y + 4, canvas);
-                break;
-            case 2:
-                g2d.drawImage(pacman3down, x + 4, y + 4, canvas);
-                break;
-            case 3:
-                g2d.drawImage(pacman4down, x + 4, y + 4, canvas);
-                break;
-            default:
-                g2d.drawImage(pacman1down, x + 4, y + 4, canvas);
-                break;
-        }
-    }
-
-    /**
-     * Draws Pacman facing left
-     *
-     * @param g2d    a Graphics2D object
-     * @param canvas A JComponent object to be drawn on
-     */
-    public void drawPacManLeft(Graphics2D g2d, JComponent canvas) {
-        switch (pacmananimpos) {
-            case 1:
-                g2d.drawImage(pacman2left, x + 4, y + 4, canvas);
-                break;
-            case 2:
-                g2d.drawImage(pacman3left, x + 4, y + 4, canvas);
-                break;
-            case 3:
-                g2d.drawImage(pacman4left, x + 4, y + 4, canvas);
-                break;
-            default:
-                g2d.drawImage(pacman1left, x + 4, y + 4, canvas);
-                break;
-        }
-    }
-
-    /**
-     * Draws Pacman facing right
-     *
-     * @param g2d    a Graphics2D object
-     * @param canvas A JComponent object to be drawn on
-     */
-    public void drawPacManRight(Graphics2D g2d, JComponent canvas) {
-        switch (pacmananimpos) {
-            case 1:
-                g2d.drawImage(pacman2right, x + 4, y + 4, canvas);
-                break;
-            case 2:
-                g2d.drawImage(pacman3right, x + 4, y + 4, canvas);
-                break;
-            case 3:
-                g2d.drawImage(pacman4right, x + 4, y + 4, canvas);
-                break;
-            default:
-                g2d.drawImage(pacman1right, x + 4, y + 4, canvas);
-                break;
-        }
+            g2d.drawImage(pacmanDown[pacmananimpos], x + 4, y + 4, canvas);
     }
 
     /**
@@ -324,24 +229,30 @@ public class PacPlayer extends Character {
      * Load game sprites from images folder
      */
     @Override
-    public void loadImages() {
+    public void loadImages()
+    {
+        pacmanUp = new Image[4];
+        pacmanDown = new Image[4];
+        pacmanLeft = new Image[4];
+        pacmanRight = new Image[4];
+
         try {
-            pacman1up = ImageIO.read(getClass().getResource(assetPath + "pacmanup.png"));
-            pacman2up = ImageIO.read(getClass().getResource(assetPath + "up1.png"));
-            pacman3up = ImageIO.read(getClass().getResource(assetPath + "up2.png"));
-            pacman4up = ImageIO.read(getClass().getResource(assetPath + "up3.png"));
-            pacman1down = ImageIO.read(getClass().getResource(assetPath + "pacmandown.png"));
-            pacman2down = ImageIO.read(getClass().getResource(assetPath + "down1.png"));
-            pacman3down = ImageIO.read(getClass().getResource(assetPath + "down2.png"));
-            pacman4down = ImageIO.read(getClass().getResource(assetPath + "down3.png"));
-            pacman1left = ImageIO.read(getClass().getResource(assetPath + "pacmanleft.png"));
-            pacman2left = ImageIO.read(getClass().getResource(assetPath + "left1.png"));
-            pacman3left = ImageIO.read(getClass().getResource(assetPath + "left2.png"));
-            pacman4left = ImageIO.read(getClass().getResource(assetPath + "left3.png"));
-            pacman1right = ImageIO.read(getClass().getResource(assetPath + "pacmanright.png"));
-            pacman2right = ImageIO.read(getClass().getResource(assetPath + "right1.png"));
-            pacman3right = ImageIO.read(getClass().getResource(assetPath + "right2.png"));
-            pacman4right = ImageIO.read(getClass().getResource(assetPath + "right3.png"));
+            pacmanUp[0] = ImageIO.read(getClass().getResource(assetPath + "pacmanup.png"));
+            pacmanUp[1] = ImageIO.read(getClass().getResource(assetPath + "up1.png"));
+            pacmanUp[2] = ImageIO.read(getClass().getResource(assetPath + "up2.png"));
+            pacmanUp[3] = ImageIO.read(getClass().getResource(assetPath + "up3.png"));
+            pacmanDown[0] = ImageIO.read(getClass().getResource(assetPath + "pacmandown.png"));
+            pacmanDown[1] = ImageIO.read(getClass().getResource(assetPath + "down1.png"));
+            pacmanDown[2] = ImageIO.read(getClass().getResource(assetPath + "down2.png"));
+            pacmanDown[3] = ImageIO.read(getClass().getResource(assetPath + "down3.png"));
+            pacmanLeft[0] = ImageIO.read(getClass().getResource(assetPath + "pacmanleft.png"));
+            pacmanLeft[1] = ImageIO.read(getClass().getResource(assetPath + "left1.png"));
+            pacmanLeft[2] = ImageIO.read(getClass().getResource(assetPath + "left2.png"));
+            pacmanLeft[3] = ImageIO.read(getClass().getResource(assetPath + "left3.png"));
+            pacmanRight[0] = ImageIO.read(getClass().getResource(assetPath + "pacmanright.png"));
+            pacmanRight[1] = ImageIO.read(getClass().getResource(assetPath + "right1.png"));
+            pacmanRight[2] = ImageIO.read(getClass().getResource(assetPath + "right2.png"));
+            pacmanRight[3] = ImageIO.read(getClass().getResource(assetPath + "right3.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -354,6 +265,6 @@ public class PacPlayer extends Character {
      */
     @Override
     public Image getLifeImage() {
-        return pacman3left;
+        return pacmanLeft[3];
     }
 }
