@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
@@ -198,28 +199,23 @@ public class Ghost extends Character {
             }
         }
 
-        if(count > 0)
+        if(count > 0 && hasChoice(grid))
         {
-            //Makes sure ghost is in a grid and not in movement
-            if (this.x % Board.BLOCKSIZE == 0 && this.y % Board.BLOCKSIZE == 0)
+            Node bestDir = pathFind(grid, coord[0][0] / Board.BLOCKSIZE, coord[0][1] / Board.BLOCKSIZE);
+            Node tempDir;
+            for (int i = 1; i < count; i++) //Loop through each pacman
             {
-                //TODO: dont run pathfinding unless ghost has decision to make (at an intersection)
-                Node bestDir = pathFind(grid, coord[0][0] / Board.BLOCKSIZE, coord[0][1] / Board.BLOCKSIZE);
-                Node tempDir;
-                for(int i = 1; i < count; i++) //Loop through each pacman
-                {
-                    tempDir = pathFind(grid, coord[i][0] / Board.BLOCKSIZE, coord[i][1] / Board.BLOCKSIZE);
-                    if(tempDir.distance.value < bestDir.distance.value) //If new path is shorter
-                        bestDir = tempDir;
-                }
+                tempDir = pathFind(grid, coord[i][0] / Board.BLOCKSIZE, coord[i][1] / Board.BLOCKSIZE);
+                if (tempDir.distance.value < bestDir.distance.value) //If new path is shorter
+                    bestDir = tempDir;
+            }
 
-                if (bestDir.x - this.x / Board.BLOCKSIZE == 0 && bestDir.y - this.y / Board.BLOCKSIZE == 0) //ghost on pacman
-                    moveRandom(grid);
-                else
-                {
-                    dx = bestDir.x - this.x / Board.BLOCKSIZE;
-                    dy = bestDir.y - this.y / Board.BLOCKSIZE;
-                }
+            if (bestDir.x - this.x / Board.BLOCKSIZE == 0 && bestDir.y - this.y / Board.BLOCKSIZE == 0) //ghost on pacman
+                moveRandom(grid);
+            else
+            {
+                dx = bestDir.x - this.x / Board.BLOCKSIZE;
+                dy = bestDir.y - this.y / Board.BLOCKSIZE;
             }
         }
         else
@@ -304,55 +300,54 @@ public class Ghost extends Character {
      */
     public void moveRandom(Grid grid)
     {
-        int[][] d;
-        int count;
-
         //Makes sure ghost is in a grid and not in movement
-        if (this.x % Board.BLOCKSIZE == 0 && this.y % Board.BLOCKSIZE == 0) {
-            d = moveList(grid);
-            count = d[0][0];
+        if (this.x % Board.BLOCKSIZE == 0 && this.y % Board.BLOCKSIZE == 0)
+        {
+            ArrayList<Point> list = moveList(grid);
 
             //randomly pick an available move
-            count = (int) (Math.random() * count) + 1;
-            this.dx = d[count][0];
-            this.dy = d[count][1];
+            int rand = (int) (Math.random() * list.size());
+            this.dx = list.get(rand).x;
+            this.dy = list.get(rand).y;
         }
     }
 
     /**
-     * Returns a list of possible movements
-     * moves[0][0] is the number of available moves
+     * Returns an ArrayList of possible movements
      *
      * @param grid
      */
-    private int[][] moveList(Grid grid)
+    private ArrayList<Point> moveList(Grid grid)
     {
-        int[][] moves = new int[5][2];
-        int count = 1;
+        ArrayList<Point> moves = new ArrayList<>();
         int block = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
 
-        // following block of code randomizes movement (randomizes dx[] and dy[])
         // First condition prevents checks collision with wall
         // Second condition prevents switching direction abruptly (left -> right) (up -> down)
-        if ((block & 1) == 0 && this.dx != 1) {
-            moves[count][0] = -1;
-            count++;
-        }
-        if ((block & 2) == 0 && this.dy != 1) {
-            moves[count][1] = -1;
-            count++;
-        }
-        if ((block & 4) == 0 && this.dx != -1) {
-            moves[count][0] = 1;
-            count++;
-        }
-        if ((block & 8) == 0 && this.dy != -1) {
-            moves[count][1] = 1;
-            count++;
-        }
-
-        moves[0][0] = count - 1;
+        if ((block & 1) == 0 && this.dx != 1)
+            moves.add(new Point(-1, 0));
+        if ((block & 2) == 0 && this.dy != 1)
+            moves.add(new Point(0, -1));
+        if ((block & 4) == 0 && this.dx != -1)
+            moves.add(new Point(1, 0));
+        if ((block & 8) == 0 && this.dy != -1)
+            moves.add(new Point(0, 1));
 
         return moves;
+    }
+
+    private boolean hasChoice(Grid grid)
+    {
+        if (this.x % Board.BLOCKSIZE == 0 && this.y % Board.BLOCKSIZE == 0)
+        {
+            int block = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
+            int count = (block & 1) == 0 && this.dx != 1 ? 1 : 0;
+            count += (block & 2) == 0 && this.dy != 1 ? 1 : 0;
+            count += (block & 4) == 0 && this.dx != -1 ? 1 : 0;
+            count += (block & 8) == 0 && this.dy != -1 ? 1 : 0;
+            if(count > 1)
+                return true;
+        }
+        return false;
     }
 }
