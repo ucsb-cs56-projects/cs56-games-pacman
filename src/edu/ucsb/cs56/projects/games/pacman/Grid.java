@@ -321,7 +321,7 @@ public class Grid
 
                 g2d.setColor(fruitColor);
                 if ((screenData[i][j] & 32) != 0) // draws fruit
-                    g2d.fillRect(x + 11, y + 11, 2, 2);
+                    g2d.fillRect(x + 10, y + 10, 4, 4);
             }
         }
     }

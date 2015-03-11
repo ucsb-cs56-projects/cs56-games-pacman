@@ -31,7 +31,7 @@ import java.util.Date;
 public class Board extends JPanel implements ActionListener
 {
     enum GameType {
-        INTRO, SINGLEPLAYER, COOPERATIVE, VERSUS, LEADERBOARD
+        INTRO, HELP, SINGLEPLAYER, COOPERATIVE, VERSUS, LEADERBOARD
     }
 
     public static final int BLOCKSIZE = 24;
@@ -164,9 +164,9 @@ public class Board extends JPanel implements ActionListener
     /**
      * Draw a message box with the text "Press s to start." in the center of the screen
      *
-     * @param g a Graphics2D object
+     * @param g a Graphics object
      */
-    public void showIntroScreen(Graphics2D g) {
+    public void showIntroScreen(Graphics g) {
         g.setColor(new Color(0, 32, 48));
         g.fillRect(50, SCRSIZE / 2 - 50, SCRSIZE - 100, 90);
         g.setColor(Color.white);
@@ -189,11 +189,100 @@ public class Board extends JPanel implements ActionListener
     }
 
     /**
+     * Draw a message box telling the player the game is paused
+     * Also tells player to press 'p' to continue the game
+     *
+     * @param g a Graphics object
+     */
+    public void showPauseScreen(Graphics g)
+    {
+        g.setColor(new Color(0, 32, 48));
+        g.fillRect(50, SCRSIZE / 2 - 50, SCRSIZE - 100, 90);
+        g.setColor(Color.white);
+        g.drawRect(50, SCRSIZE / 2 - 50, SCRSIZE - 100, 90);
+
+        String a = "Game Paused...";
+        String b = "Press 'p' or 'Pause' to continue";
+        Font big = new Font("Helvetica", Font.BOLD, 20);
+        Font small = new Font("Helvetica", Font.BOLD, 12);
+        FontMetrics metr1 = this.getFontMetrics(big);
+        FontMetrics metr2 = this.getFontMetrics(small);
+
+        g.setColor(Color.white);
+        g.setFont(big);
+        g.drawString(a, (SCRSIZE - metr1.stringWidth(a)) / 2, SCRSIZE / 2 - metr1.getHeight() / 2);
+        g.setFont(small);
+        g.drawString(b, (SCRSIZE - metr2.stringWidth(b)) / 2, SCRSIZE / 2 + metr2.getHeight() / 2);
+    }
+
+    /**
+     * Shows help
+     *
+     * @param g a Graphics object
+     */
+    public void showHelpScreen(Graphics g)
+    {
+        g.setColor(new Color(0, 32, 48));
+        g.fillRect(10, 10, SCRSIZE - 15, SCRSIZE - 15);
+        g.setColor(Color.white);
+        g.drawRect(10, 10, SCRSIZE - 15, SCRSIZE - 15);
+
+        int bx = 25, by = 60;
+
+        String a = "Help";
+
+        Font big = new Font("Helvetica", Font.BOLD, 18);
+        Font medium = new Font("Helvetica", Font.BOLD, 14);
+        Font small = new Font("Helvetica", Font.PLAIN, 12);
+        FontMetrics metr1 = this.getFontMetrics(big);
+
+        g.setColor(Color.white);
+        g.setFont(big);
+        g.drawString(a, (SCRSIZE - metr1.stringWidth(a)) / 2, 40);
+        g.setFont(medium);
+        g.drawString("Title Screen", bx, by);
+        g.drawString("In Game", bx + 200, by);
+        g.drawString("Controls", bx, by + 90);
+        g.setFont(small);
+        g.drawString("S - Start Single Player", bx + 10, by + 20);
+        g.drawString("D - Start Co-op", bx + 10, by + 40);
+        g.drawString("F - Start Versus", bx + 10, by + 60);
+        g.drawString("Esc - Quit Game", bx + 210, by + 20);
+        g.drawString("P - Pause Game", bx + 210, by + 40);
+
+        g.drawString("Pacman:", bx + 10, by + 110);
+        g.drawString("Up Arrow - Move Up", bx + 30, by + 130);
+        g.drawString("Left Arrow - Move Left", bx + 30, by + 150);
+        g.drawString("Down Arrow - Move Down", bx + 30, by + 170);
+        g.drawString("Right Arrow - Move Right", bx + 30, by + 190);
+
+        g.drawString("Mrs. Pacman:", bx + 220, by + 110);
+        g.drawString("W - Move Up", bx + 240, by + 130);
+        g.drawString("A - Move Left", bx + 240, by + 150);
+        g.drawString("S - Move Down", bx + 240, by + 170);
+        g.drawString("D - Move Right", bx + 240, by + 190);
+
+        g.drawString("Ghost 1", bx + 10, by + 220);
+        g.drawString("W - Move Up", bx + 30, by + 240);
+        g.drawString("A - Move Left", bx + 30, by + 260);
+        g.drawString("S - Move Down", bx + 30, by + 280);
+        g.drawString("D - Move Right", bx + 30, by + 300);
+
+        g.drawString("Ghost 2", bx + 170, by + 220);
+        g.drawString("Numpad 8 - Move Up", bx + 190, by + 240);
+        g.drawString("Numpad 4 - Move Left", bx + 190, by + 260);
+        g.drawString("Numpad 5 - Move Down", bx + 190, by + 280);
+        g.drawString("Numpad 6 - Move Right", bx + 190, by + 300);
+
+        g.drawString("Press 'h' to return...", bx + 245, by + 330);
+    }
+
+    /**
      * Display the current score on the bottom right of the screen
      *
      * @param g a Graphics object
      */
-    public void drawScore(Graphics2D g) {
+    public void drawScore(Graphics g) {
         int i;
         int pelletsLeft;
         String s;
@@ -222,9 +311,9 @@ public class Board extends JPanel implements ActionListener
     /**
      * Displays a list of scores on the bottom of the screen
      *
-     * @param g a Graphics2D object
+     * @param g a Graphics object
      */
-    public void drawHighScores(Graphics2D g)
+    public void drawHighScores(Graphics g)
     {
         ArrayList<Integer> scores = sl.loadScores();
         g.setFont(smallFont);
@@ -272,13 +361,13 @@ public class Board extends JPanel implements ActionListener
             if (gt == GameType.VERSUS) {
                 for (Character ghost : ghosts) {
                     if (pacman.x > (ghost.x - 12) && pacman.x < (ghost.x + 12) &&
-                            pacman.y > (ghost.y - 12) && pacman.y < (ghost.y + 12) && gt != GameType.INTRO)
+                            pacman.y > (ghost.y - 12) && pacman.y < (ghost.y + 12))// && gt != GameType.INTRO)
                         pacman.death();
                 }
             } else {
                 for (int i = 0; i < numGhosts; i++) {
                     if (pacman.x > (ghosts[i].x - 12) && pacman.x < (ghosts[i].x + 12) &&
-                            pacman.y > (ghosts[i].y - 12) && pacman.y < (ghosts[i].y + 12) && gt != GameType.INTRO)
+                            pacman.y > (ghosts[i].y - 12) && pacman.y < (ghosts[i].y + 12))// && gt != GameType.INTRO)
                         pacman.death();
                 }
             }
@@ -381,51 +470,24 @@ public class Board extends JPanel implements ActionListener
         Graphics2D g2d = (Graphics2D) g;
 
         grid.drawMaze(g2d);
-        drawScore(g2d);
-        if (gt == GameType.INTRO)
-            showIntroScreen(g2d);
-        else //Won't be true if leaderboard is integrted
-            playGame(g2d);
+        drawScore(g);
+        switch(gt)
+        {
+            case INTRO:
+                showIntroScreen(g);
+                break;
+            case HELP:
+                showHelpScreen(g);
+                break;
+            default:
+                playGame(g2d);
+        }
 
         if(!timer.isRunning())
-        {
-            g.setColor(new Color(0, 32, 48));
-            g.fillRect(50, SCRSIZE / 2 - 50, SCRSIZE - 100, 90);
-            g.setColor(Color.white);
-            g.drawRect(50, SCRSIZE / 2 - 50, SCRSIZE - 100, 90);
+            showPauseScreen(g);
 
-            String a = "Game Paused...";
-            String b = "Press 'p' or 'Pause' to continue";
-            Font big = new Font("Helvetica", Font.BOLD, 20);
-            Font small = new Font("Helvetica", Font.BOLD, 12);
-            FontMetrics metr1 = this.getFontMetrics(big);
-            FontMetrics metr2 = this.getFontMetrics(small);
-
-            g.setColor(Color.white);
-            g.setFont(big);
-            g.drawString(a, (SCRSIZE - metr1.stringWidth(a)) / 2, SCRSIZE / 2 - metr1.getHeight() / 2);
-            g.setFont(small);
-            g.drawString(b, (SCRSIZE - metr2.stringWidth(b)) / 2, SCRSIZE / 2 + metr2.getHeight() / 2);
-        }
         Toolkit.getDefaultToolkit().sync();
         g.dispose();
-    }
-
-    public String loadHelpFile(String filename) {
-        String input = "";
-        try {
-            FileReader reader = new FileReader(filename);
-            BufferedReader bufferedreader = new BufferedReader(reader);
-
-            String textReader = bufferedreader.readLine();
-            while (textReader != null) {
-                input += "\n" + textReader;
-                textReader = bufferedreader.readLine();
-            }
-        } catch (IOException ex) {
-            System.out.println("Error: Could not load help file");
-        }
-        return input;
     }
 
     /**
@@ -479,33 +541,16 @@ public class Board extends JPanel implements ActionListener
                         gameInit();
                         break;
                     case KeyEvent.VK_H:
-                        System.out.println("Help Selected");
-                        JFrame helpFrame = new JFrame();
-                        JPanel helpPanel = new JPanel();
-                        JLabel helpLabel = new JLabel("Help");
-
-                        helpLabel.setForeground(Color.white);
-                        helpLabel.setPreferredSize(new Dimension(200, 20));
-                        helpLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
-                        JTextArea text = new JTextArea(37, 40);
-                        String instructions = loadHelpFile("instructions.txt");
-                        text.setText(instructions);
-                        text.setLineWrap(true);
-                        text.setWrapStyleWord(true);
-                        text.setCaretPosition(0);
-                        text.setEditable(false);
-
-                        JScrollPane scroller = new JScrollPane(text);
-                        scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-                        scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-                        helpPanel.add(helpLabel);
-                        helpPanel.add(scroller);
-                        helpPanel.setBackground(new Color(0, 32, 48));
-                        helpPanel.setForeground(Color.white);
-                        helpFrame.getContentPane().add(helpPanel);
-                        helpFrame.setSize(550, 700);
-                        helpFrame.setVisible(true);
+                        gt = GameType.HELP;
+                        break;
+                }
+            }
+            else if(gt == GameType.HELP)
+            {
+                switch(key)
+                {
+                    case KeyEvent.VK_H:
+                        gt = GameType.INTRO;
                         break;
                 }
             }
@@ -549,5 +594,4 @@ public class Board extends JPanel implements ActionListener
             }
         }
     }
-
 }
