@@ -144,7 +144,7 @@ public class Grid
     public boolean checkMaze() {
         for (int i = 0; i < Board.NUMBLOCKS; i++) {
             for (int j = 0; j < Board.NUMBLOCKS; j++) {
-                if ((screenData[i][j] & 48) != 0)
+                if ((screenData[i][j] & 16) != 0)
                     return false;
             }
         }
@@ -187,12 +187,38 @@ public class Grid
     }
 
 
+    /* Better Implementation Idea
+    You could have an ArrayList that holds Point Objects of
+    locations that the Pacman has eaten pellets.
+    - Create ArrayList<Point> in Grid.java & initialize
+    - Add new Point every time Pacman eats pellet/fruit in PacPlayer.java
+
+    When it is time to spawn a fruit, choose a random Point from this
+    ArrayList (int) (Math.random() * list.size()), then remove the point
+    where you spawned the fruit.
+
+    When a level is complete, make sure you clear this ArrayList using
+    list.clear()
+
+    **If you want to fix this too, you can try:
+    To prevent the fruit from spawning on Pacman, just cross-check
+    that the spawning location != any of the Pacman location
+    (use a loop on pacmen array for this so you handle multi-player mode)
+
+    I think without having a defined search space, and just searching
+    randomly, you cannot easily fix the bug where the program is looking
+    forever to find an open space.  That's why having this list of possible
+    spaces is the best way I can think of.
+     */
+
     public void randomBlock(){
         this.x = (int) (Math.random() * Board.NUMBLOCKS);
         this.y = (int) (Math.random() * Board.NUMBLOCKS);
     }
     /**
      * Increment fruit as the pacman is alive
+     *
+     * @param numBoardsCleared number of levels cleared
      */
     public void incrementFruit(int numBoardsCleared) {
         if (fruitCounter > 20) {

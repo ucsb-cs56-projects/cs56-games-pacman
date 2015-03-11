@@ -99,7 +99,6 @@ public class Board extends JPanel implements ActionListener
         {
             if (pacman.alive)
             {
-                grid.incrementFruit(numBoardsCleared);
                 pacman.move(grid);
                 pacman.draw(g2d, this);
             }
@@ -111,6 +110,8 @@ public class Board extends JPanel implements ActionListener
                         ghosts[i].moveAI(grid, pacmen);
                         ghosts[i].draw(g2d, this);
                     }
+                    //increment in here so you don't in versus mode
+                    grid.incrementFruit(numBoardsCleared);
                     detectCollision(ghosts);
                     break;
                 case COOPERATIVE:
@@ -124,6 +125,8 @@ public class Board extends JPanel implements ActionListener
                         ghosts[i].moveAI(grid, pacmen);
                         ghosts[i].draw(g2d, this);
                     }
+                    //increment in here so you don't in versus mode
+                    grid.incrementFruit(numBoardsCleared);
                     detectCollision(ghosts);
                     break;
                 case VERSUS:

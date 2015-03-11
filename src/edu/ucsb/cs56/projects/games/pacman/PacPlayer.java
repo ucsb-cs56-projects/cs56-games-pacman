@@ -104,17 +104,15 @@ public class PacPlayer extends Character {
 
             //if pellet, eat and increase score
             if ((ch & 16) != 0) {
-                //THIS WILL NOT WORK IF OTHER BITS ARE IMPORTANT TOO
-                //IT REMOVES ALL OTHER BITS BESIDES 4 LSB
-                grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch & 15);
+                //Toggles pellet bit
+                grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 16);
                 Board.score++;
             }
 
             //if fruit, eat and increase score
             if ((ch & 32) != 0) {
-                //THIS WILL NOT WORK IF OTHER BITS ARE IMPORTANT TOO
-                //IT REMOVES ALL OTHER BITS BESIDES 4 LSB
-                grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch & 15);
+                //Toggles fruit bit
+                grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 32);
                 Board.score+=10;
             }
 
