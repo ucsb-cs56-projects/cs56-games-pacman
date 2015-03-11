@@ -110,7 +110,13 @@ public class PacPlayer extends Character {
                 Board.score++;
             }
 
-            //TODO: implement fruits here.  Very easy just like pellet
+            //if fruit, eat and increase score
+            if ((ch & 32) != 0) {
+                //THIS WILL NOT WORK IF OTHER BITS ARE IMPORTANT TOO
+                //IT REMOVES ALL OTHER BITS BESIDES 4 LSB
+                grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch & 15);
+                Board.score+=10;
+            }
 
             //passes key commands to movement
             if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) ||

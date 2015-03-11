@@ -240,8 +240,8 @@ public class Ghost extends Character {
         Node current = null, temp;
         int block;
 
-        PriorityQueue<Node> opened = new PriorityQueue<>();
-        HashSet<Node> closed = new HashSet<>();
+        PriorityQueue<Node> opened = new PriorityQueue<Node>();
+        HashSet<Node> closed = new HashSet<Node>();
 
         temp = new Node(this.x / Board.BLOCKSIZE, this.y / Board.BLOCKSIZE, 0); //current location of ghost
         temp.init();
@@ -319,7 +319,7 @@ public class Ghost extends Character {
      */
     private ArrayList<Point> moveList(Grid grid)
     {
-        ArrayList<Point> moves = new ArrayList<>();
+        ArrayList<Point> moves = new ArrayList<Point>();
         int block = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
 
         // First condition prevents checks collision with wall

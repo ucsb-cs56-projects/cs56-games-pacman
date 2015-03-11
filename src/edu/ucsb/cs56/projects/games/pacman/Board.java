@@ -99,6 +99,7 @@ public class Board extends JPanel implements ActionListener
         {
             if (pacman.alive)
             {
+                grid.incrementFruit(numBoardsCleared);
                 pacman.move(grid);
                 pacman.draw(g2d, this);
             }

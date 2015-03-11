@@ -12,6 +12,10 @@ import java.util.Arrays;
 
 public class Grid
 {
+    public int fruitCounter = 0;
+    public int x;
+    public int y;
+
     /*
      check this link to implement the ghost AI movement at intersection.
      Revise the level 1 data to classic pacman for intersection detection
@@ -119,7 +123,7 @@ public class Grid
     };
 
     short[][] screenData;
-    Color mazeColor, dotColor;
+    Color mazeColor, dotColor, fruitColor;
 
     /**
      * Constructor for Board object
@@ -128,6 +132,7 @@ public class Grid
         screenData = new short[Board.NUMBLOCKS][Board.NUMBLOCKS];
         mazeColor = new Color(5, 100, 5);
         dotColor = new Color(192, 192, 0);
+        fruitColor = new Color(255,0,0);
     }
 
     /**
@@ -181,6 +186,74 @@ public class Grid
         }
     }
 
+
+    public void randomBlock(){
+        this.x = (int) (Math.random() * Board.NUMBLOCKS);
+        this.y = (int) (Math.random() * Board.NUMBLOCKS);
+    }
+    /**
+     * Increment fruit as the pacman is alive
+     */
+    public void incrementFruit(int numBoardsCleared) {
+        if (fruitCounter > 20) {
+            fruitCounter = 0;
+            this.randomBlock();
+            if (numBoardsCleared % 3 == 0) {
+                while (true) {
+                    {
+                        if (((screenData[this.x][this.y] & 16) == 0) && (leveldata1[this.x][this.y] & 16) != 0) {
+                            screenData[this.x][this.y] = (short) (screenData[this.x][this.y] | 32);
+                            break;
+                        }
+                        this.randomBlock();
+                    }
+                }
+            } else if (numBoardsCleared % 3 == 1)
+                while (true) {
+                    {
+                        if (((screenData[this.x][this.y] & 16) == 0) && (leveldata2[this.x][this.y] & 16) != 0) {
+                            screenData[this.x][this.y] = (short) (screenData[this.x][this.y] | 32);
+                            break;
+                        }
+                        this.randomBlock();
+                    }
+                }
+            else if (numBoardsCleared % 3 == 2)
+                while (true) {
+                    {
+                        if (((screenData[this.x][this.y] & 16) == 0) && (leveldata3[this.x][this.y] & 16) != 0) {
+                            screenData[this.x][this.y] = (short) (screenData[this.x][this.y] | 32);
+                            break;
+                        }
+                        this.randomBlock();
+                    }
+                }
+            else if (numBoardsCleared % 3 == 3)
+                while (true) {
+                    {
+                        if (((screenData[this.x][this.y] & 16) == 0) && (leveldata4[this.x][this.y] & 16) != 0) {
+                            screenData[this.x][this.y] = (short) (screenData[this.x][this.y] | 32);
+                            break;
+                        }
+                        this.randomBlock();
+                    }
+                }
+            else if (numBoardsCleared % 3 == 4)
+                while (true) {
+                    {
+                        if (((screenData[this.x][this.y] & 16) == 0) && (leveldata5[this.x][this.y] & 16) != 0) {
+                                screenData[this.x][this.y] = (short) (screenData[this.x][this.y] | 32);
+                                break;
+                            }
+                        this.randomBlock();
+                    }
+                }
+            }
+        else
+            fruitCounter++;
+        }
+
+
     /**
      * Draws the maze that serves as a playing field.
      *
@@ -203,7 +276,8 @@ public class Grid
                 bit 1 not 0 -> draw top
                 bit 2 not 0 -> draw right
                 bit 3 not 0 -> draw bottom
-                bit 4 not 0 -> draw point
+                bit 4 not 0 -> draw pellet
+                bit 5 not 0 -> draw fruit
                  */
 
                 if ((screenData[i][j] & 1) != 0) // draws left
@@ -216,7 +290,11 @@ public class Grid
                     g2d.drawLine(x, y + Board.BLOCKSIZE - 1, x + Board.BLOCKSIZE - 1, y + Board.BLOCKSIZE - 1);
 
                 g2d.setColor(dotColor);
-                if ((screenData[i][j] & 16) != 0) // draws point
+                if ((screenData[i][j] & 16) != 0) // draws pellet
+                    g2d.fillRect(x + 11, y + 11, 2, 2);
+
+                g2d.setColor(fruitColor);
+                if ((screenData[i][j] & 32) != 0) // draws fruit
                     g2d.fillRect(x + 11, y + 11, 2, 2);
             }
         }
