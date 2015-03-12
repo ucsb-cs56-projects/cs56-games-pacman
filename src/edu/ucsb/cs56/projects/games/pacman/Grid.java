@@ -274,10 +274,10 @@ public class Grid
                         this.randomBlock();
                     }
                 }
-            }
+        }
         else
             fruitCounter++;
-        }
+    }
 
 
     /**
@@ -285,9 +285,9 @@ public class Grid
      *
      * @param g2d a Graphics2D object
      */
-    public void drawMaze(Graphics2D g2d) {
+    public void drawMaze(Graphics2D g2d)
+    {
         int x, y;
-
         g2d.setStroke(new BasicStroke(2));
         for (int i = 0; i < Board.NUMBLOCKS; i++) {
             for (int j = 0; j < Board.NUMBLOCKS; j++) {

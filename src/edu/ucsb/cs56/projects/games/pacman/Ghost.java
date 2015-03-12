@@ -191,7 +191,7 @@ public class Ghost extends Character {
         for(Character p : c)
         {
             double distance = Math.sqrt(Math.pow(this.x - p.x, 2.0) + Math.pow(this.y - p.y, 2.0));
-            if(p.alive && distance < 100.0)// && Math.random() < 0.6)
+            if(p.alive && distance < 150.0)// && Math.random() < 0.6)
             {
                 coord[count][0] = p.x;
                 coord[count][1] = p.y;

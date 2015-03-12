@@ -6,9 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -48,9 +45,10 @@ public class Board extends JPanel implements ActionListener
     private Grid grid;
     private Font smallFont = new Font("Helvetica", Font.BOLD, 14);
     private GameType gt;
-    private Character pacman, msPacman, ghost1, ghost2;
-    private Character[] pacmen, playerGhosts;
-    private Ghost[] ghosts;
+    private PacPlayer pacman, msPacman;
+    private Ghost ghost1, ghost2;
+    private Character[] pacmen;
+    private ArrayList<Ghost> ghosts;
     private int numGhosts = 6, numBoardsCleared = 0;
     private int curSpeed = 3;
     private int numPellet;
@@ -70,7 +68,7 @@ public class Board extends JPanel implements ActionListener
 
         setBackground(Color.black);
         setDoubleBuffered(true);
-        ghosts = new Ghost[MAX_GHOSTS];
+        ghosts = new ArrayList<Ghost>();
         timer = new Timer(40, this);
         timer.start();
     }
@@ -78,11 +76,11 @@ public class Board extends JPanel implements ActionListener
     /**
      * Called by the system
      */
-    public void addNotify() {
+    public void addNotify()
+    {
         super.addNotify();
         gt = GameType.INTRO;
-        gameInit();
-        numPellet = grid.getPelletNum();
+        grid.levelInit(0);
     }
 
     /**
@@ -105,10 +103,10 @@ public class Board extends JPanel implements ActionListener
             switch (gt)
             {
                 case SINGLEPLAYER:
-                    for (int i = 0; i < numGhosts; i++)
+                    for(Ghost g : ghosts)
                     {
-                        ghosts[i].moveAI(grid, pacmen);
-                        ghosts[i].draw(g2d, this);
+                        g.moveAI(grid, pacmen);
+                        g.draw(g2d, this);
                     }
                     //increment in here so you don't in versus mode
                     grid.incrementFruit(numBoardsCleared);
@@ -120,17 +118,17 @@ public class Board extends JPanel implements ActionListener
                         msPacman.move(grid);
                         msPacman.draw(g2d, this);
                     }
-                    for (int i = 0; i < numGhosts; i++)
+                    for(Ghost g : ghosts)
                     {
-                        ghosts[i].moveAI(grid, pacmen);
-                        ghosts[i].draw(g2d, this);
+                        g.moveAI(grid, pacmen);
+                        g.draw(g2d, this);
                     }
                     //increment in here so you don't in versus mode
                     grid.incrementFruit(numBoardsCleared);
                     detectCollision(ghosts);
                     break;
                 case VERSUS:
-                    for (Character ghost : playerGhosts)
+                    for (Character ghost : ghosts)
                     {
                         ghost.move(grid);
                         ghost.draw(g2d, this);
@@ -141,11 +139,10 @@ public class Board extends JPanel implements ActionListener
                         score = 0;
                         numBoardsCleared++;
                         grid.levelInit(numBoardsCleared);
-                        numPellet = grid.getPelletNum();
                         levelContinue();
 
                     }
-                    detectCollision(playerGhosts);
+                    detectCollision(ghosts);
                     break;
             }
             if (grid.checkMaze())
@@ -282,27 +279,23 @@ public class Board extends JPanel implements ActionListener
      *
      * @param g a Graphics object
      */
-    public void drawScore(Graphics g) {
-        int i;
-        int pelletsLeft;
-        String s;
-        String p;
-
+    public void drawScore(Graphics g)
+    {
         g.setFont(smallFont);
         g.setColor(new Color(96, 128, 255));
         if (gt == GameType.VERSUS) {
-            pelletsLeft = numPellet - score;
-            p = "Pellets left: " + pelletsLeft;
+            String p = "Pellets left: " + (numPellet - score);
             g.drawString(p, SCRSIZE / 2 + 96, SCRSIZE + 16);
         } else {
-            s = "Score: " + score;
+            String s = "Score: " + score;
             g.drawString(s, SCRSIZE / 2 + 136, SCRSIZE + 16);
         }
-        for (i = 0; i < pacman.lives; i++) {
+
+        for (int i = 0; i < pacman.lives; i++) {
             g.drawImage(pacman.getLifeImage(), i * 28 + 8, SCRSIZE + 1, this);
         }
         if (gt == GameType.COOPERATIVE) {
-            for (i = 0; i < msPacman.lives; i++) {
+            for (int i = 0; i < msPacman.lives; i++) {
                 g.drawImage(msPacman.getLifeImage(), i * 28 + 108, SCRSIZE + 1, this);
             }
         }
@@ -347,7 +340,7 @@ public class Board extends JPanel implements ActionListener
         numBoardsCleared = 0;
         Date d = new Date();
         leaderBoardGui.showEndGameScreen(this.score, d);
-        gameInit();
+        grid.levelInit(0);
     }
 
     /**
@@ -355,21 +348,15 @@ public class Board extends JPanel implements ActionListener
      *
      * @param ghosts An array of Ghost
      */
-    public void detectCollision(Character[] ghosts)
+    public void detectCollision(ArrayList<Ghost> ghosts)
     {
-        for (Character pacman : pacmen) {
-            if (gt == GameType.VERSUS) {
-                for (Character ghost : ghosts) {
-                    if (pacman.x > (ghost.x - 12) && pacman.x < (ghost.x + 12) &&
-                            pacman.y > (ghost.y - 12) && pacman.y < (ghost.y + 12))// && gt != GameType.INTRO)
-                        pacman.death();
-                }
-            } else {
-                for (int i = 0; i < numGhosts; i++) {
-                    if (pacman.x > (ghosts[i].x - 12) && pacman.x < (ghosts[i].x + 12) &&
-                            pacman.y > (ghosts[i].y - 12) && pacman.y < (ghosts[i].y + 12))// && gt != GameType.INTRO)
-                        pacman.death();
-                }
+        for (Character pacman : pacmen)
+        {
+            for (Character ghost : ghosts)
+            {
+                if (Math.abs(pacman.x - ghost.x) < 20 &&
+                    Math.abs(pacman.y - ghost.y) < 20 )
+                    pacman.death();
             }
         }
     }
@@ -383,18 +370,22 @@ public class Board extends JPanel implements ActionListener
     public boolean checkAlive()
     {
         for (Character pacman : pacmen)
-        {
-            if (pacman.alive)
-                return true;
-        }
+            if (pacman.alive) return true;
         return false;
     }
 
     /**
      * Initialize game variables
      */
-    public void gameInit() {
-        switch (gt) {
+    public void gameInit()
+    {
+        grid.levelInit(numBoardsCleared);
+        levelContinue();
+        score = 0;
+        numGhosts = 6;
+        curSpeed = 3;
+        switch (gt)
+        {
             case SINGLEPLAYER:
                 pacmen = new Character[1];
                 pacmen[0] = pacman;
@@ -411,35 +402,32 @@ public class Board extends JPanel implements ActionListener
                 pacmen = new Character[1];
                 pacmen[0] = pacman;
                 pacman.reset();
-                playerGhosts = new Character[2];
-                playerGhosts[0] = ghost1;
-                playerGhosts[1] = ghost2;
-                ghost1.reset();
-                ghost2.reset();
                 break;
         }
-        grid.levelInit(numBoardsCleared);
-        levelContinue();
-        score = 0;
-        numGhosts = 6;
-        curSpeed = 3;
     }
 
     /**
      * Initialize Pacman and ghost position/direction
      */
-    public void levelContinue() {
-        int dx = 1;
-        int random;
-
-        for (short i = 0; i < numGhosts; i++)
+    public void levelContinue()
+    {
+        numPellet = grid.getPelletNum();
+        ghosts.clear();
+        if(gt == GameType.VERSUS)
         {
-            random = (int) (Math.random() * curSpeed) + 1;
-            ghosts[i] = new Ghost(4 * BLOCKSIZE, 4 * BLOCKSIZE, random);
-            ghosts[i].dx = dx;
-            dx = -dx;
+            ghosts.add(ghost1);
+            ghosts.add(ghost2);
         }
-        switch (gt) {
+        else
+        {
+            for (int i = 0; i < numGhosts; i++)
+            {
+                int random = (int) (Math.random() * curSpeed) + 1;
+                ghosts.add(new Ghost(4 * BLOCKSIZE, 4 * BLOCKSIZE, random));
+            }
+        }
+        switch (gt)
+        {
             case SINGLEPLAYER:
                 pacman.resetPos();
                 break;
@@ -449,7 +437,7 @@ public class Board extends JPanel implements ActionListener
                 break;
             case VERSUS:
                 pacman.resetPos();
-                for (Character ghost : playerGhosts)
+                for (Character ghost : ghosts)
                 {
                     ghost.resetPos();
                     if (numBoardsCleared == 3)
@@ -588,6 +576,7 @@ public class Board extends JPanel implements ActionListener
                         {
                             gt = GameType.INTRO;
                             numBoardsCleared = 0;
+                            grid.levelInit(0);
                         }
                         break;
                 }
