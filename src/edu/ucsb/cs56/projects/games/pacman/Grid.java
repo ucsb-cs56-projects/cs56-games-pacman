@@ -167,6 +167,39 @@ public class Grid
         return numOfPellet;
     }
 
+    /**
+     * Count the number of pellets in each map
+     *
+     * @return An int indicating how many pellets are left
+     */
+    public int getPelletNumForMap(int numBoardsCleared) {
+        int numOfPellet = 0;
+        for (int i = 0; i < Board.NUMBLOCKS; i++) {
+            for (int j = 0; j < Board.NUMBLOCKS; j++) {
+                if (numBoardsCleared % 3 == 0){
+                    if ((leveldata1[i][j] & 16) != 0)
+                        numOfPellet++;
+                }
+                else if (numBoardsCleared % 3 == 1) {
+                    if ((leveldata2[i][j] & 16) != 0)
+                        numOfPellet++;
+                }
+                else if (numBoardsCleared % 3 == 2) {
+                    if ((leveldata3[i][j] & 16) != 0)
+                        numOfPellet++;
+                }
+                else if (numBoardsCleared % 3 == 3) {
+                    if ((leveldata4[i][j] & 16) != 0)
+                        numOfPellet++;
+                }
+                else if (numBoardsCleared % 3 == 4){
+                    if ((leveldata5[i][j] & 16) != 0)
+                        numOfPellet++;
+                }
+            }
+        }
+        return numOfPellet;
+    }
 
     /**
      * Initialize level
@@ -221,62 +254,64 @@ public class Grid
      * @param numBoardsCleared number of levels cleared
      */
     public void incrementFruit(int numBoardsCleared) {
-        if (fruitCounter > 20) {
-            fruitCounter = 0;
-            this.randomBlock();
-            if (numBoardsCleared % 3 == 0) {
-                while (true) {
-                    {
-                        if (((screenData[this.x][this.y] & 16) == 0) && (leveldata1[this.x][this.y] & 16) != 0) {
-                            screenData[this.x][this.y] = (short) (screenData[this.x][this.y] | 32);
-                            break;
-                        }
-                        this.randomBlock();
-                    }
-                }
-            } else if (numBoardsCleared % 3 == 1)
-                while (true) {
-                    {
-                        if (((screenData[this.x][this.y] & 16) == 0) && (leveldata2[this.x][this.y] & 16) != 0) {
-                            screenData[this.x][this.y] = (short) (screenData[this.x][this.y] | 32);
-                            break;
-                        }
-                        this.randomBlock();
-                    }
-                }
-            else if (numBoardsCleared % 3 == 2)
-                while (true) {
-                    {
-                        if (((screenData[this.x][this.y] & 16) == 0) && (leveldata3[this.x][this.y] & 16) != 0) {
-                            screenData[this.x][this.y] = (short) (screenData[this.x][this.y] | 32);
-                            break;
-                        }
-                        this.randomBlock();
-                    }
-                }
-            else if (numBoardsCleared % 3 == 3)
-                while (true) {
-                    {
-                        if (((screenData[this.x][this.y] & 16) == 0) && (leveldata4[this.x][this.y] & 16) != 0) {
-                            screenData[this.x][this.y] = (short) (screenData[this.x][this.y] | 32);
-                            break;
-                        }
-                        this.randomBlock();
-                    }
-                }
-            else if (numBoardsCleared % 3 == 4)
-                while (true) {
-                    {
-                        if (((screenData[this.x][this.y] & 16) == 0) && (leveldata5[this.x][this.y] & 16) != 0) {
+        if(this.getPelletNum()< this.getPelletNumForMap(numBoardsCleared)) {
+            if (fruitCounter > 100) {
+                fruitCounter = 0;
+                this.randomBlock();
+                if (numBoardsCleared % 3 == 0) {
+                    while (true) {
+                        {
+                            if (((screenData[this.x][this.y] & 16) == 0) && (leveldata1[this.x][this.y] & 16) != 0) {
                                 screenData[this.x][this.y] = (short) (screenData[this.x][this.y] | 32);
                                 break;
                             }
-                        this.randomBlock();
+                            this.randomBlock();
+                        }
                     }
-                }
-        }
-        else
-            fruitCounter++;
+                } else if (numBoardsCleared % 3 == 1)
+                    while (true) {
+                        {
+                            if (((screenData[this.x][this.y] & 16) == 0) && (leveldata2[this.x][this.y] & 16) != 0) {
+                                screenData[this.x][this.y] = (short) (screenData[this.x][this.y] | 32);
+                                break;
+                            }
+                            this.randomBlock();
+                        }
+                    }
+                else if (numBoardsCleared % 3 == 2)
+                    while (true) {
+                        {
+                            if (((screenData[this.x][this.y] & 16) == 0) && (leveldata3[this.x][this.y] & 16) != 0) {
+                                screenData[this.x][this.y] = (short) (screenData[this.x][this.y] | 32);
+                                break;
+                            }
+                            this.randomBlock();
+                        }
+                    }
+                else if (numBoardsCleared % 3 == 3)
+                    while (true) {
+                        {
+                            if (((screenData[this.x][this.y] & 16) == 0) && (leveldata4[this.x][this.y] & 16) != 0) {
+                                screenData[this.x][this.y] = (short) (screenData[this.x][this.y] | 32);
+                                break;
+                            }
+                            this.randomBlock();
+                        }
+                    }
+                else if (numBoardsCleared % 3 == 4)
+                    while (true) {
+                        {
+                            if (((screenData[this.x][this.y] & 16) == 0) && (leveldata5[this.x][this.y] & 16) != 0) {
+                                screenData[this.x][this.y] = (short) (screenData[this.x][this.y] | 32);
+                                break;
+                            }
+                            this.randomBlock();
+                        }
+                    }
+            } else
+                fruitCounter++;
+        }else
+            return;
     }
 
 
