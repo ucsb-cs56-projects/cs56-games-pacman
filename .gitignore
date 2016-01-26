@@ -1,6 +1,9 @@
 build/
 *.class
 *.ser
+*.idea
+*.iml
+*~
 highScores.txt
 
 # Package Files #

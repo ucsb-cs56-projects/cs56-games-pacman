@@ -1,56 +1,60 @@
 package edu.ucsb.cs56.projects.games.pacman;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.event.KeyEvent;
-
-import java.io.IOException;
-
 import javax.imageio.ImageIO;
-import javax.swing.JComponent;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.PriorityQueue;
 
 /**
  * Class representing enemy ghosts in single player mode
  * and player ghosts in multiplayer mode
+ *
  * @author Dario Castellanos Anaya
  * @author Daniel Ly
- * @version CS56, S13
+ * @author Kelvin Yang
+ * @version CS56, W15
  */
-public class Ghost extends Character{
+public class Ghost extends Character {
     public static final int GHOST1 = 1;
     public static final int GHOST2 = 2;
-	
+
     private Image ghost;
-    
+
     public Ghost(int x, int y, int speed) {
-	super(x, y);
-	this.speed = speed;
-	assetPath = "assets/";
-	loadImages();
+        super(x, y);
+        this.speed = speed;
+        assetPath = "assets/";
+        loadImages();
     }
-    
-    public Ghost(int x, int y, int speed, int playerNum){
-    	super(x, y, playerNum);
-    	this.speed = speed;
-    	assetPath = "assets/";
-    	loadImages();
+
+    public Ghost(int x, int y, int speed, int playerNum) {
+        super(x, y, playerNum);
+        this.speed = speed;
+        assetPath = "assets/";
+        loadImages();
     }
-	
-	/**
+
+    /**
      * Handles character's death
      */
-    public void death() { }
+    public void death() {
+    }
 
     /**
      * Draws the ghost
-     * @param g2d a Graphics2D object
+     *
+     * @param g a Graphics2D object
      * @param canvas A Jcomponent object to be drawn on
      */
     @Override
     public void draw(Graphics2D g, JComponent canvas) {
-        g.drawImage(ghost, x + 1, y + 1, canvas);
+        g.drawImage(ghost, x + 4, y + 4, canvas);
     }
-    
+
     /**
      * Load game sprites from images folder
      */
@@ -64,187 +68,286 @@ public class Ghost extends Character{
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Returns the image used for displaying remaining lives
+     *
      * @return Image of character
      */
     @Override
     public Image getLifeImage() {
         return ghost;
     }
-    
+
     /**
      * Handles key presses for game controls
+     *
      * @param key Integer representing the key pressed
      */
     @Override
     public void keyPressed(int key) {
-    	if (playerNum == GHOST1){
-			switch (key){
-				case KeyEvent.VK_A:
-					reqdx=-1;
-					reqdy=0;
-					break;
-				 case KeyEvent.VK_D:
-					reqdx=1;
-					reqdy=0;
-				 	break;
-				 case KeyEvent.VK_W:
-					reqdx=0;
-					reqdy=-1;
-					break;
-				 case KeyEvent.VK_S:
-					reqdx=0;
-					reqdy=1;
-					break;
-				 default: break;
-			}
-      }
-    	else if (playerNum == GHOST2){
-			switch (key){
-				case KeyEvent.VK_NUMPAD4:
-					reqdx=-1;
-					reqdy=0;
-					break;
-				case KeyEvent.VK_NUMPAD6:
-					reqdx=1;
-					reqdy=0;
-					break;
-				case KeyEvent.VK_NUMPAD8:
-					reqdx=0;
-					reqdy=-1;
-					break;
-				case KeyEvent.VK_NUMPAD5:
-					reqdx=0;
-					reqdy=1;
-					break;
-				default: break;
-			}
-		}
+        if (playerNum == GHOST1) {
+            switch (key) {
+                case KeyEvent.VK_A:
+                    reqdx = -1;
+                    reqdy = 0;
+                    break;
+                case KeyEvent.VK_D:
+                    reqdx = 1;
+                    reqdy = 0;
+                    break;
+                case KeyEvent.VK_W:
+                    reqdx = 0;
+                    reqdy = -1;
+                    break;
+                case KeyEvent.VK_S:
+                    reqdx = 0;
+                    reqdy = 1;
+                    break;
+                default:
+                    break;
+            }
+        } else if (playerNum == GHOST2) {
+            switch (key) {
+                case KeyEvent.VK_NUMPAD4:
+                    reqdx = -1;
+                    reqdy = 0;
+                    break;
+                case KeyEvent.VK_NUMPAD6:
+                    reqdx = 1;
+                    reqdy = 0;
+                    break;
+                case KeyEvent.VK_NUMPAD8:
+                    reqdx = 0;
+                    reqdy = -1;
+                    break;
+                case KeyEvent.VK_NUMPAD5:
+                    reqdx = 0;
+                    reqdy = 1;
+                    break;
+                default:
+                    break;
+            }
+        }
     }
-    
+
     /**
      * Moves character's current position with the board's collision
+     *
+     * see PacPlayer.java for code explanation
+     *
      * @param grid The Grid to be used for collision
      */
     @Override
-    public void move(Grid grid) { 
-        int pos;
+    public void move(Grid grid) {
         short ch;
 
         if (reqdx == -dx && reqdy == -dy) {
             dx = reqdx;
             dy = reqdy;
-            viewdx = dx;
-            viewdy = dy;
         }
-        if (x % grid.blockSize == 0 && y % grid.blockSize == 0) {
-            pos = x / grid.blockSize + grid.nrOfBlocks * (int)(y / grid.blockSize);
-            ch = grid.screenData[pos];
+        if (x % Board.BLOCKSIZE == 0 && y % Board.BLOCKSIZE == 0) {
+            //Tunnel effect
+            x = ((x / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
+            y = ((y / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
+
+            ch = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
 
             if (reqdx != 0 || reqdy != 0) {
-                if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) ||
-                      (reqdx == 1 && reqdy == 0 && (ch & 4) != 0) ||
-                      (reqdx == 0 && reqdy == -1 && (ch & 2) != 0) ||
-                      (reqdx == 0 && reqdy == 1 && (ch & 8) != 0))) {
+                if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) || (reqdx == 1 && reqdy == 0 && (ch & 4) != 0) ||
+                        (reqdx == 0 && reqdy == -1 && (ch & 2) != 0) || (reqdx == 0 && reqdy == 1 && (ch & 8) != 0))) {
                     dx = reqdx;
                     dy = reqdy;
-                    viewdx = dx;
-                    viewdy = dy;
                 }
             }
 
             // Check for standstill
-            if ((dx == -1 && dy == 0 && (ch & 1) != 0) ||
-                (dx == 1 && dy == 0 && (ch & 4) != 0) ||
-                (dx == 0 && dy == -1 && (ch & 2) != 0) ||
-                (dx == 0 && dy == 1 && (ch & 8) != 0)) {
+            if ((dx == -1 && dy == 0 && (ch & 1) != 0) || (dx == 1 && dy == 0 && (ch & 4) != 0) ||
+                    (dx == 0 && dy == -1 && (ch & 2) != 0) || (dx == 0 && dy == 1 && (ch & 8) != 0)) {
                 dx = 0;
                 dy = 0;
             }
         }
         move();
     }
+
     /**
-     * For ghosts that are close to pacman, have them follow pacman 
+     * For ghosts that are close to pacman, have them follow pacman
+     * with a specified probability
+     *
      * @param grid The Grid to be used for the collision
-     * @param ix pacman's x position in integer form
-     * @param iy pacman's y position in integer form
-     * @param dx An array of integers used for randomized movement
-     * @param dy An array of integers used for randomized movement
-	 */ 
-	 public void moveAI(Grid grid, int ix, int iy, int[] dx, int[] dy){
-         double myX = (double) ix;
-         double myY = (double) iy;
-         double dSquared = Math.pow(this.x - myX, 2.0) + Math.pow(this.y - myY, 2.0);
-         double distance = Math.sqrt(dSquared);
-         
-         /*if( distance <=  100.0){
-             move properly
-         }
-         else {
-             moveAI(grid, dx, dy);
-         }*/
-         moveAI(grid, dx, dy);
-     }
-    
-    /**
-     * Moves character's current position with the board's collision
-     * @param grid The Grid to be used for collision
-     * @param dx An array of integers used for randomized movement
-     * @param dy An array of integers used for randomized movement
+     * @param c    Array of pacmen to chase
      */
     @Override
-    public void moveAI(Grid grid, int[] dx, int[] dy){
-        int pos;
-        int count;
-	
-        if (this.x % grid.blockSize == 0 && this.y % grid.blockSize == 0) {
-            pos = x / (int)grid.blockSize + (int)grid.nrOfBlocks * (int)(this.y / (int)grid.blockSize);
-            
-            count = 0;
-            
-                // following block of code randomizes movement (randomizes dx[] and dy[])
-                if ((grid.screenData[pos] & 1) == 0 && this.dx != 1) {
-                    dx[count] = -1;
-                    dy[count] = 0;
-                    count++;
-                }
-                if ((grid.screenData[pos] & 2) == 0 && this.dy != 1) {
-                    dx[count] = 0;
-                    dy[count] = -1;
-                    count++;
-                }
-                if ((grid.screenData[pos] & 4) == 0 && this.dx != -1) {
-                    dx[count] = 1;
-                    dy[count] = 0;
-                    count++;
-                }
-                if ((grid.screenData[pos] & 8) == 0 && this.dy != -1) {
-                    dx[count] = 0;
-                    dy[count] = 1;
-                    count++;
-                }
-                 
-                if (count == 0) {
-                    if ((grid.screenData[pos] & 15) == 15) {
-                        this.dx = 0;
-                        this.dy = 0;
-                        
-                    } else {
-                        this.dx = -this.dx;
-                        this.dy = -this.dy;
-                        
-                    }
-                    
-                 }
-                    count = (int)(Math.random() * count);
-                    if (count > 3)
-                        count = 3;
-                    this.dx = dx[count];
-                    this.dy = dy[count];
-        }
+    public void moveAI(Grid grid, Character[] c)
+    {
         move();
-   }
+        if(c.length == 0) //Nothing to chase.  Should never happen
+            return;
+
+        int[][] coord = new int[c.length][2];
+        int count = 0;
+
+        for(Character p : c)
+        {
+            double distance = Math.sqrt(Math.pow(this.x - p.x, 2.0) + Math.pow(this.y - p.y, 2.0));
+            if(p.alive && distance < 150.0)// && Math.random() < 0.6)
+            {
+                coord[count][0] = p.x;
+                coord[count][1] = p.y;
+                count++;
+            }
+        }
+
+        if(count > 0 && hasChoice(grid))
+        {
+            Node bestDir = pathFind(grid, coord[0][0] / Board.BLOCKSIZE, coord[0][1] / Board.BLOCKSIZE);
+            Node tempDir;
+            for (int i = 1; i < count; i++) //Loop through each pacman
+            {
+                tempDir = pathFind(grid, coord[i][0] / Board.BLOCKSIZE, coord[i][1] / Board.BLOCKSIZE);
+                if (tempDir.distance.value < bestDir.distance.value) //If new path is shorter
+                    bestDir = tempDir;
+            }
+
+            if (bestDir.x - this.x / Board.BLOCKSIZE == 0 && bestDir.y - this.y / Board.BLOCKSIZE == 0) //ghost on pacman
+                moveRandom(grid);
+            else
+            {
+                dx = bestDir.x - this.x / Board.BLOCKSIZE;
+                dy = bestDir.y - this.y / Board.BLOCKSIZE;
+            }
+        }
+        else
+        {
+            moveRandom(grid);
+        }
+    }
+
+    /**
+     * A* pathfinding algorithm
+     *
+     * @param grid the grid to be used for pathfinding
+     * @param x target x coordinate in grid form
+     * @param y target y coordinate in grid form
+     */
+    public Node pathFind(Grid grid, int x, int y)
+    {
+        //Set target x, y
+        Node.tx = x;
+        Node.ty = y;
+
+        Node current = null, temp;
+        int block;
+
+        PriorityQueue<Node> opened = new PriorityQueue<Node>();
+        HashSet<Node> closed = new HashSet<Node>();
+
+        temp = new Node(this.x / Board.BLOCKSIZE, this.y / Board.BLOCKSIZE, 0); //current location of ghost
+        temp.init();
+        temp.setDir(dx, dy);
+        opened.offer(temp);
+
+        while(!opened.isEmpty())
+        {
+            current = opened.poll(); //get best node
+            closed.add(current); //add node to closed set (visited)
+
+            if(current.hCost == 0) //if future cost is 0, then it is target node
+                break;
+
+            block = grid.screenData[current.y][current.x];
+
+            //If can move, not abrupt, and unvisited, add to opened
+            if((block & 1) == 0 && current.dir != 3) //Can move and not abrupt
+            {
+                temp = current.getChild(-1, 0); //get child node
+                if(!closed.contains(temp)) //Unvisited
+                    opened.add(temp);
+            }
+            if((block & 2) == 0 && current.dir != 4)
+            {
+                temp = current.getChild(0, -1);
+                if(!closed.contains(temp))
+                    opened.add(temp);
+            }
+            if((block & 4) == 0 && current.dir != 1)
+            {
+                temp = current.getChild(1, 0);
+                if(!closed.contains(temp))
+                    opened.add(temp);
+            }
+            if((block & 8) == 0 && current.dir != 2)
+            {
+                temp = current.getChild(0, 1);
+                if(!closed.contains(temp))
+                    opened.add(temp);
+            }
+        }
+
+        //if current.parent == null, then ghost is on pacman.  Handle it by moving randomly
+        //current.parent.parent == null, then current is best next move
+        while(current.parent != null && current.parent.parent != null)
+            current = current.parent;
+
+        return current;
+    }
+
+    /**
+     * Moves character's current position with the board's collision
+     *
+     * @param grid The Grid to be used for collision
+     */
+    public void moveRandom(Grid grid)
+    {
+        //Makes sure ghost is in a grid and not in movement
+        if (this.x % Board.BLOCKSIZE == 0 && this.y % Board.BLOCKSIZE == 0)
+        {
+            ArrayList<Point> list = moveList(grid);
+
+            //randomly pick an available move
+            int rand = (int) (Math.random() * list.size());
+            this.dx = list.get(rand).x;
+            this.dy = list.get(rand).y;
+        }
+    }
+
+    /**
+     * Returns an ArrayList of possible movements
+     *
+     * @param grid
+     */
+    private ArrayList<Point> moveList(Grid grid)
+    {
+        ArrayList<Point> moves = new ArrayList<Point>();
+        int block = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
+
+        // First condition prevents checks collision with wall
+        // Second condition prevents switching direction abruptly (left -> right) (up -> down)
+        if ((block & 1) == 0 && this.dx != 1)
+            moves.add(new Point(-1, 0));
+        if ((block & 2) == 0 && this.dy != 1)
+            moves.add(new Point(0, -1));
+        if ((block & 4) == 0 && this.dx != -1)
+            moves.add(new Point(1, 0));
+        if ((block & 8) == 0 && this.dy != -1)
+            moves.add(new Point(0, 1));
+
+        return moves;
+    }
+
+    private boolean hasChoice(Grid grid)
+    {
+        if (this.x % Board.BLOCKSIZE == 0 && this.y % Board.BLOCKSIZE == 0)
+        {
+            int block = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
+            int count = (block & 1) == 0 && this.dx != 1 ? 1 : 0;
+            count += (block & 2) == 0 && this.dy != 1 ? 1 : 0;
+            count += (block & 4) == 0 && this.dx != -1 ? 1 : 0;
+            count += (block & 8) == 0 && this.dy != -1 ? 1 : 0;
+            if(count > 1)
+                return true;
+        }
+        return false;
+    }
 }
