@@ -30,6 +30,7 @@ public class PacPlayer extends Character {
     public int viewdx, viewdy;
 
     private Image[] pacmanUp, pacmanDown, pacmanLeft, pacmanRight;
+    private Grid grid;
 
     /**
      * Constructor for PacPlayer class
@@ -52,9 +53,10 @@ public class PacPlayer extends Character {
      * @param y         the starting y coordinate of pacman
      * @param playerNum int representing who the player is controlling
      */
-    public PacPlayer(int x, int y, int playerNum) {
+    public PacPlayer(int x, int y, int playerNum, Grid grid) {
         super(x, y, playerNum);
         speed = pacmanspeed;
+        this.grid = grid;
         lives = 3;
         if (playerNum == PACMAN) assetPath = "assets/pacman/";
         else if (playerNum == MSPACMAN) assetPath = "assets/mspacman/";
@@ -222,6 +224,46 @@ public class PacPlayer extends Character {
                 case KeyEvent.VK_S:
                     reqdx = 0;
                     reqdy = 1;
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void keyReleased(int key) {
+        move(this.grid);
+        if (playerNum == PACMAN) {
+            switch (key) {
+                case KeyEvent.VK_LEFT:
+                    reqdx = 0;
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    reqdx = 0;
+                    break;
+                case KeyEvent.VK_UP:
+                    reqdy = 0;
+                    break;
+                case KeyEvent.VK_DOWN:
+                    reqdy = 0;
+                    break;
+                default:
+                    break;
+            }
+        } else if (playerNum == MSPACMAN) {
+            switch (key) {
+                case KeyEvent.VK_A:
+                    reqdx = 0;
+                    break;
+                case KeyEvent.VK_D:
+                    reqdx = 0;
+                    break;
+                case KeyEvent.VK_W:
+                    reqdy = 0;
+                    break;
+                case KeyEvent.VK_S:
+                    reqdy = 0;
                     break;
                 default:
                     break;

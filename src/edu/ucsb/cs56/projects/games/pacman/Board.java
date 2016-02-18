@@ -60,10 +60,10 @@ public class Board extends JPanel implements ActionListener
     public Board() {
         addKeyListener(new TAdapter());
         grid = new Grid();
-        pacman = new PacPlayer(8 * BLOCKSIZE, 11 * BLOCKSIZE, PacPlayer.PACMAN);
-        msPacman = new PacPlayer(7 * BLOCKSIZE, 11 * BLOCKSIZE, PacPlayer.MSPACMAN);
-        ghost1 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 4, Ghost.GHOST1);
-        ghost2 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 4, Ghost.GHOST2);
+        pacman = new PacPlayer(8 * BLOCKSIZE, 11 * BLOCKSIZE, PacPlayer.PACMAN, grid);
+        msPacman = new PacPlayer(7 * BLOCKSIZE, 11 * BLOCKSIZE, PacPlayer.MSPACMAN, grid);
+        ghost1 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 4, Ghost.GHOST1, grid);
+        ghost2 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 4, Ghost.GHOST2, grid);
         setFocusable(true);
 
         setBackground(Color.black);
@@ -581,6 +581,26 @@ public class Board extends JPanel implements ActionListener
                         break;
                 }
             }
+        }
+
+        public void keyReleased(KeyEvent e) {
+            int key = e.getKeyCode();
+
+            switch (gt)
+                {
+                    case SINGLEPLAYER:
+                        pacman.keyReleased(key);
+                        break;
+                    case COOPERATIVE:
+                        pacman.keyReleased(key);
+                        msPacman.keyReleased(key);
+                        break;
+                    case VERSUS:
+                        pacman.keyReleased(key);
+                        ghost1.keyReleased(key);
+                        ghost2.keyReleased(key);
+                        break;
+                }
         }
     }
 }

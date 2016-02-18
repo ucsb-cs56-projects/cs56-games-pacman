@@ -109,6 +109,13 @@ public abstract class Character
     public abstract void keyPressed(int key);
 
     /**
+     * Handles key releases for game controls
+     *
+     * @param key Integer representing the key released
+     */
+    public abstract void keyReleased(int key);
+
+    /**
      * Moves character's current position with the board's collision
      *
      * @param grid The Grid to be used for collision
