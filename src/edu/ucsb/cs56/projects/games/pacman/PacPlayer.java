@@ -23,7 +23,7 @@ public class PacPlayer extends Character {
 
     private final int pacanimdelay = 2;
     private final int pacmananimcount = 4;
-    private final int pacmanspeed = 5;
+    private final int pacmanspeed = 4;
     int pacanimcount = pacanimdelay;
     int pacanimdir = 1;
     int pacmananimpos = 0;
