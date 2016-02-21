@@ -28,7 +28,7 @@ public class Ghost extends Character {
     public Ghost(int x, int y, int speed) {
         super(x, y);
         this.speed = speed;
-        assetPath = "assets/";
+        assetImagePath = "assets/";
         loadImages();
     }
 
@@ -36,7 +36,7 @@ public class Ghost extends Character {
         super(x, y, playerNum);
         this.speed = speed;
         this.grid = grid;
-        assetPath = "assets/";
+        assetImagePath = "assets/";
         loadImages();
     }
 
@@ -63,9 +63,9 @@ public class Ghost extends Character {
     @Override
     public void loadImages() {
         try {
-            if (playerNum == GHOST1) ghost = ImageIO.read(getClass().getResource(assetPath + "ghostred.png"));
-            else if (playerNum == GHOST2) ghost = ImageIO.read(getClass().getResource(assetPath + "ghostblue.png"));
-            else ghost = ImageIO.read(getClass().getResource(assetPath + "ghostred.png"));
+            if (playerNum == GHOST1) ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostred.png"));
+            else if (playerNum == GHOST2) ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostblue.png"));
+            else ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostred.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

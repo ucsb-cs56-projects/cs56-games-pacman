@@ -15,7 +15,7 @@ import java.awt.*;
 public abstract class Character
 {
     public boolean alive;
-    public String assetPath;
+    public String assetImagePath;
     public int playerNum, lives;
     public int deathTimer; // Used for invincibility after reviving
     public int startX, startY, speed;
