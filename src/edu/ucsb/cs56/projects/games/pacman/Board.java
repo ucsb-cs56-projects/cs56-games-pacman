@@ -390,7 +390,7 @@ public class Board extends JPanel implements ActionListener
         levelContinue();
         score = 0;
         numGhosts = 6;
-        curSpeed = 3;
+        curSpeed = 2;
 
         try {
             this.beginningAudio.play();
