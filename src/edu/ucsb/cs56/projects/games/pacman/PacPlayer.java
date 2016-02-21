@@ -117,8 +117,7 @@ public class PacPlayer extends Character {
             if ((ch & 16) != 0) {
                 //Toggles pellet bit
                 grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 16);
-                //playAudio(1 + (Board.score % 2));
-                playAudio(1);
+                playAudio(0);
                 Board.score++;
             }
 
@@ -127,7 +126,7 @@ public class PacPlayer extends Character {
                 //Toggles fruit bit
                 grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 32);
                 Board.score+=10;
-                playAudio(2);
+                playAudio(1);
             }
 
             //passes key commands to movement
@@ -322,7 +321,7 @@ public class PacPlayer extends Character {
     public void loadAudio()
     {
         try {
-            String[] sounds = {"beginning.wav", "chomp.wav", "eatfruit.wav"};
+            String[] sounds = {"chomp.wav", "eatfruit.wav"};
             pacmanAudio = new Audio[sounds.length];
             for(int i = 0; i < sounds.length; i++) {
                 pacmanAudio[i] = new Audio(getClass().getResourceAsStream(assetAudioPath + sounds[i]));

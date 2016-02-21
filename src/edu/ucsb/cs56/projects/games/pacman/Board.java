@@ -53,6 +53,7 @@ public class Board extends JPanel implements ActionListener
     private int curSpeed = 3;
     private int numPellet;
     private Timer timer;
+    private Audio beginningAudio;
 
     /**
      * Constructor for Board object
@@ -71,6 +72,12 @@ public class Board extends JPanel implements ActionListener
         ghosts = new ArrayList<Ghost>();
         timer = new Timer(40, this);
         timer.start();
+
+        try {
+            this.beginningAudio = new Audio(getClass().getResourceAsStream("assets/audio/beginning.wav"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -384,6 +391,13 @@ public class Board extends JPanel implements ActionListener
         score = 0;
         numGhosts = 6;
         curSpeed = 3;
+
+        try {
+            this.beginningAudio.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         switch (gt)
         {
             case SINGLEPLAYER:
