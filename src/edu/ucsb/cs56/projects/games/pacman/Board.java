@@ -62,8 +62,8 @@ public class Board extends JPanel implements ActionListener
         grid = new Grid();
         pacman = new PacPlayer(8 * BLOCKSIZE, 11 * BLOCKSIZE, PacPlayer.PACMAN, grid);
         msPacman = new PacPlayer(7 * BLOCKSIZE, 11 * BLOCKSIZE, PacPlayer.MSPACMAN, grid);
-        ghost1 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 4, Ghost.GHOST1, grid);
-        ghost2 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 4, Ghost.GHOST2, grid);
+        ghost1 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 2, Ghost.GHOST1, grid);
+        ghost2 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 2, Ghost.GHOST2, grid);
         setFocusable(true);
 
         setBackground(Color.black);
