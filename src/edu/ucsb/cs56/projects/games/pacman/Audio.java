@@ -9,6 +9,7 @@ public class Audio {
 	private int audioSize;
 	private byte[] audioData;
 	private DataLine.Info audioInfo;
+	private Clip audioClip;
 
 	public Audio(InputStream inputStream) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
 		AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(this.loadStream(inputStream));
@@ -17,6 +18,8 @@ public class Audio {
 		this.audioData = new byte[this.audioSize];
 		this.audioInfo  = new DataLine.Info(Clip.class, this.audioFormat, this.audioSize);
 		audioInputStream.read(this.audioData, 0, this.audioSize);
+		this.audioClip = (Clip) AudioSystem.getLine(this.audioInfo);
+		this.audioClip.open(this.audioFormat, this.audioData, 0, this.audioSize);
 	}
 
 	public ByteArrayInputStream loadStream(InputStream inputStream) throws IOException {
@@ -28,10 +31,6 @@ public class Audio {
 			byteArrayOutputStream.write(buffer, 0, lengthRead);
 		}
 
-		/*for(int i = inputStream.read(buffer); i != -1; i = inputStream.read(buffer)) {
-			byteArrayOutputStream.write(buffer, 0, i);
-		}*/
-
 		byteArrayOutputStream.flush();
 
 		inputStream.close();
@@ -40,8 +39,8 @@ public class Audio {
 	}
 
 	public void play() throws UnsupportedAudioFileException, LineUnavailableException{
-		Clip clip = (Clip) AudioSystem.getLine(this.audioInfo);
-		clip.open(this.audioFormat, this.audioData, 0, this.audioSize);
-		clip.start();
+		if(this.audioClip.isRunning()) return;
+		this.audioClip.setMicrosecondPosition(0);
+		this.audioClip.start();
 	}
 }

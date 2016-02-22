@@ -53,6 +53,7 @@ public class Board extends JPanel implements ActionListener
     private int curSpeed = 3;
     private int numPellet;
     private Timer timer;
+    private Audio beginningAudio;
 
     /**
      * Constructor for Board object
@@ -62,8 +63,8 @@ public class Board extends JPanel implements ActionListener
         grid = new Grid();
         pacman = new PacPlayer(8 * BLOCKSIZE, 11 * BLOCKSIZE, PacPlayer.PACMAN, grid);
         msPacman = new PacPlayer(7 * BLOCKSIZE, 11 * BLOCKSIZE, PacPlayer.MSPACMAN, grid);
-        ghost1 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 4, Ghost.GHOST1, grid);
-        ghost2 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 4, Ghost.GHOST2, grid);
+        ghost1 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 2, Ghost.GHOST1, grid);
+        ghost2 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 2, Ghost.GHOST2, grid);
         setFocusable(true);
 
         setBackground(Color.black);
@@ -71,6 +72,12 @@ public class Board extends JPanel implements ActionListener
         ghosts = new ArrayList<Ghost>();
         timer = new Timer(40, this);
         timer.start();
+
+        try {
+            this.beginningAudio = new Audio(getClass().getResourceAsStream("assets/audio/beginning.wav"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -383,7 +390,14 @@ public class Board extends JPanel implements ActionListener
         levelContinue();
         score = 0;
         numGhosts = 6;
-        curSpeed = 3;
+        curSpeed = 2;
+
+        try {
+            this.beginningAudio.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         switch (gt)
         {
             case SINGLEPLAYER:

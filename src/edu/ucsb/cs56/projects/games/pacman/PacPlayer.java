@@ -23,7 +23,7 @@ public class PacPlayer extends Character {
 
     private final int pacanimdelay = 2;
     private final int pacmananimcount = 4;
-    private final int pacmanspeed = 6;
+    private final int pacmanspeed = 4;
     int pacanimcount = pacanimdelay;
     int pacanimdir = 1;
     int pacmananimpos = 0;
@@ -117,7 +117,7 @@ public class PacPlayer extends Character {
             if ((ch & 16) != 0) {
                 //Toggles pellet bit
                 grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 16);
-                playAudio(1 + (Board.score % 2));
+                playAudio(0);
                 Board.score++;
             }
 
@@ -126,7 +126,7 @@ public class PacPlayer extends Character {
                 //Toggles fruit bit
                 grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 32);
                 Board.score+=10;
-                playAudio(3);
+                playAudio(1);
             }
 
             //passes key commands to movement
@@ -321,7 +321,7 @@ public class PacPlayer extends Character {
     public void loadAudio()
     {
         try {
-            String[] sounds = {"beginning.wav", "chomp_01.wav","chomp_02.wav", "eatfruit.wav"};
+            String[] sounds = {"chomp.wav", "eatfruit.wav"};
             pacmanAudio = new Audio[sounds.length];
             for(int i = 0; i < sounds.length; i++) {
                 pacmanAudio[i] = new Audio(getClass().getResourceAsStream(assetAudioPath + sounds[i]));
