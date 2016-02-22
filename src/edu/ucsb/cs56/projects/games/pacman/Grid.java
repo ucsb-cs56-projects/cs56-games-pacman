@@ -15,7 +15,7 @@ public class Grid
     public int fruitCounter = 0;
     public int x;
     public int y;
-
+    final int MAX_LEVEL = 5;
     /*
      check this link to implement the ghost AI movement at intersection.
      Revise the level 1 data to classic pacman for intersection detection
@@ -176,23 +176,23 @@ public class Grid
         int numOfPellet = 0;
         for (int i = 0; i < Board.NUMBLOCKS; i++) {
             for (int j = 0; j < Board.NUMBLOCKS; j++) {
-                if (numBoardsCleared % 3 == 0){
+                if (numBoardsCleared % MAX_LEVEL == 0){
                     if ((leveldata1[i][j] & 16) != 0)
                         numOfPellet++;
                 }
-                else if (numBoardsCleared % 3 == 1) {
+                else if (numBoardsCleared % MAX_LEVEL == 1) {
                     if ((leveldata2[i][j] & 16) != 0)
                         numOfPellet++;
                 }
-                else if (numBoardsCleared % 3 == 2) {
+                else if (numBoardsCleared % MAX_LEVEL == 2) {
                     if ((leveldata3[i][j] & 16) != 0)
                         numOfPellet++;
                 }
-                else if (numBoardsCleared % 3 == 3) {
+                else if (numBoardsCleared % MAX_LEVEL == 3) {
                     if ((leveldata4[i][j] & 16) != 0)
                         numOfPellet++;
                 }
-                else if (numBoardsCleared % 3 == 4){
+                else if (numBoardsCleared % MAX_LEVEL == 4){
                     if ((leveldata5[i][j] & 16) != 0)
                         numOfPellet++;
                 }
@@ -208,13 +208,13 @@ public class Grid
         for (int i = 0; i < Board.NUMBLOCKS; i++) {
             if (numBoardsCleared % 3 == 0)
                 screenData[i] = Arrays.copyOf(leveldata1[i], Board.NUMBLOCKS);
-            else if (numBoardsCleared % 3 == 1)
+            else if (numBoardsCleared % MAX_LEVEL == 1)
                 screenData[i] = Arrays.copyOf(leveldata2[i], Board.NUMBLOCKS);
-            else if (numBoardsCleared % 3 == 2)
+            else if (numBoardsCleared % MAX_LEVEL == 2)
                 screenData[i] = Arrays.copyOf(leveldata3[i], Board.NUMBLOCKS);
-            else if (numBoardsCleared % 3 == 3)
+            else if (numBoardsCleared % MAX_LEVEL == 3)
                 screenData[i] = Arrays.copyOf(leveldata4[i], Board.NUMBLOCKS);
-            else if (numBoardsCleared % 3 == 4)
+            else if (numBoardsCleared % MAX_LEVEL == 4)
                 screenData[i] = Arrays.copyOf(leveldata5[i], Board.NUMBLOCKS);
         }
     }
