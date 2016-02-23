@@ -258,7 +258,7 @@ public class Grid
             if (fruitCounter > 100) {
                 fruitCounter = 0;
                 this.randomBlock();
-                if (numBoardsCleared % 3 == 0) {
+                if (numBoardsCleared % MAX_LEVEL == 0) {
                     while (true) {
                         {
                             if (((screenData[this.x][this.y] & 16) == 0) && (leveldata1[this.x][this.y] & 16) != 0) {
@@ -268,7 +268,7 @@ public class Grid
                             this.randomBlock();
                         }
                     }
-                } else if (numBoardsCleared % 3 == 1)
+                } else if (numBoardsCleared % MAX_LEVEL == 1)
                     while (true) {
                         {
                             if (((screenData[this.x][this.y] & 16) == 0) && (leveldata2[this.x][this.y] & 16) != 0) {
@@ -278,7 +278,7 @@ public class Grid
                             this.randomBlock();
                         }
                     }
-                else if (numBoardsCleared % 3 == 2)
+                else if (numBoardsCleared % MAX_LEVEL == 2)
                     while (true) {
                         {
                             if (((screenData[this.x][this.y] & 16) == 0) && (leveldata3[this.x][this.y] & 16) != 0) {
@@ -288,7 +288,7 @@ public class Grid
                             this.randomBlock();
                         }
                     }
-                else if (numBoardsCleared % 3 == 3)
+                else if (numBoardsCleared % MAX_LEVEL == 3)
                     while (true) {
                         {
                             if (((screenData[this.x][this.y] & 16) == 0) && (leveldata4[this.x][this.y] & 16) != 0) {
@@ -298,7 +298,7 @@ public class Grid
                             this.randomBlock();
                         }
                     }
-                else if (numBoardsCleared % 3 == 4)
+                else if (numBoardsCleared % MAX_LEVEL == 4)
                     while (true) {
                         {
                             if (((screenData[this.x][this.y] & 16) == 0) && (leveldata5[this.x][this.y] & 16) != 0) {
