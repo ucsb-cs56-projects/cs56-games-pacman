@@ -161,12 +161,12 @@ public class PacPlayer extends Character {
         doAnim();
         if (viewdx == -1)
             g2d.drawImage(pacmanLeft[pacmananimpos], x + 4, y + 4, canvas);
-        else if (viewdx == 1)
-            g2d.drawImage(pacmanRight[pacmananimpos], x + 4, y + 4, canvas);
         else if (viewdy == -1)
             g2d.drawImage(pacmanUp[pacmananimpos], x + 4, y + 4, canvas);
-        else
+        else if (viewdy == 1)
             g2d.drawImage(pacmanDown[pacmananimpos], x + 4, y + 4, canvas);
+        else
+            g2d.drawImage(pacmanRight[pacmananimpos], x + 4, y + 4, canvas);
     }
 
     /**
