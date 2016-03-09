@@ -15,7 +15,7 @@ import java.awt.*;
 public abstract class Character
 {
     public boolean alive;
-    public String assetPath;
+    public String assetImagePath;
     public int playerNum, lives;
     public int deathTimer; // Used for invincibility after reviving
     public int startX, startY, speed;
@@ -107,6 +107,13 @@ public abstract class Character
      * @param key Integer representing the key pressed
      */
     public abstract void keyPressed(int key);
+
+    /**
+     * Handles key releases for game controls
+     *
+     * @param key Integer representing the key released
+     */
+    public abstract void keyReleased(int key);
 
     /**
      * Moves character's current position with the board's collision

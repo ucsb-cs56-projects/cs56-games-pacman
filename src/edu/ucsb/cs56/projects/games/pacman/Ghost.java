@@ -23,18 +23,20 @@ public class Ghost extends Character {
     public static final int GHOST2 = 2;
 
     private Image ghost;
+    private Grid grid;
 
     public Ghost(int x, int y, int speed) {
         super(x, y);
         this.speed = speed;
-        assetPath = "assets/";
+        assetImagePath = "assets/";
         loadImages();
     }
 
-    public Ghost(int x, int y, int speed, int playerNum) {
+    public Ghost(int x, int y, int speed, int playerNum, Grid grid) {
         super(x, y, playerNum);
         this.speed = speed;
-        assetPath = "assets/";
+        this.grid = grid;
+        assetImagePath = "assets/";
         loadImages();
     }
 
@@ -61,9 +63,9 @@ public class Ghost extends Character {
     @Override
     public void loadImages() {
         try {
-            if (playerNum == GHOST1) ghost = ImageIO.read(getClass().getResource(assetPath + "ghostred.png"));
-            else if (playerNum == GHOST2) ghost = ImageIO.read(getClass().getResource(assetPath + "ghostblue.png"));
-            else ghost = ImageIO.read(getClass().getResource(assetPath + "ghostred.png"));
+            if (playerNum == GHOST1) ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostred.png"));
+            else if (playerNum == GHOST2) ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostblue.png"));
+            else ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostred.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -124,6 +126,46 @@ public class Ghost extends Character {
                 case KeyEvent.VK_NUMPAD5:
                     reqdx = 0;
                     reqdy = 1;
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void keyReleased(int key) {
+        move(this.grid);
+        if (playerNum == GHOST1) {
+            switch (key) {
+                case KeyEvent.VK_A:
+                    reqdx = 0;
+                    break;
+                case KeyEvent.VK_D:
+                    reqdx = 0;
+                    break;
+                case KeyEvent.VK_W:
+                    reqdy = 0;
+                    break;
+                case KeyEvent.VK_S:
+                    reqdy = 0;
+                    break;
+                default:
+                    break;
+            }
+        } else if (playerNum == GHOST2) {
+            switch (key) {
+                case KeyEvent.VK_NUMPAD4:
+                    reqdx = 0;
+                    break;
+                case KeyEvent.VK_NUMPAD6:
+                    reqdx = 0;
+                    break;
+                case KeyEvent.VK_NUMPAD8:
+                    reqdy = 0;
+                    break;
+                case KeyEvent.VK_NUMPAD5:
+                    reqdy = 0;
                     break;
                 default:
                     break;

@@ -1,6 +1,9 @@
 package edu.ucsb.cs56.projects.games.pacman;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -20,7 +23,7 @@ public class PacPlayer extends Character {
 
     private final int pacanimdelay = 2;
     private final int pacmananimcount = 4;
-    private final int pacmanspeed = 6;
+    private final int pacmanspeed = 4;
     int pacanimcount = pacanimdelay;
     int pacanimdir = 1;
     int pacmananimpos = 0;
@@ -30,6 +33,9 @@ public class PacPlayer extends Character {
     public int viewdx, viewdy;
 
     private Image[] pacmanUp, pacmanDown, pacmanLeft, pacmanRight;
+    private Audio[] pacmanAudio;
+    private String assetAudioPath;
+    private Grid grid;
 
     /**
      * Constructor for PacPlayer class
@@ -41,8 +47,10 @@ public class PacPlayer extends Character {
         super(x, y);
         speed = pacmanspeed;
         lives = 3;
-        assetPath = "assets/pacman/";
+        assetImagePath = "assets/pacman/";
+        assetAudioPath = "assets/audio/";
         loadImages();
+        loadAudio();
     }
 
     /**
@@ -52,13 +60,16 @@ public class PacPlayer extends Character {
      * @param y         the starting y coordinate of pacman
      * @param playerNum int representing who the player is controlling
      */
-    public PacPlayer(int x, int y, int playerNum) {
+    public PacPlayer(int x, int y, int playerNum, Grid grid) {
         super(x, y, playerNum);
         speed = pacmanspeed;
+        this.grid = grid;
         lives = 3;
-        if (playerNum == PACMAN) assetPath = "assets/pacman/";
-        else if (playerNum == MSPACMAN) assetPath = "assets/mspacman/";
+        if (playerNum == PACMAN) assetImagePath = "assets/pacman/";
+        else if (playerNum == MSPACMAN) assetImagePath = "assets/mspacman/";
+        assetAudioPath = "assets/audio/";
         loadImages();
+        loadAudio();
     }
 
     public void resetPos()
@@ -106,6 +117,7 @@ public class PacPlayer extends Character {
             if ((ch & 16) != 0) {
                 //Toggles pellet bit
                 grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 16);
+                playAudio(0);
                 Board.score++;
             }
 
@@ -114,6 +126,7 @@ public class PacPlayer extends Character {
                 //Toggles fruit bit
                 grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 32);
                 Board.score+=10;
+                playAudio(1);
             }
 
             //passes key commands to movement
@@ -148,12 +161,12 @@ public class PacPlayer extends Character {
         doAnim();
         if (viewdx == -1)
             g2d.drawImage(pacmanLeft[pacmananimpos], x + 4, y + 4, canvas);
-        else if (viewdx == 1)
-            g2d.drawImage(pacmanRight[pacmananimpos], x + 4, y + 4, canvas);
         else if (viewdy == -1)
             g2d.drawImage(pacmanUp[pacmananimpos], x + 4, y + 4, canvas);
-        else
+        else if (viewdy == 1)
             g2d.drawImage(pacmanDown[pacmananimpos], x + 4, y + 4, canvas);
+        else
+            g2d.drawImage(pacmanRight[pacmananimpos], x + 4, y + 4, canvas);
     }
 
     /**
@@ -229,6 +242,46 @@ public class PacPlayer extends Character {
         }
     }
 
+    @Override
+    public void keyReleased(int key) {
+        move(this.grid);
+        if (playerNum == PACMAN) {
+            switch (key) {
+                case KeyEvent.VK_LEFT:
+                    reqdx = 0;
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    reqdx = 0;
+                    break;
+                case KeyEvent.VK_UP:
+                    reqdy = 0;
+                    break;
+                case KeyEvent.VK_DOWN:
+                    reqdy = 0;
+                    break;
+                default:
+                    break;
+            }
+        } else if (playerNum == MSPACMAN) {
+            switch (key) {
+                case KeyEvent.VK_A:
+                    reqdx = 0;
+                    break;
+                case KeyEvent.VK_D:
+                    reqdx = 0;
+                    break;
+                case KeyEvent.VK_W:
+                    reqdy = 0;
+                    break;
+                case KeyEvent.VK_S:
+                    reqdy = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
     /**
      * Load game sprites from images folder
      */
@@ -241,23 +294,53 @@ public class PacPlayer extends Character {
         pacmanRight = new Image[4];
 
         try {
-            pacmanUp[0] = ImageIO.read(getClass().getResource(assetPath + "pacmanup.png"));
-            pacmanUp[1] = ImageIO.read(getClass().getResource(assetPath + "up1.png"));
-            pacmanUp[2] = ImageIO.read(getClass().getResource(assetPath + "up2.png"));
-            pacmanUp[3] = ImageIO.read(getClass().getResource(assetPath + "up3.png"));
-            pacmanDown[0] = ImageIO.read(getClass().getResource(assetPath + "pacmandown.png"));
-            pacmanDown[1] = ImageIO.read(getClass().getResource(assetPath + "down1.png"));
-            pacmanDown[2] = ImageIO.read(getClass().getResource(assetPath + "down2.png"));
-            pacmanDown[3] = ImageIO.read(getClass().getResource(assetPath + "down3.png"));
-            pacmanLeft[0] = ImageIO.read(getClass().getResource(assetPath + "pacmanleft.png"));
-            pacmanLeft[1] = ImageIO.read(getClass().getResource(assetPath + "left1.png"));
-            pacmanLeft[2] = ImageIO.read(getClass().getResource(assetPath + "left2.png"));
-            pacmanLeft[3] = ImageIO.read(getClass().getResource(assetPath + "left3.png"));
-            pacmanRight[0] = ImageIO.read(getClass().getResource(assetPath + "pacmanright.png"));
-            pacmanRight[1] = ImageIO.read(getClass().getResource(assetPath + "right1.png"));
-            pacmanRight[2] = ImageIO.read(getClass().getResource(assetPath + "right2.png"));
-            pacmanRight[3] = ImageIO.read(getClass().getResource(assetPath + "right3.png"));
+            pacmanUp[0] = ImageIO.read(getClass().getResource(assetImagePath + "pacmanup.png"));
+            pacmanUp[1] = ImageIO.read(getClass().getResource(assetImagePath + "up1.png"));
+            pacmanUp[2] = ImageIO.read(getClass().getResource(assetImagePath + "up2.png"));
+            pacmanUp[3] = ImageIO.read(getClass().getResource(assetImagePath + "up3.png"));
+            pacmanDown[0] = ImageIO.read(getClass().getResource(assetImagePath + "pacmandown.png"));
+            pacmanDown[1] = ImageIO.read(getClass().getResource(assetImagePath + "down1.png"));
+            pacmanDown[2] = ImageIO.read(getClass().getResource(assetImagePath + "down2.png"));
+            pacmanDown[3] = ImageIO.read(getClass().getResource(assetImagePath + "down3.png"));
+            pacmanLeft[0] = ImageIO.read(getClass().getResource(assetImagePath + "pacmanleft.png"));
+            pacmanLeft[1] = ImageIO.read(getClass().getResource(assetImagePath + "left1.png"));
+            pacmanLeft[2] = ImageIO.read(getClass().getResource(assetImagePath + "left2.png"));
+            pacmanLeft[3] = ImageIO.read(getClass().getResource(assetImagePath + "left3.png"));
+            pacmanRight[0] = ImageIO.read(getClass().getResource(assetImagePath + "pacmanright.png"));
+            pacmanRight[1] = ImageIO.read(getClass().getResource(assetImagePath + "right1.png"));
+            pacmanRight[2] = ImageIO.read(getClass().getResource(assetImagePath + "right2.png"));
+            pacmanRight[3] = ImageIO.read(getClass().getResource(assetImagePath + "right3.png"));
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Load game audio from audio folder
+     */
+    public void loadAudio()
+    {
+        try {
+            String[] sounds = {"chomp.wav", "eatfruit.wav"};
+            pacmanAudio = new Audio[sounds.length];
+            for(int i = 0; i < sounds.length; i++) {
+                pacmanAudio[i] = new Audio(getClass().getResourceAsStream(assetAudioPath + sounds[i]));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Plays a sound from pacman audio array.
+     *
+     * @param sound sound effect ID
+     */
+    public void playAudio(int sound)
+    {
+        try {
+            pacmanAudio[sound].play();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
