@@ -64,21 +64,21 @@ public class PacManLevelEditor extends JFrame {
 			System.out.println(selectedFile.getAbsolutePath());
 			try {	
 				FileInputStream input_file_stream = new FileInputStream(selectedFile.getAbsolutePath());
-	      		ObjectInputStream object_input_stream = new ObjectInputStream(input_file_stream);
-	      		GridData data = (GridData)object_input_stream.readObject();
-	      		this.grid_data = data.get2DGridData();
+				ObjectInputStream object_input_stream = new ObjectInputStream(input_file_stream);
+				GridData data = (GridData)object_input_stream.readObject();
+				this.grid_data = data.get2DGridData();
 
-	      		this.panel_grid_display.updateGrid(this.grid_data);
-	      		this.panel_grid_display.repaint();
+				this.panel_grid_display.updateGrid(this.grid_data);
+				this.panel_grid_display.repaint();
 
-	      		this.save_path = selectedFile.getAbsolutePath();
-	      		this.menu_file_save.setEnabled(true);
+				this.save_path = selectedFile.getAbsolutePath();
+				this.menu_file_save.setEnabled(true);
 				this.menu_file_save_as.setEnabled(true);
-	      	} catch (Exception e) {
-	      		e.printStackTrace();
-	      		System.out.println(e);
-	      		System.out.println("Unable to deserialize the level data.");
-	      	}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println(e);
+				System.out.println("Unable to deserialize the level data.");
+			}
 		}
 	}
 
@@ -104,7 +104,7 @@ public class PacManLevelEditor extends JFrame {
 		int grid_width = this.grid_data[0].length;
 
 		short[] converted_grid = new short[grid_width * grid_height];
-	    for(int i = 0; i < converted_grid.length; i++) {
+		for(int i = 0; i < converted_grid.length; i++) {
 			converted_grid[i] = this.grid_data[i / grid_width][i % grid_width];
 		}
 
@@ -115,14 +115,14 @@ public class PacManLevelEditor extends JFrame {
 			ObjectOutputStream grid_data_object_out = new ObjectOutputStream(grid_data_out_file);
 			grid_data_object_out.writeObject(grid_data_out);
 			this.level_edited = false;
-      	} catch (Exception e) {
-      		e.printStackTrace();
-      		System.out.println(e);
-      		System.out.println("Unable to serialize the level data.");
-      		return false;
-      	}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e);
+			System.out.println("Unable to serialize the level data.");
+			return false;
+		}
 
-      	return true;
+		return true;
 	}
 
 	public void saveLevelAs() {
