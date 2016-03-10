@@ -27,20 +27,28 @@ public class PacManLevelEditor extends JFrame {
 	private JToggleButton toggle_cell_pellet;
 	private JToggleButton toggle_cell_border_right;
 	private JToggleButton toggle_cell_border_bottom;
-	private JPanel panel_special;
-	private JLabel label_special;
-	private JToggleButton toggle_cell_pacman_spawn;
-	private short[][] gridData;
+	private short[][] grid_data;
+	private Point current_grid_selection;
+	private String save_path;
 
 	public PacManLevelEditor() {
 		initComponents();
+		this.save_path = "";
 	}
 
 	public static void main(String[] args) {
 		System.setProperty("apple.laf.useScreenMenuBar", "true");
 
 		PacManLevelEditor editor = new PacManLevelEditor();
+		editor.setSize(700, 400);
 		editor.setVisible(true);
+	}
+
+	public void newLevel() {
+		this.save_path = "";
+		this.grid_data = new short[17][17];
+		this.panel_grid_display.updateGrid(this.grid_data);
+		this.panel_grid_display.repaint();
 	}
 
 	public void loadLevel() {
@@ -53,14 +61,16 @@ public class PacManLevelEditor extends JFrame {
 				FileInputStream input_file_stream = new FileInputStream(selectedFile.getAbsolutePath());
 	      		ObjectInputStream object_input_stream = new ObjectInputStream(input_file_stream);
 	      		GridData data = (GridData)object_input_stream.readObject();
-	      		this.gridData = data.get2DGridData();
+	      		this.grid_data = data.get2DGridData();
 
-	      		this.panel_grid_display.updateGrid(this.gridData);
+	      		this.panel_grid_display.updateGrid(this.grid_data);
 	      		this.panel_grid_display.repaint();
 
-				for(int i = 0; i < this.gridData.length; i++) {
-					for(int j = 0; j < this.gridData[i].length; j++) {
-						System.out.print(" " + this.gridData[i][j]);
+	      		this.save_path = selectedFile.getAbsolutePath();
+
+				for(int i = 0; i < this.grid_data.length; i++) {
+					for(int j = 0; j < this.grid_data[i].length; j++) {
+						System.out.print(" " + this.grid_data[i][j]);
 					}
 					System.out.print("\n");
 				}
@@ -72,6 +82,81 @@ public class PacManLevelEditor extends JFrame {
 		}
 	}
 
+	public boolean saveLevel() {
+		File selectedFile;
+		if(this.save_path.isEmpty()) {
+			JFileChooser fileChooser = new JFileChooser();
+			int result = fileChooser.showSaveDialog(this);
+			if(result == JFileChooser.APPROVE_OPTION) {
+				selectedFile = fileChooser.getSelectedFile();
+			} else {
+				return false;
+			}
+		} else {
+			try {
+				selectedFile = new File(this.save_path);
+			} catch (NullPointerException e) {
+				return false;
+			}
+		}
+
+		int grid_height = this.grid_data.length;
+		int grid_width = this.grid_data[0].length;
+
+		short[] converted_grid = new short[grid_width * grid_height];
+	    for(int i = 0; i < converted_grid.length; i++) {
+			converted_grid[i] = this.grid_data[i / grid_width][i % grid_width];
+		}
+
+		GridData grid_data_out = new GridData(grid_width, converted_grid);
+
+		try {
+			FileOutputStream grid_data_out_file = new FileOutputStream(selectedFile);
+			ObjectOutputStream grid_data_object_out = new ObjectOutputStream(grid_data_out_file);
+			grid_data_object_out.writeObject(grid_data_out);
+      	} catch (Exception e) {
+      		e.printStackTrace();
+      		System.out.println(e);
+      		System.out.println("Unable to serialize the level data.");
+      		return false;
+      	}
+
+      	return true;
+	}
+
+	public void saveLevelAs() {
+		String original_save_path = this.save_path;
+		this.save_path = "";
+		if(!this.saveLevel()) {
+			this.save_path = original_save_path;
+		}
+	}
+
+	public void setGridSelection(Point grid_selection) {
+		this.current_grid_selection = grid_selection;
+
+		if(grid_selection.x < 0 || grid_selection.y < 0) {
+			toggle_cell_border_top.setEnabled(false);
+			toggle_cell_border_left.setEnabled(false);
+			toggle_cell_border_right.setEnabled(false);
+			toggle_cell_border_bottom.setEnabled(false);
+			toggle_cell_pellet.setEnabled(false);
+			return;
+		}
+		
+		toggle_cell_border_top.setEnabled(true);
+		toggle_cell_border_left.setEnabled(true);
+		toggle_cell_border_right.setEnabled(true);
+		toggle_cell_border_bottom.setEnabled(true);
+		toggle_cell_pellet.setEnabled(true);
+
+		toggle_cell_pellet.setSelected((this.grid_data[grid_selection.y][grid_selection.x] & GridData.GRID_CELL_PELLET) != 0);
+		toggle_cell_border_left.setSelected((this.grid_data[grid_selection.y][grid_selection.x] & GridData.GRID_CELL_BORDER_LEFT) != 0);
+		toggle_cell_border_right.setSelected((this.grid_data[grid_selection.y][grid_selection.x] & GridData.GRID_CELL_BORDER_RIGHT) != 0);
+		toggle_cell_border_top.setSelected((this.grid_data[grid_selection.y][grid_selection.x] & GridData.GRID_CELL_BORDER_TOP) != 0);
+		toggle_cell_border_bottom.setSelected((this.grid_data[grid_selection.y][grid_selection.x] & GridData.GRID_CELL_BORDER_BOTTOM) != 0) ;
+	}
+
 	private void initComponents() {
 		menu_bar = new JMenuBar();
 		menu_file = new JMenu();
@@ -79,14 +164,14 @@ public class PacManLevelEditor extends JFrame {
 		menu_file_load = new JMenuItem();
 		menu_file_save = new JMenuItem();
 		menu_file_save_as = new JMenuItem();
-		panel_grid_display = new PacManLevelDisplay();
+		panel_grid_display = new PacManLevelDisplay(this);
 		panel_editor = new JPanel();
 		label_grid_properties = new JLabel();
 		panel_grid_properties = new JPanel();
 		label_grid_size = new JLabel();
 		grid_size_width = new JTextField();
 		grid_size_height = new JTextField();
-		JPanel panel_vspacer_top = new JPanel(null);
+		JPanel panel_vspacer = new JPanel(null);
 		label_cell_properties = new JLabel();
 		panel_cell_properties = new JPanel();
 		toggle_cell_border_top = new JToggleButton();
@@ -94,10 +179,6 @@ public class PacManLevelEditor extends JFrame {
 		toggle_cell_pellet = new JToggleButton();
 		toggle_cell_border_right = new JToggleButton();
 		toggle_cell_border_bottom = new JToggleButton();
-		JPanel panel_vspacer_bottom = new JPanel(null);
-		panel_special = new JPanel();
-		label_special = new JLabel();
-		toggle_cell_pacman_spawn = new JToggleButton();
 
 		setTitle("PacMan Level Editor");
 		Container contentPane = getContentPane();
@@ -131,11 +212,9 @@ public class PacManLevelEditor extends JFrame {
 		menu_file_save_as.addActionListener(menu_listener);
 		menu_file.add(menu_file_save_as);
 
-		
 		menu_bar.add(menu_file);
 		setJMenuBar(menu_bar);
 
-		panel_grid_display.setBackground(new Color(0, 204, 102));
 		panel_grid_display.setLayout(new FlowLayout());
 		contentPane.add(panel_grid_display, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -194,7 +273,7 @@ public class PacManLevelEditor extends JFrame {
 			new Insets(0, 0, 0, 0), 0, 0));
 
 		// Spacer
-		panel_editor.add(panel_vspacer_top, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0,
+		panel_editor.add(panel_vspacer, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
 			new Insets(0, 0, 0, 0), 0, 0));
 
@@ -211,9 +290,12 @@ public class PacManLevelEditor extends JFrame {
 		((GridBagLayout)panel_cell_properties.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 		((GridBagLayout)panel_cell_properties.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
+		ButtonActionListener button_listener = new ButtonActionListener();
+
 		// Cell Top Border Toggle
 		toggle_cell_border_top.setText("Top");
 		toggle_cell_border_top.setEnabled(false);
+		toggle_cell_border_top.addActionListener(button_listener);
 		panel_cell_properties.add(toggle_cell_border_top, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
 			new Insets(0, 0, 0, 0), 0, 0));
@@ -221,6 +303,7 @@ public class PacManLevelEditor extends JFrame {
 		// Cell Left Border Toggle
 		toggle_cell_border_left.setText("Left");
 		toggle_cell_border_left.setEnabled(false);
+		toggle_cell_border_left.addActionListener(button_listener);
 		panel_cell_properties.add(toggle_cell_border_left, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
 			new Insets(0, 0, 0, 0), 0, 0));
@@ -228,6 +311,7 @@ public class PacManLevelEditor extends JFrame {
 		// Cell Pellet Border Toggle
 		toggle_cell_pellet.setText("Pellet");
 		toggle_cell_pellet.setEnabled(false);
+		toggle_cell_pellet.addActionListener(button_listener);
 		panel_cell_properties.add(toggle_cell_pellet, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
 			new Insets(0, 0, 0, 0), 0, 0));
@@ -235,6 +319,7 @@ public class PacManLevelEditor extends JFrame {
 		// Cell Right Border Toggle
 		toggle_cell_border_right.setText("Right");
 		toggle_cell_border_right.setEnabled(false);
+		toggle_cell_border_right.addActionListener(button_listener);
 		panel_cell_properties.add(toggle_cell_border_right, new GridBagConstraints(4, 2, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
 			new Insets(0, 0, 0, 0), 0, 0));
@@ -242,6 +327,7 @@ public class PacManLevelEditor extends JFrame {
 		// Cell Buttom Border Toggle
 		toggle_cell_border_bottom.setText("Bottom");
 		toggle_cell_border_bottom.setEnabled(false);
+		toggle_cell_border_bottom.addActionListener(button_listener);
 		panel_cell_properties.add(toggle_cell_border_bottom, new GridBagConstraints(2, 4, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
 			new Insets(0, 0, 0, 0), 0, 0));
@@ -249,35 +335,6 @@ public class PacManLevelEditor extends JFrame {
 		panel_editor.add(panel_cell_properties, new GridBagConstraints(0, 8, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
 			new Insets(0, 0, 0, 0), 0, 0));
-
-		// Spacer
-		/*panel_editor.add(panel_vspacer_bottom, new GridBagConstraints(0, 10, 1, 1, 0.0, 0.0,
-			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-			new Insets(0, 0, 0, 0), 0, 0));*/
-
-/*		// Special Properties
-		panel_special.setLayout(new GridBagLayout());
-		((GridBagLayout)panel_special.getLayout()).columnWidths = new int[] {0, 2, 0, 0};
-		((GridBagLayout)panel_special.getLayout()).rowHeights = new int[] {0, 0};
-		((GridBagLayout)panel_special.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0, 1.0E-4};
-		((GridBagLayout)panel_special.getLayout()).rowWeights = new double[] {0.0, 1.0E-4};
-
-		label_special.setText("Special");
-		label_special.setFont(label_special.getFont().deriveFont(label_special.getFont().getStyle() | Font.BOLD));
-		panel_special.add(label_special, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-			new Insets(0, 0, 0, 0), 0, 0));
-
-		// Toggle Button for PacMan Spawn Point.
-		toggle_cell_pacman_spawn.setText("PacMan Spawn Point");
-		toggle_cell_pacman_spawn.setToolTipText("Sets the current cell as the spawn point for PacMan.");
-		panel_special.add(toggle_cell_pacman_spawn, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-			new Insets(0, 0, 0, 0), 0, 0));
-
-		panel_editor.add(panel_special, new GridBagConstraints(0, 12, 1, 1, 0.0, 0.0,
-			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-			new Insets(0, 0, 0, 0), 0, 0));*/
 
 		contentPane.add(panel_editor, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
@@ -289,10 +346,37 @@ public class PacManLevelEditor extends JFrame {
 
 	class MenuActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			System.out.println("Received action performed.");
-			if(e.getSource() == PacManLevelEditor.this.menu_file_load) {
-				PacManLevelEditor.this.loadLevel();
+			PacManLevelEditor parent = PacManLevelEditor.this;
+			if(e.getSource() == parent.menu_file_new) {
+				parent.newLevel();
+			} else if(e.getSource() == parent.menu_file_load) {
+				parent.loadLevel();
+			} else if(e.getSource() == parent.menu_file_save) {
+				parent.saveLevel();
+			} else if(e.getSource() == parent.menu_file_save_as) {
+				parent.saveLevelAs();
 			}
+		}
+	}
+
+	class ButtonActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			PacManLevelEditor parent = PacManLevelEditor.this;
+			JToggleButton[] buttons = {parent.toggle_cell_border_left, parent.toggle_cell_border_right, parent.toggle_cell_border_top, parent.toggle_cell_border_bottom, parent.toggle_cell_pellet}; 
+			byte[] bits = {GridData.GRID_CELL_BORDER_LEFT, GridData.GRID_CELL_BORDER_RIGHT, GridData.GRID_CELL_BORDER_TOP, GridData.GRID_CELL_BORDER_BOTTOM, GridData.GRID_CELL_PELLET};
+
+			for(int i = 0; i < buttons.length; i++) {
+				if(e.getSource() == buttons[i]) {
+					if(buttons[i].isSelected()) {
+						parent.grid_data[parent.current_grid_selection.y][parent.current_grid_selection.x] |= bits[i];
+					} else {
+						parent.grid_data[parent.current_grid_selection.y][parent.current_grid_selection.x] &= ~bits[i];
+					}
+					break;
+				}
+			}
+
+			parent.repaint();
 		}
 	}
 }
