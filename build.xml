@@ -38,6 +38,14 @@
     <java classpath="build" classname="${projectPackage}.PacMan" fork="true"/>
   </target>
 
+  <target name="run-convert" depends="compile" description="run Pacman level conversion">
+    <java classpath="build" classname="${projectPackage}.editor.GridDataConversion" fork="true"/>
+  </target>
+
+  <target name="run-editor" depends="compile" description="run Pacman lavel editor">
+    <java classpath="build" classname="${projectPackage}.editor.PacManLevelEditor" fork="true"/>
+  </target>
+
   <target name="run-args" depends="compile" description="run Pacman game">
     <java classpath="build" classname="${projectPackage}.PacMan" fork="true">
 		<arg value="${arg0}"/>

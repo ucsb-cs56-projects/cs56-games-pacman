@@ -2,6 +2,7 @@ package edu.ucsb.cs56.projects.games.pacman;
 
 import java.awt.*;
 import java.util.Arrays;
+import java.io.*;
 
 /**
  * Class representing the map layout
@@ -15,114 +16,15 @@ public class Grid
     public int fruitCounter = 0;
     public int x;
     public int y;
-    final int MAX_LEVEL = 5;
+
     /*
      check this link to implement the ghost AI movement at intersection.
      Revise the level 1 data to classic pacman for intersection detection
      http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior
      */
-    final short leveldata1[][] = new short[][]{
-            {19, 26, 26, 18, 26, 26, 26, 22,  0, 19, 26, 26, 26, 18, 26, 26, 22},
-            {21,  0,  0, 21,  0,  0,  0, 21,  0, 21,  0,  0,  0, 21,  0,  0, 21},
-            {17, 26, 26, 16, 26, 18, 26, 24, 26, 24, 26, 18, 26, 16, 26, 26, 20},
-            {25, 26, 26, 20,  0, 25, 26, 22,  0, 19, 26, 28,  0, 17, 26, 26, 28},
-            { 0,  0,  0, 21,  0,  0,  0, 21,  0, 21,  0,  0,  0, 21,  0,  0,  0},
-            { 0,  0,  0, 21,  0, 19, 26, 24, 26, 24, 26, 22,  0, 21,  0,  0,  0},
-            {26, 26, 26, 16, 26, 20,  0,  0,  0,  0,  0, 17, 26, 16, 26, 26, 26},
-            { 0,  0,  0, 21,  0, 17, 26, 26, 26, 26, 26, 20,  0, 21,  0,  0,  0},
-            { 0,  0,  0, 21,  0, 21,  0,  0,  0,  0,  0, 21,  0, 21,  0,  0,  0},
-            {19, 26, 26, 16, 26, 24, 26, 22,  0, 19, 26, 24, 26, 16, 26, 26, 22},
-            {21,  0,  0, 21,  0,  0,  0, 21,  0, 21,  0,  0,  0, 21,  0,  0, 21},
-            {25, 22,  0, 21,  0,  0,  0, 17,  2, 20,  0,  0,  0, 21,  0, 19, 28}, // "2" in this line stands for where the pacman spawn
-            { 0, 21,  0, 17, 26, 26, 18, 24, 24, 24, 18, 26, 26, 20,  0, 21,  0},
-            {19, 24, 26, 28,  0,  0, 25, 18, 26, 18, 28,  0,  0, 25, 26, 24, 22},
-            {21,  0,  0,  0,  0,  0,  0, 21,  0, 21,  0,  0,  0,  0,  0,  0, 21},
-            {25, 26, 26, 26, 26, 26, 26, 24, 26, 24, 26, 26, 26, 26, 26, 26, 28},
-            { 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-    };
-
-    final short leveldata2[][] = new short[][]{
-            {19, 26, 26, 18, 26, 18, 26, 18, 26, 18, 26, 18, 26, 18, 26, 26, 22}, //1
-            {25, 26, 18, 28,  0, 25, 22, 21,  0, 21, 19, 28,  0, 25, 18, 26, 28}, //2
-            { 0,  0, 17, 22,  0,  0, 21, 21,  0, 21, 21,  0,  0, 19, 20,  0,  0}, //3
-            { 0,  0, 21, 25, 26, 26, 24, 24, 26, 24, 24, 26, 26, 28, 21,  0,  0}, //4
-            {26, 26, 20,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 17, 26, 26}, //5
-            { 0,  0, 21,  0,  0, 19, 26, 26, 26, 26, 26, 22,  0,  0, 21,  0,  0}, //6
-            { 0,  0, 25, 18, 26, 20,  0,  0,  0,  0,  0, 17, 26, 18, 28,  0,  0}, //7
-            { 0,  0,  0, 21,  0, 21,  0,  0,  0,  0,  0, 21,  0, 21,  0,  0,  0}, //8
-            { 0,  0,  0, 21,  0, 25, 26, 18, 26, 18, 26, 28,  0, 21,  0,  0,  0}, //9
-            {26, 22,  0, 21,  0,  0,  0, 21,  0, 21,  0,  0,  0, 21,  0, 19, 26}, //10
-            { 0, 17, 26, 20,  0,  0, 19, 20,  0, 17, 22,  0,  0, 17, 26, 20,  0}, //11
-            { 0, 21,  0, 21,  0,  0, 21, 25, 26, 28, 21,  0,  0, 21,  0, 21,  0}, //12
-            { 0, 21,  0, 17, 26, 26, 20,  0,  0,  0, 17, 26, 26, 20,  0, 21,  0}, //13
-            {19, 28,  0, 21,  0,  0, 17, 22,  0, 19, 20,  0,  0, 21,  0, 25, 22}, //14
-            {21,  0,  0, 21,  0,  0, 21, 21,  0, 21, 21,  0,  0, 21,  0,  0, 21}, //15
-            {17, 26, 26, 20,  0,  0, 21, 21,  0, 21, 21,  0,  0, 17, 26, 26, 20}, //16
-            {25, 26, 26, 24, 26, 26, 28, 25, 26, 28, 25, 26, 26, 24, 26, 26, 28}  //17
-
-    };
-
-    final short leveldata3[][] = new short[][]{
-            {19, 26, 26, 18, 26, 22,  0, 19, 26, 22,  0, 19, 26, 18, 26, 26, 22}, //1
-            {21,  0,  0, 21,  0, 17, 26, 20,  0, 17, 26, 20,  0, 21,  0,  0, 21}, //2
-            {21,  0,  0, 21,  0, 21,  0, 17, 26, 20,  0, 21,  0, 21,  0,  0, 21}, //3
-            {25, 26, 26, 20,  0, 21,  0, 21,  0, 21,  0, 21,  0, 17, 26, 26, 28}, //4
-            { 0,  0,  0, 17, 26, 24, 26, 20,  0, 17, 26, 24, 26, 20,  0,  0,  0}, //5
-            { 0, 19, 18, 20,  0,  0,  0, 21,  0, 21,  0,  0,  0, 17, 18, 22,  0}, //6
-            { 0, 21, 21, 21,  0, 19, 26, 24, 26, 24, 26, 22,  0, 21, 21, 21,  0}, //7
-            {26, 28, 21, 21,  0, 21,  0,  0,  0,  0,  0, 21,  0, 21, 21, 25, 26}, //8
-            { 0,  0, 21, 25, 26, 24, 26, 18, 26, 18, 26, 24, 26, 28, 21,  0,  0}, //9
-            {26, 26, 20, 19, 26, 26, 26, 20,  0, 17, 26, 26, 26, 22, 17, 26, 26}, //10
-            { 0,  0, 21, 21,  0,  0,  0, 21,  0, 21,  0,  0,  0, 21, 21,  0,  0}, //11
-            {19, 22, 21, 21,  0, 19, 18, 24, 26, 24, 18, 22,  0, 21, 21, 19, 22}, //12
-            {21, 21, 17, 16, 26, 20, 25, 22,  0, 19, 28, 17, 26, 16, 20, 21, 21}, //13
-            {21, 21, 21, 21,  0, 21,  0, 21,  0, 21,  0, 21,  0, 21, 21, 21, 21}, //14
-            {21, 25, 20, 21,  0, 17, 22, 21,  0, 21, 19, 20,  0, 21, 17, 28, 21}, //15
-            {21,  0, 21, 25, 22, 21, 17, 28,  0, 25, 20, 21, 19, 28, 21,  0, 21}, //16
-            {25, 26, 28,  0, 25, 28, 25, 26, 26, 26, 28, 25, 28,  0, 25, 26, 28}  //17
-    };
-
-    final short leveldata4[][] = new short[][]{
-            {19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 16},
-            {17, 16, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 16, 16, 16, 16},
-            {17, 20,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 17, 16, 16, 16},
-            {17, 16, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 16, 16, 16, 16},
-            {17, 16, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 16, 16, 16, 16},
-            {17, 20,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 17, 16, 16, 16},
-            {17, 16, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 16, 16, 16, 16},
-            {17, 16, 24, 24, 24, 24, 24, 16, 24, 24, 24, 24, 24, 16, 16, 16, 16},
-            {17, 20,  0,  0,  0,  0,  0, 21,  0,  0,  0,  0,  0, 17, 16, 16, 16},
-            {17, 20,  0, 19, 18, 18, 18, 16, 18, 18, 18, 22,  0, 17, 16, 16, 16},
-            {17, 20,  0, 17, 16, 16, 16, 16, 16, 16, 16, 20,  0, 17, 16, 16, 16},
-            {17, 20,  0, 25, 24, 24, 24, 24, 24, 24, 24, 28,  0, 17, 16, 16, 16},
-            {17, 20,  0,  0,  0,  0,  0, 16,  0,  0,  0,  0,  0, 17, 16, 16, 16},
-            {17, 16, 18, 18, 18, 18, 22, 16, 19, 18, 18, 18, 18, 16, 16, 16, 16},
-            {25, 24, 24, 24, 24, 24, 28, 16, 25, 24, 24, 24, 24, 24, 24, 24, 16},
-            {18, 18, 18, 18, 18, 18, 18, 16, 18, 18, 18, 18, 18, 18, 18, 18, 16},
-            {16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16}
-    };
-
-    final short leveldata5[][] = new short[][]{
-            { 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-            { 0,  0, 19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,  0,  0,  0},
-            { 0,  0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,  0,  0,  0},
-            { 0,  0, 17, 16, 16, 16, 24, 24, 24, 24, 24, 24, 16, 20,  0,  0,  0},
-            { 0,  0, 17, 16, 16, 20,  0,  0,  0,  0,  0,  0, 17, 20,  0,  0,  0},
-            { 0,  0, 17, 16, 16, 20,  0,  0,  0,  0,  0,  0, 25, 28,  0,  0,  0},
-            { 0,  0, 17, 16, 16, 16, 18, 18, 18, 18, 22,  0,  0,  0,  0,  0,  0},
-            { 0,  0, 17, 16, 16, 16, 16, 16, 16, 16, 20,  0,  0,  0,  0,  0,  0},
-            { 0,  0, 25, 24, 16, 16, 16, 16, 16, 16, 16, 18, 18, 18, 22,  0,  0},
-            { 0,  0,  0,  0, 17, 16, 16, 16, 16, 16, 24, 16, 16, 16, 20,  0,  0},
-            { 0,  0,  0,  0, 17, 16, 16, 16, 16, 20,  0, 17, 16, 16, 20,  0,  0},
-            {19, 18, 18, 26, 16, 24, 24,  0, 24, 28,  0, 17, 16, 16, 20,  0,  0},
-            {17, 16, 20,  0, 21,  0,  0, 21,  0,  0,  0, 17, 16, 16, 20,  0,  0},
-            {17, 16, 20,  0, 21,  0, 19, 16, 22,  0,  0, 25, 24, 24, 28,  0,  0},
-            {25, 24, 28,  0, 29,  0, 25, 24, 28,  0,  0,  0,  0,  0,  0,  0,  0},
-            { 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-            { 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0}
-    };
 
     short[][] screenData;
+    short[][][] levelsData;
     Color mazeColor, dotColor, fruitColor;
 
     /**
@@ -133,6 +35,29 @@ public class Grid
         mazeColor = new Color(5, 100, 5);
         dotColor = new Color(192, 192, 0);
         fruitColor = new Color(255,0,0);
+
+        String[] loadableLevels = {"level1.data", "level2.data", "level3.data", "level4.data", "level5.data"};
+        this.levelsData = new short[loadableLevels.length][1][1];
+        for(int i = 0; i < loadableLevels.length; i++) {
+            GridData level = loadLevel("assets/levels/"+loadableLevels[i]);
+            levelsData[i] = level.get2DGridData();
+        }
+    }
+
+    public GridData loadLevel(String asset_path) {
+        try {
+            InputStream input_stream = getClass().getResourceAsStream(asset_path);
+            //System.out.println(input_stream);
+            ObjectInputStream object_input_stream = new ObjectInputStream(input_stream);
+            GridData data = (GridData)object_input_stream.readObject();
+            return data;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e);
+            System.out.println("Failed to load level data assets.");
+            System.exit(2);
+        }
+        return null;
     }
 
     /**
@@ -144,7 +69,7 @@ public class Grid
     public boolean checkMaze() {
         for (int i = 0; i < Board.NUMBLOCKS; i++) {
             for (int j = 0; j < Board.NUMBLOCKS; j++) {
-                if ((screenData[i][j] & 16) != 0)
+                if ((screenData[i][j] & GridData.GRID_CELL_PELLET) != 0)
                     return false;
             }
         }
@@ -160,7 +85,7 @@ public class Grid
         int numOfPellet = 0;
         for (int i = 0; i < Board.NUMBLOCKS; i++) {
             for (int j = 0; j < Board.NUMBLOCKS; j++) {
-                if ((screenData[i][j] & 16) != 0)
+                if ((screenData[i][j] & GridData.GRID_CELL_PELLET) != 0)
                     numOfPellet++;
             }
         }
@@ -176,25 +101,8 @@ public class Grid
         int numOfPellet = 0;
         for (int i = 0; i < Board.NUMBLOCKS; i++) {
             for (int j = 0; j < Board.NUMBLOCKS; j++) {
-                if (numBoardsCleared % MAX_LEVEL == 0){
-                    if ((leveldata1[i][j] & 16) != 0)
-                        numOfPellet++;
-                }
-                else if (numBoardsCleared % MAX_LEVEL == 1) {
-                    if ((leveldata2[i][j] & 16) != 0)
-                        numOfPellet++;
-                }
-                else if (numBoardsCleared % MAX_LEVEL == 2) {
-                    if ((leveldata3[i][j] & 16) != 0)
-                        numOfPellet++;
-                }
-                else if (numBoardsCleared % MAX_LEVEL == 3) {
-                    if ((leveldata4[i][j] & 16) != 0)
-                        numOfPellet++;
-                }
-                else if (numBoardsCleared % MAX_LEVEL == 4){
-                    if ((leveldata5[i][j] & 16) != 0)
-                        numOfPellet++;
+                if((this.levelsData[numBoardsCleared % this.levelsData.length][i][j] & GridData.GRID_CELL_PELLET) != 0) {
+                    numOfPellet++;
                 }
             }
         }
@@ -206,16 +114,7 @@ public class Grid
      */
     public void levelInit(int numBoardsCleared) {
         for (int i = 0; i < Board.NUMBLOCKS; i++) {
-            if (numBoardsCleared % 3 == 0)
-                screenData[i] = Arrays.copyOf(leveldata1[i], Board.NUMBLOCKS);
-            else if (numBoardsCleared % MAX_LEVEL == 1)
-                screenData[i] = Arrays.copyOf(leveldata2[i], Board.NUMBLOCKS);
-            else if (numBoardsCleared % MAX_LEVEL == 2)
-                screenData[i] = Arrays.copyOf(leveldata3[i], Board.NUMBLOCKS);
-            else if (numBoardsCleared % MAX_LEVEL == 3)
-                screenData[i] = Arrays.copyOf(leveldata4[i], Board.NUMBLOCKS);
-            else if (numBoardsCleared % MAX_LEVEL == 4)
-                screenData[i] = Arrays.copyOf(leveldata5[i], Board.NUMBLOCKS);
+            screenData[i] = Arrays.copyOf(this.levelsData[numBoardsCleared % this.levelsData.length][i], Board.NUMBLOCKS);
         }
     }
 
@@ -258,60 +157,19 @@ public class Grid
             if (fruitCounter > 100) {
                 fruitCounter = 0;
                 this.randomBlock();
-                if (numBoardsCleared % MAX_LEVEL == 0) {
-                    while (true) {
-                        {
-                            if (((screenData[this.x][this.y] & 16) == 0) && (leveldata1[this.x][this.y] & 16) != 0) {
-                                screenData[this.x][this.y] = (short) (screenData[this.x][this.y] | 32);
-                                break;
-                            }
-                            this.randomBlock();
-                        }
+                while(true) {
+                    if (((screenData[this.x][this.y] & GridData.GRID_CELL_PELLET) == 0) && (this.levelsData[numBoardsCleared % this.levelsData.length][this.x][this.y] & GridData.GRID_CELL_PELLET) != 0) {
+                        screenData[this.x][this.y] = (short) (screenData[this.x][this.y] | GridData.GRID_CELL_FRUIT);
+                        break;
                     }
-                } else if (numBoardsCleared % MAX_LEVEL == 1)
-                    while (true) {
-                        {
-                            if (((screenData[this.x][this.y] & 16) == 0) && (leveldata2[this.x][this.y] & 16) != 0) {
-                                screenData[this.x][this.y] = (short) (screenData[this.x][this.y] | 32);
-                                break;
-                            }
-                            this.randomBlock();
-                        }
-                    }
-                else if (numBoardsCleared % MAX_LEVEL == 2)
-                    while (true) {
-                        {
-                            if (((screenData[this.x][this.y] & 16) == 0) && (leveldata3[this.x][this.y] & 16) != 0) {
-                                screenData[this.x][this.y] = (short) (screenData[this.x][this.y] | 32);
-                                break;
-                            }
-                            this.randomBlock();
-                        }
-                    }
-                else if (numBoardsCleared % MAX_LEVEL == 3)
-                    while (true) {
-                        {
-                            if (((screenData[this.x][this.y] & 16) == 0) && (leveldata4[this.x][this.y] & 16) != 0) {
-                                screenData[this.x][this.y] = (short) (screenData[this.x][this.y] | 32);
-                                break;
-                            }
-                            this.randomBlock();
-                        }
-                    }
-                else if (numBoardsCleared % MAX_LEVEL == 4)
-                    while (true) {
-                        {
-                            if (((screenData[this.x][this.y] & 16) == 0) && (leveldata5[this.x][this.y] & 16) != 0) {
-                                screenData[this.x][this.y] = (short) (screenData[this.x][this.y] | 32);
-                                break;
-                            }
-                            this.randomBlock();
-                        }
-                    }
-            } else
+                    this.randomBlock();
+                }
+            } else {
                 fruitCounter++;
-        }else
+            }
+        }else {
             return;
+        }
     }
 
 

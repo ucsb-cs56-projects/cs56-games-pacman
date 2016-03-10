@@ -30,10 +30,12 @@ public class PacManLevelEditor extends JFrame {
 	private short[][] grid_data;
 	private Point current_grid_selection;
 	private String save_path;
+	private boolean level_edited;
 
 	public PacManLevelEditor() {
 		initComponents();
 		this.save_path = "";
+		this.level_edited = false;
 	}
 
 	public static void main(String[] args) {
@@ -49,6 +51,8 @@ public class PacManLevelEditor extends JFrame {
 		this.grid_data = new short[17][17];
 		this.panel_grid_display.updateGrid(this.grid_data);
 		this.panel_grid_display.repaint();
+		this.menu_file_save.setEnabled(true);
+		this.menu_file_save_as.setEnabled(true);
 	}
 
 	public void loadLevel() {
@@ -67,13 +71,8 @@ public class PacManLevelEditor extends JFrame {
 	      		this.panel_grid_display.repaint();
 
 	      		this.save_path = selectedFile.getAbsolutePath();
-
-				for(int i = 0; i < this.grid_data.length; i++) {
-					for(int j = 0; j < this.grid_data[i].length; j++) {
-						System.out.print(" " + this.grid_data[i][j]);
-					}
-					System.out.print("\n");
-				}
+	      		this.menu_file_save.setEnabled(true);
+				this.menu_file_save_as.setEnabled(true);
 	      	} catch (Exception e) {
 	      		e.printStackTrace();
 	      		System.out.println(e);
@@ -114,6 +113,7 @@ public class PacManLevelEditor extends JFrame {
 			FileOutputStream grid_data_out_file = new FileOutputStream(selectedFile);
 			ObjectOutputStream grid_data_object_out = new ObjectOutputStream(grid_data_out_file);
 			grid_data_object_out.writeObject(grid_data_out);
+			this.level_edited = false;
       	} catch (Exception e) {
       		e.printStackTrace();
       		System.out.println(e);
@@ -205,10 +205,12 @@ public class PacManLevelEditor extends JFrame {
 		menu_file.addSeparator();
 
 		menu_file_save.setText("Save");
+		menu_file_save.setEnabled(false);
 		menu_file_save.addActionListener(menu_listener);
 		menu_file.add(menu_file_save);
 
 		menu_file_save_as.setText("Save As...");
+		menu_file_save_as.setEnabled(false);
 		menu_file_save_as.addActionListener(menu_listener);
 		menu_file.add(menu_file_save_as);
 
@@ -348,8 +350,20 @@ public class PacManLevelEditor extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			PacManLevelEditor parent = PacManLevelEditor.this;
 			if(e.getSource() == parent.menu_file_new) {
+				if(parent.level_edited) {
+					int response = JOptionPane.showConfirmDialog(parent, "There are unsaved edits to this file. Are you sure you wish to discard changes?", "Unsaved Changes", JOptionPane.YES_NO_OPTION);
+					if(response != JOptionPane.YES_OPTION) {
+						return;
+					}
+				}
 				parent.newLevel();
 			} else if(e.getSource() == parent.menu_file_load) {
+				if(parent.level_edited) {
+					int response = JOptionPane.showConfirmDialog(parent, "There are unsaved edits to this file. Are you sure you wish to discard changes?", "Unsaved Changes", JOptionPane.YES_NO_OPTION);
+					if(response != JOptionPane.YES_OPTION) {
+						return;
+					}
+				}
 				parent.loadLevel();
 			} else if(e.getSource() == parent.menu_file_save) {
 				parent.saveLevel();
@@ -367,6 +381,7 @@ public class PacManLevelEditor extends JFrame {
 
 			for(int i = 0; i < buttons.length; i++) {
 				if(e.getSource() == buttons[i]) {
+					parent.level_edited = true;
 					if(buttons[i].isSelected()) {
 						parent.grid_data[parent.current_grid_selection.y][parent.current_grid_selection.x] |= bits[i];
 					} else {
