@@ -105,6 +105,7 @@ public class PacManLevelDisplay extends JPanel {
 			PacManLevelDisplay.this.current_selection = new_grid_location;
 			PacManLevelDisplay.this.parent.setGridSelection(new_grid_location);
 			PacManLevelDisplay.this.repaint();
+			parent.repaint();
 		}
 	}
 }

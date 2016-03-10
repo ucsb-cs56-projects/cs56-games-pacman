@@ -43,6 +43,7 @@ public class PacManLevelEditor extends JFrame {
 
 		PacManLevelEditor editor = new PacManLevelEditor();
 		editor.setSize(700, 400);
+		editor.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		editor.setVisible(true);
 	}
 
