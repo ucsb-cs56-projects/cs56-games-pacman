@@ -9,3 +9,4 @@ highScores.txt
 # Package Files #
 *.war
 *.ear
+javadoc
