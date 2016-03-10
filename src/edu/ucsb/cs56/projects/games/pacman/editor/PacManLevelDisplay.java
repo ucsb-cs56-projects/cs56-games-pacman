@@ -6,7 +6,7 @@ import javax.swing.*;
 import edu.ucsb.cs56.projects.games.pacman.GridData;
 
 /**
- * Renders the level grid data for the custom PacMan level editor.
+ * Renders the level grid data for the custom Pac-Man level editor.
  *
  * @author Ryan Tse
  * @author Chris Beser

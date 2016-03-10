@@ -8,7 +8,7 @@ import edu.ucsb.cs56.projects.games.pacman.GridData;
 import edu.ucsb.cs56.projects.games.pacman.Board;
 
 /**
- * Custom PacMan level editor.
+ * Custom Pac-Man level editor.
  *
  * @author Ryan Tse
  * @author Chris Beser

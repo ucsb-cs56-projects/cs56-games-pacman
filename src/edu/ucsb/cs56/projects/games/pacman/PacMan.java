@@ -4,7 +4,7 @@ import javax.swing.*;
 
 
 /**
- * A Pacman arcade game remake<p>
+ * A Pac-Man arcade game remake<p>
  * The version of the code by Jan Bodnar may be found at http://zetcode.com/tutorials/javagamestutorial/pacman/
  *
  * @author Brian Postma
@@ -13,7 +13,9 @@ import javax.swing.*;
  * @author Deanna Hartsook
  * @author Kateryna Fomenko
  * @author Yuxiang Zhu
- * @version CS56 W15
+ * @author Ryan Tse
+ * @author Chris Beser
+ * @version CS56 W16
  */
 
 public class PacMan extends JFrame {

@@ -11,7 +11,7 @@ import java.util.Date;
 
 
 /**
- * Playing field for a Pacman arcade game remake that keeps track of all relevant data and handles game logic.<p>
+ * Playing field for a Pac-Man arcade game remake that keeps track of all relevant data and handles game logic.<p>
  * The version of the code by Jan Bodnar may be found at http://zetcode.com/tutorials/javagamestutorial/pacman/
  *
  * @author Brian Postma
