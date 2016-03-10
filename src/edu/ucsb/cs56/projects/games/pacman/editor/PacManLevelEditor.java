@@ -5,6 +5,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.io.*;
 import edu.ucsb.cs56.projects.games.pacman.GridData;
+import edu.ucsb.cs56.projects.games.pacman.Board;
 
 public class PacManLevelEditor extends JFrame {
 	private JMenuBar menu_bar;
@@ -32,6 +33,10 @@ public class PacManLevelEditor extends JFrame {
 	private String save_path;
 	private boolean level_edited;
 
+	// Currently, since Blocks.NUMBLOCKS is hard coded, we will adopt the value
+	// of that into the DEFAULT_GRID_SIZE.
+	private final static Integer DEFAULT_GRID_SIZE = Board.NUMBLOCKS;
+
 	public PacManLevelEditor() {
 		initComponents();
 		this.save_path = "";
@@ -39,6 +44,7 @@ public class PacManLevelEditor extends JFrame {
 	}
 
 	public static void main(String[] args) {
+		// This is an OS X specific property to use the native menu bar location.
 		System.setProperty("apple.laf.useScreenMenuBar", "true");
 
 		PacManLevelEditor editor = new PacManLevelEditor();
@@ -49,7 +55,7 @@ public class PacManLevelEditor extends JFrame {
 
 	public void newLevel() {
 		this.save_path = "";
-		this.grid_data = new short[17][17];
+		this.grid_data = new short[this.DEFAULT_GRID_SIZE][this.DEFAULT_GRID_SIZE];
 		this.panel_grid_display.updateGrid(this.grid_data);
 		this.panel_grid_display.repaint();
 		this.menu_file_save.setEnabled(true);
@@ -57,13 +63,12 @@ public class PacManLevelEditor extends JFrame {
 	}
 
 	public void loadLevel() {
-		JFileChooser fileChooser = new JFileChooser();
-		int result = fileChooser.showOpenDialog(this);
+		JFileChooser file_chooser = new JFileChooser();
+		int result = file_chooser.showOpenDialog(this);
 		if(result == JFileChooser.APPROVE_OPTION) {
-			File selectedFile = fileChooser.getSelectedFile();
-			System.out.println(selectedFile.getAbsolutePath());
+			File selected_file = file_chooser.getSelectedFile();
 			try {	
-				FileInputStream input_file_stream = new FileInputStream(selectedFile.getAbsolutePath());
+				FileInputStream input_file_stream = new FileInputStream(selected_file.getAbsolutePath());
 				ObjectInputStream object_input_stream = new ObjectInputStream(input_file_stream);
 				GridData data = (GridData)object_input_stream.readObject();
 				this.grid_data = data.get2DGridData();
@@ -71,30 +76,31 @@ public class PacManLevelEditor extends JFrame {
 				this.panel_grid_display.updateGrid(this.grid_data);
 				this.panel_grid_display.repaint();
 
-				this.save_path = selectedFile.getAbsolutePath();
+				this.save_path = selected_file.getAbsolutePath();
 				this.menu_file_save.setEnabled(true);
 				this.menu_file_save_as.setEnabled(true);
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println(e);
 				System.out.println("Unable to deserialize the level data.");
+				JOptionPane.showMessageDialog(this, "Unable to open level data file.", "Load Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
 
 	public boolean saveLevel() {
-		File selectedFile;
+		File selected_file;
 		if(this.save_path.isEmpty()) {
-			JFileChooser fileChooser = new JFileChooser();
-			int result = fileChooser.showSaveDialog(this);
+			JFileChooser file_chooser = new JFileChooser();
+			int result = file_chooser.showSaveDialog(this);
 			if(result == JFileChooser.APPROVE_OPTION) {
-				selectedFile = fileChooser.getSelectedFile();
+				selected_file = file_chooser.getSelectedFile();
 			} else {
 				return false;
 			}
 		} else {
 			try {
-				selectedFile = new File(this.save_path);
+				selected_file = new File(this.save_path);
 			} catch (NullPointerException e) {
 				return false;
 			}
@@ -103,6 +109,7 @@ public class PacManLevelEditor extends JFrame {
 		int grid_height = this.grid_data.length;
 		int grid_width = this.grid_data[0].length;
 
+		// Convert the 2D grid array to a 1D storable grid array.
 		short[] converted_grid = new short[grid_width * grid_height];
 		for(int i = 0; i < converted_grid.length; i++) {
 			converted_grid[i] = this.grid_data[i / grid_width][i % grid_width];
@@ -111,7 +118,7 @@ public class PacManLevelEditor extends JFrame {
 		GridData grid_data_out = new GridData(grid_width, converted_grid);
 
 		try {
-			FileOutputStream grid_data_out_file = new FileOutputStream(selectedFile);
+			FileOutputStream grid_data_out_file = new FileOutputStream(selected_file);
 			ObjectOutputStream grid_data_object_out = new ObjectOutputStream(grid_data_out_file);
 			grid_data_object_out.writeObject(grid_data_out);
 			this.level_edited = false;
@@ -119,6 +126,7 @@ public class PacManLevelEditor extends JFrame {
 			e.printStackTrace();
 			System.out.println(e);
 			System.out.println("Unable to serialize the level data.");
+			JOptionPane.showMessageDialog(this, "Unable to save level data file.", "Save Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 
@@ -127,8 +135,11 @@ public class PacManLevelEditor extends JFrame {
 
 	public void saveLevelAs() {
 		String original_save_path = this.save_path;
+		// We empty out the save path so that save level will prompt for a destination file.
 		this.save_path = "";
 		if(!this.saveLevel()) {
+			// In the event the save is incomplete, we restore the save path so that
+			// it can still be saved to the original file.
 			this.save_path = original_save_path;
 		}
 	}
@@ -136,6 +147,8 @@ public class PacManLevelEditor extends JFrame {
 	public void setGridSelection(Point grid_selection) {
 		this.current_grid_selection = grid_selection;
 
+		// If there is a grid selection that x or y is less than
+		// zero, that means there is in essence no selection.
 		if(grid_selection.x < 0 || grid_selection.y < 0) {
 			toggle_cell_border_top.setEnabled(false);
 			toggle_cell_border_left.setEnabled(false);
@@ -151,6 +164,7 @@ public class PacManLevelEditor extends JFrame {
 		toggle_cell_border_bottom.setEnabled(true);
 		toggle_cell_pellet.setEnabled(true);
 
+		// The toggles are set based upon the state of the grid data.
 		toggle_cell_pellet.setSelected((this.grid_data[grid_selection.y][grid_selection.x] & GridData.GRID_CELL_PELLET) != 0);
 		toggle_cell_border_left.setSelected((this.grid_data[grid_selection.y][grid_selection.x] & GridData.GRID_CELL_BORDER_LEFT) != 0);
 		toggle_cell_border_right.setSelected((this.grid_data[grid_selection.y][grid_selection.x] & GridData.GRID_CELL_BORDER_RIGHT) != 0);
@@ -181,6 +195,10 @@ public class PacManLevelEditor extends JFrame {
 		toggle_cell_border_right = new JToggleButton();
 		toggle_cell_border_bottom = new JToggleButton();
 
+		// Resusable insets value for objects that should have
+		// no inset value.
+		Insets default_no_inset = new Insets(0, 0, 0, 0);
+
 		setTitle("PacMan Level Editor");
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new GridBagLayout());
@@ -190,7 +208,6 @@ public class PacManLevelEditor extends JFrame {
 		((GridBagLayout)contentPane.getLayout()).rowWeights = new double[] {1.0, 1.0E-4};
 
 		// File Menu
-
 		MenuActionListener menu_listener = new MenuActionListener();
 
 		menu_file.setText("File");
@@ -233,7 +250,7 @@ public class PacManLevelEditor extends JFrame {
 		label_grid_properties.setFont(label_grid_properties.getFont().deriveFont(label_grid_properties.getFont().getStyle() | Font.BOLD));
 		panel_editor.add(label_grid_properties, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-			new Insets(0, 0, 0, 0), 0, 0));
+			default_no_inset, 0, 0));
 
 		panel_grid_properties.setLayout(new GridBagLayout());
 		((GridBagLayout)panel_grid_properties.getLayout()).columnWidths = new int[] {0, 2, 0, 2, 0, 2, 0, 0};
@@ -245,47 +262,47 @@ public class PacManLevelEditor extends JFrame {
 		label_grid_size.setLabelFor(grid_size_width);
 		panel_grid_properties.add(label_grid_size, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-			new Insets(0, 0, 0, 0), 0, 0));
+			default_no_inset, 0, 0));
 
-		grid_size_width.setEditable(false);
-		grid_size_width.setEnabled(false);
 		/*
 		 * TODO: In future revisions, if the game is changed to support
 		 * additional board sizes, it would make sense to enable this
 		 * option and allow editors to specify the size of the board.
 		 */
-		grid_size_width.setText("17");
+		grid_size_width.setEditable(false);
+		grid_size_width.setEnabled(false);
+		grid_size_width.setText(this.DEFAULT_GRID_SIZE.toString());
 		grid_size_width.setToolTipText("Currently, grid resizing is not supported by the game.");
 		panel_grid_properties.add(grid_size_width, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-			new Insets(0, 0, 0, 0), 0, 0));
+			default_no_inset, 0, 0));
 
 		grid_size_height.setEditable(false);
 		grid_size_height.setEnabled(false);
-		grid_size_height.setText("17");
+		grid_size_height.setText(this.DEFAULT_GRID_SIZE.toString());
 		// It is currently presumed within the code that games will always be
 		// square in size. The logic of other components in this editor
 		// will need to be revised should there be non-square boards.
 		grid_size_height.setToolTipText("Grids must be square.");
 		panel_grid_properties.add(grid_size_height, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-			new Insets(0, 0, 0, 0), 0, 0));
+			default_no_inset, 0, 0));
 
 		panel_editor.add(panel_grid_properties, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-			new Insets(0, 0, 0, 0), 0, 0));
+			default_no_inset, 0, 0));
 
 		// Spacer
 		panel_editor.add(panel_vspacer, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-			new Insets(0, 0, 0, 0), 0, 0));
+			default_no_inset, 0, 0));
 
 		// Cell Properties
 		label_cell_properties.setText("Cell Properties");
 		label_cell_properties.setFont(label_cell_properties.getFont().deriveFont(label_cell_properties.getFont().getStyle() | Font.BOLD));
 		panel_editor.add(label_cell_properties, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-			new Insets(0, 0, 0, 0), 0, 0));
+			default_no_inset, 0, 0));
 
 		panel_cell_properties.setLayout(new GridBagLayout());
 		((GridBagLayout)panel_cell_properties.getLayout()).columnWidths = new int[] {0, 2, 0, 2, 0, 0};
@@ -301,7 +318,7 @@ public class PacManLevelEditor extends JFrame {
 		toggle_cell_border_top.addActionListener(button_listener);
 		panel_cell_properties.add(toggle_cell_border_top, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-			new Insets(0, 0, 0, 0), 0, 0));
+			default_no_inset, 0, 0));
 
 		// Cell Left Border Toggle
 		toggle_cell_border_left.setText("Left");
@@ -309,7 +326,7 @@ public class PacManLevelEditor extends JFrame {
 		toggle_cell_border_left.addActionListener(button_listener);
 		panel_cell_properties.add(toggle_cell_border_left, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-			new Insets(0, 0, 0, 0), 0, 0));
+			default_no_inset, 0, 0));
 
 		// Cell Pellet Border Toggle
 		toggle_cell_pellet.setText("Pellet");
@@ -317,7 +334,7 @@ public class PacManLevelEditor extends JFrame {
 		toggle_cell_pellet.addActionListener(button_listener);
 		panel_cell_properties.add(toggle_cell_pellet, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-			new Insets(0, 0, 0, 0), 0, 0));
+			default_no_inset, 0, 0));
 
 		// Cell Right Border Toggle
 		toggle_cell_border_right.setText("Right");
@@ -325,7 +342,7 @@ public class PacManLevelEditor extends JFrame {
 		toggle_cell_border_right.addActionListener(button_listener);
 		panel_cell_properties.add(toggle_cell_border_right, new GridBagConstraints(4, 2, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-			new Insets(0, 0, 0, 0), 0, 0));
+			default_no_inset, 0, 0));
 
 		// Cell Buttom Border Toggle
 		toggle_cell_border_bottom.setText("Bottom");
@@ -333,17 +350,20 @@ public class PacManLevelEditor extends JFrame {
 		toggle_cell_border_bottom.addActionListener(button_listener);
 		panel_cell_properties.add(toggle_cell_border_bottom, new GridBagConstraints(2, 4, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-			new Insets(0, 0, 0, 0), 0, 0));
+			default_no_inset, 0, 0));
 
 		panel_editor.add(panel_cell_properties, new GridBagConstraints(0, 8, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-			new Insets(0, 0, 0, 0), 0, 0));
+			default_no_inset, 0, 0));
 
 		contentPane.add(panel_editor, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-			new Insets(0, 0, 0, 0), 0, 0));
+			default_no_inset, 0, 0));
 
 		pack();
+
+		// Unless there is a parent that opened this window,
+		// this should be centered relative to the screen.
 		setLocationRelativeTo(getOwner());
 	}
 
@@ -377,6 +397,7 @@ public class PacManLevelEditor extends JFrame {
 	class ButtonActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			PacManLevelEditor parent = PacManLevelEditor.this;
+			// These two arrays are in parallel with each other.
 			JToggleButton[] buttons = {parent.toggle_cell_border_left, parent.toggle_cell_border_right, parent.toggle_cell_border_top, parent.toggle_cell_border_bottom, parent.toggle_cell_pellet}; 
 			byte[] bits = {GridData.GRID_CELL_BORDER_LEFT, GridData.GRID_CELL_BORDER_RIGHT, GridData.GRID_CELL_BORDER_TOP, GridData.GRID_CELL_BORDER_BOTTOM, GridData.GRID_CELL_PELLET};
 

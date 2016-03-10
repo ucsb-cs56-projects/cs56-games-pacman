@@ -12,7 +12,7 @@ import edu.ucsb.cs56.projects.games.pacman.GridData;
 
 public class GridDataConversion {
 	public static void main(String[] args) {
-		short convertData[][] = new short[][]{
+		short convert_data[][] = new short[][]{
 			{ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
 			{ 0,  0, 19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,  0,  0,  0},
 			{ 0,  0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,  0,  0,  0},
@@ -33,8 +33,8 @@ public class GridDataConversion {
 		};
 
 		// Determine the size of the grid.
-		int grid_width = convertData[0].length;
-		int grid_height = convertData.length;
+		int grid_width = convert_data[0].length;
+		int grid_height = convert_data.length;
 
 		// Currently, the code presumes that the width and length
 		// of the board are the same.
@@ -48,7 +48,7 @@ public class GridDataConversion {
 		// Flatten the data into a 1D array.
 		short[] grid_data = new short[grid_data_size];
 		for(int i = 0; i < grid_data_size; i++) {
-			grid_data[i] = convertData[i / grid_width][i % grid_width];
+			grid_data[i] = convert_data[i / grid_width][i % grid_width];
 		}
 
 		// Store the data into a serializable object.
