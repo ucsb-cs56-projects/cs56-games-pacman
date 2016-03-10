@@ -4,6 +4,14 @@ import javax.sound.sampled.*;
 import java.io.*;
 import java.util.*;
 
+/**
+ * An audio class that supports importing an audio asset that is provided as an input stream.
+ * This allows the same clip to be run multiple times in concert/succession.
+ *
+ * @author Ryan Tse
+ * @author Chris Beser
+ * @version CS56 W16
+ */
 public class Audio {
 	private AudioFormat audioFormat;
 	private int audioSize;
@@ -38,8 +46,14 @@ public class Audio {
 		return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
 	}
 
-	public void play() throws UnsupportedAudioFileException, LineUnavailableException{
-		if(this.audioClip.isRunning()) return;
+	// By default, play will only allow an instance of the audio clip to be played
+	// once at any given moment and will not replay until after the clip has finished.
+	public void play() throws UnsupportedAudioFileException, LineUnavailableException {
+		this.play(true);
+	}
+
+	public void play(boolean playOnlyOnce) throws UnsupportedAudioFileException, LineUnavailableException {
+		if(playOnlyOnce && this.audioClip.isRunning()) return;
 		this.audioClip.setMicrosecondPosition(0);
 		this.audioClip.start();
 	}

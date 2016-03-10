@@ -7,6 +7,13 @@ import java.io.*;
 import edu.ucsb.cs56.projects.games.pacman.GridData;
 import edu.ucsb.cs56.projects.games.pacman.Board;
 
+/**
+ * Custom PacMan level editor.
+ *
+ * @author Ryan Tse
+ * @author Chris Beser
+ * @version CS56 W16
+ */
 public class PacManLevelEditor extends JFrame {
 	private JMenuBar menu_bar;
 	private JMenu menu_file;

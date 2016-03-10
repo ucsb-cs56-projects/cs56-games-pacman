@@ -5,6 +5,13 @@ import java.awt.event.*;
 import javax.swing.*;
 import edu.ucsb.cs56.projects.games.pacman.GridData;
 
+/**
+ * Renders the level grid data for the custom PacMan level editor.
+ *
+ * @author Ryan Tse
+ * @author Chris Beser
+ * @version CS56 W16
+ */
 public class PacManLevelDisplay extends JPanel {
 	private short[][] grid_data;
 	private Color color_maze, color_dot, color_select;

@@ -4,12 +4,16 @@ import java.io.*;
 import java.util.*;
 import edu.ucsb.cs56.projects.games.pacman.GridData;
 
-/*
- This file implements a method of converting the old 2D array of level grid data
- into a serialized file of GridData. This file is left here for historical reasons
- as this system is no longer used and is succeeded by the level editor.
+/**
+ * This file implements a method of converting the old 2D array of level grid data
+ * into a serialized file of GridData. This file is left here for historical reasons
+ * as this system is no longer used and is succeeded by the level editor.
+ *
+ * @author Ryan Tse
+ * @author Chris Beser
+ * @version CS56 W16
+ * @deprecated Refer to GridData.
  */
-
 public class GridDataConversion {
 	public static void main(String[] args) {
 		short convert_data[][] = new short[][]{

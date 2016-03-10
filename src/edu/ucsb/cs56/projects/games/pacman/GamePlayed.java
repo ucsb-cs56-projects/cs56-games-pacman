@@ -22,6 +22,7 @@ public class GamePlayed implements Serializable, Comparable<GamePlayed> {
 	 * Constructor to create a GamePlayed object
 	 *
 	 * @param name  Player's name
+	 * @param date  Date when score was set.
 	 * @param score Player's score
 	 */
 	public GamePlayed(String name, Date date, int score) {

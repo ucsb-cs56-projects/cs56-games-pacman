@@ -69,7 +69,7 @@ public class Node extends Point implements Comparable<Node>
 
 	/**
 	 * Sets the direction of movement into node
-	 * Prevents abrupt movements (left <-> right and up <-> down)
+	 * Prevents abrupt movements (left to right and up to down)
 	 *
 	 * @param dx change in x
 	 * @param dy change in y

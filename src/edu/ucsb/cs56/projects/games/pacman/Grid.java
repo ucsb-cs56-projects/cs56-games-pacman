@@ -95,6 +95,7 @@ public class Grid
 	/**
 	 * Count the number of pellets in each map
 	 *
+	 * @param numBoardsCleared the number of levels that have been cleared
 	 * @return An int indicating how many pellets are left
 	 */
 	public int getPelletNumForMap(int numBoardsCleared) {
@@ -111,6 +112,7 @@ public class Grid
 
 	/**
 	 * Initialize level
+	 * @param numBoardsCleared the number of levels that have been cleared
 	 */
 	public void levelInit(int numBoardsCleared) {
 		for (int i = 0; i < Board.NUMBLOCKS; i++) {

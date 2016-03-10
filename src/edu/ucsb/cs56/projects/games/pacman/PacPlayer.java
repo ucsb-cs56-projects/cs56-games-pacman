@@ -59,6 +59,7 @@ public class PacPlayer extends Character {
 	 * @param x         the starting x coordinate of pacman
 	 * @param y         the starting y coordinate of pacman
 	 * @param playerNum int representing who the player is controlling
+	 * @param grid      the grid in which PacPlayer is part of.
 	 */
 	public PacPlayer(int x, int y, int playerNum, Grid grid) {
 		super(x, y, playerNum);

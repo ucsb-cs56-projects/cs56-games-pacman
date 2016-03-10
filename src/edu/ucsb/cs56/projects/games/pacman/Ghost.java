@@ -272,6 +272,7 @@ public class Ghost extends Character {
 	 * @param grid the grid to be used for pathfinding
 	 * @param x target x coordinate in grid form
 	 * @param y target y coordinate in grid form
+	 * @return The next move to make for the ghost
 	 */
 	public Node pathFind(Grid grid, int x, int y)
 	{
