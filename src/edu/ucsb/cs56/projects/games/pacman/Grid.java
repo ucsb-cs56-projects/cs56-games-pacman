@@ -330,32 +330,22 @@ public class Grid
                 x = j * Board.BLOCKSIZE + 3;
 
                 g2d.setColor(mazeColor);
-                
-                /*
-                screen draw explaination
-                bit 0 not 0 -> draw left
-                bit 1 not 0 -> draw top
-                bit 2 not 0 -> draw right
-                bit 3 not 0 -> draw bottom
-                bit 4 not 0 -> draw pellet
-                bit 5 not 0 -> draw fruit
-                 */
 
-                if ((screenData[i][j] & 1) != 0) // draws left
+                if ((screenData[i][j] & GridData.GRID_CELL_BORDER_LEFT) != 0) // draws left
                     g2d.drawLine(x, y, x, y + Board.BLOCKSIZE - 1);
-                if ((screenData[i][j] & 2) != 0) // draws top
+                if ((screenData[i][j] & GridData.GRID_CELL_BORDER_TOP) != 0) // draws top
                     g2d.drawLine(x, y, x + Board.BLOCKSIZE - 1, y);
-                if ((screenData[i][j] & 4) != 0) // draws right
+                if ((screenData[i][j] & GridData.GRID_CELL_BORDER_RIGHT) != 0) // draws right
                     g2d.drawLine(x + Board.BLOCKSIZE - 1, y, x + Board.BLOCKSIZE - 1, y + Board.BLOCKSIZE - 1);
-                if ((screenData[i][j] & 8) != 0) // draws bottom
+                if ((screenData[i][j] & GridData.GRID_CELL_BORDER_BOTTOM) != 0) // draws bottom
                     g2d.drawLine(x, y + Board.BLOCKSIZE - 1, x + Board.BLOCKSIZE - 1, y + Board.BLOCKSIZE - 1);
 
                 g2d.setColor(dotColor);
-                if ((screenData[i][j] & 16) != 0) // draws pellet
+                if ((screenData[i][j] & GridData.GRID_CELL_PELLET) != 0) // draws pellet
                     g2d.fillRect(x + 11, y + 11, 2, 2);
 
                 g2d.setColor(fruitColor);
-                if ((screenData[i][j] & 32) != 0) // draws fruit
+                if ((screenData[i][j] & GridData.GRID_CELL_FRUIT) != 0) // draws fruit
                     g2d.fillRect(x + 10, y + 10, 4, 4);
             }
         }
