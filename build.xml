@@ -1,95 +1,91 @@
-<project name="Pacman" default="compile">
+<project name="Pac-Man" default="compile">
+	<!-- build.xml for CS56 W16 Pac-Man game --> 
 
-   <!-- build.xml for CS56 S13 Pacman game --> 
+	<property environment="env"/> <!-- load the environment variables --> 
+	<property name="projectPackage" value="edu.ucsb.cs56.projects.games.pacman" />
+	<property name="out.assets.dir" value="build/edu/ucsb/cs56/projects/games/pacman/assets" />
+	<property name="webRoot" value="${env.HOME}/public_html/cs56" />
+	<property name="webBaseURL" value="http://www.cs.ucsb.edu/~${env.USER}/cs56" />
+	<property name="projectName" value="cs56-games-pacman" /> 
+	<property name="javadocDest" value="${webRoot}/${projectName}/javadoc" /> 
+	<property name="javadocURL" value="${webBaseURL}/${projectName}/javadoc" /> 
+	<property name="javadocLink" value="http://java.sun.com/javase/7/docs/api/" />
+	<path id="project.class.path">
+		<pathelement location="./build"/>
+		<pathelement location="lib/junit-4.8.2.jar"/>
+	</path>
 
-   <property environment="env"/> <!-- load the environment variables --> 
-   <property name="projectPackage" value="edu.ucsb.cs56.projects.games.pacman" />
-   <property name="out.assets.dir" value="build/edu/ucsb/cs56/projects/games/pacman/assets" />
-   <property name="webRoot" value="${env.HOME}/public_html/cs56" />
-   <property name="webBaseURL"
-	     value="http://www.cs.ucsb.edu/~${env.USER}/cs56" />
-   <property name="projectName" value="cs56-games-pacman" /> 
- <!--  <property name="javadocDest"
-	     value="${webRoot}/S13/FamiliarStranger-/${projectName}/javadoc" /> 
-   <property name="javadocURL" value="${webBaseURL}/S13/FamiliarStranger-/${projectName}/javadoc" /> 
-   <property name="javadocLink"
-	     value="http://java.sun.com/javase/7/docs/api/" /> -->
-   <property name="javadocDest" value="${webRoot}/${projectName}/javadoc" /> 
-   <property name="javadocURL" value="${webBaseURL}/${projectName}/javadoc" /> 
-   <property name="javadocLink" value="http://java.sun.com/javase/7/docs/api/" />
-   <path id="project.class.path">
-         <pathelement location="./build"/>
-         <pathelement location="lib/junit-4.8.2.jar"/>
-   </path>   
+	<target name="compile" description="Compile Pac-Man code.">
+		<mkdir dir="build" />
+		<mkdir dir="${out.assets.dir}" />
+		<copy includeemptydirs="false" todir="${out.assets.dir}">
+			<fileset dir="assets"/>
+		</copy>
+		<javac srcdir="src" destdir="build" debug="true" debuglevel="lines,source" includeantruntime="false">
+			<classpath refid="project.class.path" />
+		</javac>
+	</target>
 
-  <target name="compile" description="compile my code">
-    <mkdir dir="build" />
-    <mkdir dir="${out.assets.dir}" />
-    <copy includeemptydirs="false" todir="${out.assets.dir}">
-      <fileset dir="assets"/>
-    </copy>
-    <javac srcdir="src" destdir="build" debug="true" debuglevel="lines,source" 
-	   includeantruntime="false" >
-      <classpath refid="project.class.path" />
-    </javac>
-  </target>
+	<target name="run" depends="compile" description="Run Pac-Man game.">
+		<java classpath="build" classname="${projectPackage}.PacMan" fork="true"/>
+	</target>
 
-  <target name="run" depends="compile" description="run Pacman game">
-    <java classpath="build" classname="${projectPackage}.PacMan" fork="true"/>
-  </target>
+	<target name="run-convert" depends="compile" description="Run Pac-Man level conversion (deprecated).">
+		<java classpath="build" classname="${projectPackage}.editor.GridDataConversion" fork="true"/>
+	</target>
 
-  <target name="run-args" depends="compile" description="run Pacman game">
-    <java classpath="build" classname="${projectPackage}.PacMan" fork="true">
-		<arg value="${arg0}"/>
-		<arg value="${arg1}"/>
-	</java>
-  </target>
+	<target name="run-editor" depends="compile" description="Run Pac-Man lavel editor.">
+		<java classpath="build" classname="${projectPackage}.editor.PacManLevelEditor" fork="true"/>
+	</target>
 
- <target name="javadoc" depends="compile" description="publish javadoc"> 
-   <delete dir="javadoc" quiet="true" /> 
-   <javadoc  destdir="javadoc" author="true" version="true" use="true" >
-     <fileset dir="src" includes="**/*.java"/>
-     <classpath refid="project.class.path" />
-     <link href="${javadocLink}" /> <!-- for external links to std API classes -->
-   </javadoc>
+	<target name="run-args" depends="compile" description="Run Pac-Man game with arguments.">
+		<java classpath="build" classname="${projectPackage}.PacMan" fork="true">
+			<arg value="${arg0}"/>
+			<arg value="${arg1}"/>
+		</java>
+	</target>
 
-   <!-- delete the old javadoc --> 
-   <delete quiet="true" dir="${javadocDest}" /> 
- 
-   <!-- copy everything you just made to the javadoc destination,
-	and then make it readable -->   
-   <copy todir="${javadocDest}" > 
-     <fileset dir="javadoc"/> 
-   </copy> 
+	<target name="javadoc" depends="compile" description="Generate/publish javadoc."> 
+		<delete dir="javadoc" quiet="true" /> 
+		<javadoc  destdir="javadoc" author="true" version="true" use="true" >
+			<fileset dir="src" includes="**/*.java"/>
+			<classpath refid="project.class.path" />
+			<link href="${javadocLink}" /> <!-- for external links to std API classes -->
+		</javadoc>
 
-   <!-- Note: this only does the chmod command on the javadoc
-	subdirectory and its contents.  You MIGHT have to MANUALLY do the
-	chmod on the parent directories.  However, you should only need to do
-	that once. -->
-   <chmod dir="${javadocDest}" perm="755"  type="dir" includes="**" /> 
-   <chmod dir="${javadocDest}" perm="755"  type="file" includes="**/*" /> 
-   <echo>Javadoc deployed to ${javadocURL}</echo>
- </target>        
-	
-  <target name="test" description="run JUnit tests" depends="compile">
-	  <junit haltonerror="no" haltonfailure="no">
-		  <classpath refid="project.class.path" />
-		  <batchtest fork="yes">
-			  <fileset dir="src">
-				  <include name="**/*Test.java"/>
-			  </fileset>
-		  </batchtest>
-		<formatter type="plain" usefile="false" />
-	  </junit>
-  </target>
-				  
+		<!-- delete the old javadoc --> 
+		<delete quiet="true" dir="${javadocDest}" /> 
 
-  <target name="clean" description="delete unnecessary files and directories">
-    <delete dir="build/edu" failonerror="false" verbose="true" />
-    <mkdir dir="build" />
-    <delete dir="javadoc" failonerror="false" verbose="true" />  <!-- the local copy -->
-    <mkdir dir="javadoc" />
-  </target>
+		<!-- copy everything you just made to the javadoc destination,
+		and then make it readable -->   
+		<copy todir="${javadocDest}" > 
+			<fileset dir="javadoc"/> 
+		</copy> 
+
+		<!-- Note: this only does the chmod command on the javadoc
+		subdirectory and its contents.  You MIGHT have to MANUALLY do the
+		chmod on the parent directories.  However, you should only need to do
+		that once. -->
+		<chmod dir="${javadocDest}" perm="755"  type="dir" includes="**" /> 
+		<chmod dir="${javadocDest}" perm="755"  type="file" includes="**/*" /> 
+		<echo>Javadoc deployed to ${javadocURL}</echo>
+	</target>        
+
+	<target name="test" depends="compile" description="Run JUnit tests.">
+		<junit haltonerror="no" haltonfailure="no">
+			<classpath refid="project.class.path" />
+			<batchtest fork="yes">
+				<fileset dir="src">
+					<include name="**/*Test.java"/>
+				</fileset>
+			</batchtest>
+			<formatter type="plain" usefile="false" />
+		</junit>
+	</target>
 
 
+	<target name="clean" description="Delete unnecessary files and directories.">
+		<delete dir="build" failonerror="false" verbose="true" />
+		<delete dir="javadoc" failonerror="false" verbose="true" />
+	</target>
 </project>
