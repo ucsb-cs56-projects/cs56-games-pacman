@@ -111,19 +111,19 @@ public class Ghost extends Character {
 			}
 		} else if (playerNum == GHOST2) {
 			switch (key) {
-				case KeyEvent.VK_NUMPAD4:
+				case KeyEvent.VK_J:
 					reqdx = -1;
 					reqdy = 0;
 					break;
-				case KeyEvent.VK_NUMPAD6:
+				case KeyEvent.VK_L:
 					reqdx = 1;
 					reqdy = 0;
 					break;
-				case KeyEvent.VK_NUMPAD8:
+				case KeyEvent.VK_I:
 					reqdx = 0;
 					reqdy = -1;
 					break;
-				case KeyEvent.VK_NUMPAD5:
+				case KeyEvent.VK_K:
 					reqdx = 0;
 					reqdy = 1;
 					break;
@@ -155,16 +155,16 @@ public class Ghost extends Character {
 			}
 		} else if (playerNum == GHOST2) {
 			switch (key) {
-				case KeyEvent.VK_NUMPAD4:
+				case KeyEvent.VK_J:
 					reqdx = 0;
 					break;
-				case KeyEvent.VK_NUMPAD6:
+				case KeyEvent.VK_L:
 					reqdx = 0;
 					break;
-				case KeyEvent.VK_NUMPAD8:
+				case KeyEvent.VK_I:
 					reqdy = 0;
 					break;
-				case KeyEvent.VK_NUMPAD5:
+				case KeyEvent.VK_K:
 					reqdy = 0;
 					break;
 				default:
