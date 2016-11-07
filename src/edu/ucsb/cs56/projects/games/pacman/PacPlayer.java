@@ -105,7 +105,7 @@ public class PacPlayer extends Character {
 		if (reqdx == -dx && reqdy == -dy) {
 			dx = reqdx;
 			dy = reqdy;
-			if(dx != 0 && dy != 0)
+			if(dx != 0 || dy != 0)
 				direction = ((direction + 1) % 4) + 1;
 		}
 	

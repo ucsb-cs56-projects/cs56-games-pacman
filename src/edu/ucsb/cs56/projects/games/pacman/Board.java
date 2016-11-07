@@ -63,8 +63,8 @@ public class Board extends JPanel implements ActionListener
 		grid = new Grid();
 		pacman = new PacPlayer(8 * BLOCKSIZE, 11 * BLOCKSIZE, PacPlayer.PACMAN, grid);
 		msPacman = new PacPlayer(7 * BLOCKSIZE, 11 * BLOCKSIZE, PacPlayer.MSPACMAN, grid);
-		ghost1 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 2, Ghost.GHOST1, grid);
-		ghost2 = new Ghost(9 * BLOCKSIZE, 7 * BLOCKSIZE, 2, Ghost.GHOST2, grid);
+		ghost1 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 3, Ghost.GHOST1, grid);
+		ghost2 = new Ghost(9 * BLOCKSIZE, 7 * BLOCKSIZE, 3, Ghost.GHOST2, grid);
 		setFocusable(true);
 
 		setBackground(Color.black);
@@ -149,6 +149,7 @@ public class Board extends JPanel implements ActionListener
 						levelContinue();
 
 					}
+					grid.incrementFruit(numBoardsCleared);
 					detectCollision(ghosts);
 					break;
 			}
@@ -455,7 +456,7 @@ public class Board extends JPanel implements ActionListener
 				{
 					ghost.resetPos();
 					if (numBoardsCleared == 3)
-						ghost.speed = 6;
+						ghost.speed = MAX_SPEED;
 				}
 				break;
 		}

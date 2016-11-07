@@ -195,6 +195,11 @@ public class Ghost extends Character {
 
 			ch = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
 
+			if((ch & 32) != 0) {
+				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 32);
+				Board.score -= 5;
+			}
+
 			if (reqdx != 0 || reqdy != 0) {
 				if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) || (reqdx == 1 && reqdy == 0 && (ch & 4) != 0) ||
 						(reqdx == 0 && reqdy == -1 && (ch & 2) != 0) || (reqdx == 0 && reqdy == 1 && (ch & 8) != 0))) {
