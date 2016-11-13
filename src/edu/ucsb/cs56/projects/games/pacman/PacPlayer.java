@@ -30,7 +30,7 @@ public class PacPlayer extends Character {
 
 	// need these so that when pacman collides with wall and stops moving
 	// he keeps facing wall instead of facing default position
-	public int viewdx, viewdy;
+	private int direction;	
 
 	private Image[] pacmanUp, pacmanDown, pacmanLeft, pacmanRight;
 	private Audio[] pacmanAudio;
@@ -47,6 +47,7 @@ public class PacPlayer extends Character {
 		super(x, y);
 		speed = pacmanspeed;
 		lives = 3;
+		direction = 3;
 		assetImagePath = "assets/pacman/";
 		assetAudioPath = "assets/audio/";
 		loadImages();
@@ -66,6 +67,7 @@ public class PacPlayer extends Character {
 		speed = pacmanspeed;
 		this.grid = grid;
 		lives = 3;
+		direction = 3;
 		if (playerNum == PACMAN) assetImagePath = "assets/pacman/";
 		else if (playerNum == MSPACMAN) assetImagePath = "assets/mspacman/";
 		assetAudioPath = "assets/audio/";
@@ -76,8 +78,7 @@ public class PacPlayer extends Character {
 	public void resetPos()
 	{
 		super.resetPos();
-		viewdx = -1;
-		viewdy = 0;
+		direction = 3;
 	}
 
 	public void death() {
@@ -102,10 +103,12 @@ public class PacPlayer extends Character {
 
 		//allows you to switch directions even when you are not in a grid
 		if (reqdx == -dx && reqdy == -dy) {
-			viewdx = dx = reqdx;
-			viewdy = dy = reqdy;
+			dx = reqdx;
+			dy = reqdy;
+			if(dx != 0 || dy != 0)
+				direction = ((direction + 1) % 4) + 1;
 		}
-
+	
 		if (x % Board.BLOCKSIZE == 0 && y % Board.BLOCKSIZE == 0) {
 
 			//Tunnel effect
@@ -131,12 +134,22 @@ public class PacPlayer extends Character {
 			}
 
 			//passes key commands to movement
-			if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) ||
-					(reqdx == 1 && reqdy == 0 && (ch & 4) != 0) ||
-					(reqdx == 0 && reqdy == -1 && (ch & 2) != 0) ||
-					(reqdx == 0 && reqdy == 1 && (ch & 8) != 0))) {
-				viewdx = dx = reqdx;
-				viewdy = dy = reqdy;
+			if(reqdx != 0 || reqdy != 0) {
+				if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) ||
+						(reqdx == 1 && reqdy == 0 && (ch & 4) != 0) ||
+						(reqdx == 0 && reqdy == -1 && (ch & 2) != 0) ||
+						(reqdx == 0 && reqdy == 1 && (ch & 8) != 0))) {
+					dx = reqdx;
+					dy = reqdy;
+					if(reqdx == -1 && reqdy == 0 && (ch & 1) == 0)
+						direction = 1;
+					if(reqdx == 0 && reqdy == -1 && (ch & 2) == 0)
+                                                direction = 2;
+					if(reqdx == 1 && reqdy == 0 && (ch & 4) == 0)
+                                                direction = 3;
+					if(reqdx == 0 && reqdy == 1 && (ch & 8) == 0)
+                                                direction = 4;
+				}
 			}
 
 			// Check for standstill, stop movement if hit wall
@@ -160,13 +173,13 @@ public class PacPlayer extends Character {
 	public void draw(Graphics2D g2d, JComponent canvas) {
 		if (deathTimer % 5 > 3) return; // Flicker while invincibile
 		doAnim();
-		if (viewdx == -1)
+		if (direction == 1)
 			g2d.drawImage(pacmanLeft[pacmananimpos], x + 4, y + 4, canvas);
-		else if (viewdy == -1)
+		else if (direction == 2)
 			g2d.drawImage(pacmanUp[pacmananimpos], x + 4, y + 4, canvas);
-		else if (viewdy == 1)
+		else if (direction == 4)
 			g2d.drawImage(pacmanDown[pacmananimpos], x + 4, y + 4, canvas);
-		else
+		else 
 			g2d.drawImage(pacmanRight[pacmananimpos], x + 4, y + 4, canvas);
 	}
 
@@ -353,6 +366,6 @@ public class PacPlayer extends Character {
 	 */
 	@Override
 	public Image getLifeImage() {
-		return pacmanLeft[3];
+		return pacmanRight[3];
 	}
 }

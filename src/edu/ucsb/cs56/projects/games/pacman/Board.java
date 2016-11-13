@@ -63,8 +63,8 @@ public class Board extends JPanel implements ActionListener
 		grid = new Grid();
 		pacman = new PacPlayer(8 * BLOCKSIZE, 11 * BLOCKSIZE, PacPlayer.PACMAN, grid);
 		msPacman = new PacPlayer(7 * BLOCKSIZE, 11 * BLOCKSIZE, PacPlayer.MSPACMAN, grid);
-		ghost1 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 2, Ghost.GHOST1, grid);
-		ghost2 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 2, Ghost.GHOST2, grid);
+		ghost1 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 3, Ghost.GHOST1, grid);
+		ghost2 = new Ghost(9 * BLOCKSIZE, 7 * BLOCKSIZE, 3, Ghost.GHOST2, grid);
 		setFocusable(true);
 
 		setBackground(Color.black);
@@ -149,6 +149,7 @@ public class Board extends JPanel implements ActionListener
 						levelContinue();
 
 					}
+					grid.incrementFruit(numBoardsCleared);
 					detectCollision(ghosts);
 					break;
 			}
@@ -273,10 +274,10 @@ public class Board extends JPanel implements ActionListener
 		g.drawString("D - Move Right", bx + 30, by + 300);
 
 		g.drawString("Ghost 2", bx + 170, by + 220);
-		g.drawString("Numpad 8 - Move Up", bx + 190, by + 240);
-		g.drawString("Numpad 4 - Move Left", bx + 190, by + 260);
-		g.drawString("Numpad 5 - Move Down", bx + 190, by + 280);
-		g.drawString("Numpad 6 - Move Right", bx + 190, by + 300);
+		g.drawString("I - Move Up", bx + 190, by + 240);
+		g.drawString("J - Move Left", bx + 190, by + 260);
+		g.drawString("K - Move Down", bx + 190, by + 280);
+		g.drawString("L - Move Right", bx + 190, by + 300);
 
 		g.drawString("Press 'h' to return...", bx + 245, by + 330);
 	}
@@ -437,7 +438,7 @@ public class Board extends JPanel implements ActionListener
 			for (int i = 0; i < numGhosts; i++)
 			{
 				int random = (int) (Math.random() * curSpeed) + 1;
-				ghosts.add(new Ghost(4 * BLOCKSIZE, 4 * BLOCKSIZE, random));
+				ghosts.add(new Ghost((i+6) * BLOCKSIZE, 2 * BLOCKSIZE, random));
 			}
 		}
 		switch (gt)
@@ -455,7 +456,7 @@ public class Board extends JPanel implements ActionListener
 				{
 					ghost.resetPos();
 					if (numBoardsCleared == 3)
-						ghost.speed = 6;
+						ghost.speed = MAX_SPEED;
 				}
 				break;
 		}
