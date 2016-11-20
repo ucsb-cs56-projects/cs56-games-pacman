@@ -351,10 +351,15 @@ public class Board extends JPanel implements ActionListener
 			if (score > 1)
 				sl.writeScore(score);
 		}
+		Date d = new Date();
+		if(gt == GameType.SINGLEPLAYER)
+			leaderBoardGui.showEndGameScreen(this.score, d, 1);
+		else if(gt == GameType.COOPERATIVE)
+			leaderBoardGui.showEndGameScreen(this.score, d, 2);
+		else if(gt == GameType.VERSUS)
+			leaderBoardGui.showEndGameScreen(this.score, d, 3);
 		gt = GameType.INTRO;
 		numBoardsCleared = 0;
-		Date d = new Date();
-		leaderBoardGui.showEndGameScreen(this.score, d);
 		grid.levelInit(0);
 	}
 
@@ -521,7 +526,8 @@ public class Board extends JPanel implements ActionListener
 	 * @param args - represents the command line arguments
 	 */
 	public void callLeaderboardMain(String args) {
-		leaderBoardGui.setLeaderBoardFileName(args);
+		String [] files = {"pacmanleaderboardsingle.ser", "pacmanleaderboardcoop.ser", "pacmanleaderboardversus.ser"};
+		leaderBoardGui.setLeaderBoardFileName(files);
 	}
 
 	/**
