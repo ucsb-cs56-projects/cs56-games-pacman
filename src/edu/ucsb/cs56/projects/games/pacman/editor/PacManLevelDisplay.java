@@ -61,7 +61,8 @@ public class PacManLevelDisplay extends JPanel {
 
 		int pellet_size = (int)(this.block_size * 0.2);
 		int fruit_size = (int)(this.block_size * 0.3);
-
+		int pill_size = (int)(this.block_size * 0.5);
+		
 		for (int i = 0; i < this.grid_data.length; i++) {
 			for (int j = 0; j < this.grid_data[i].length; j++) {
 				y = i * block_size + 3;
@@ -91,7 +92,9 @@ public class PacManLevelDisplay extends JPanel {
 
 				if ((this.grid_data[i][j] & GridData.GRID_CELL_PELLET) != 0)
 					g2.fillRect(x + block_size/2 - pellet_size/2, y + block_size/2 - pellet_size/2, pellet_size, pellet_size);
-
+				
+				if ((this.grid_data[i][j] & GridData.GRID_CELL_POWER_PILL) != 0)
+					g2.fillOval(x + block_size/2 - pill_size/2, y + block_size/2 - pill_size/2, pill_size, pill_size);
 			}
 		}
 	}

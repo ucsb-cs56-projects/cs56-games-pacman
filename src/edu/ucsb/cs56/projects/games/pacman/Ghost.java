@@ -23,13 +23,20 @@ public class Ghost extends Character {
 	public static final int GHOST2 = 2;
 
 	private Image ghost;
+	private Image scared_ghost;
 	private Grid grid;
+	public boolean edible;
+	public int prev_speed;
+	public int edibleTimer;
 
 	public Ghost(int x, int y, int speed) {
 		super(x, y);
 		this.speed = speed;
 		assetImagePath = "assets/";
 		loadImages();
+		edible = false;
+		prev_speed = speed;
+		edibleTimer = 1;
 	}
 
 	public Ghost(int x, int y, int speed, int playerNum, Grid grid) {
@@ -38,12 +45,30 @@ public class Ghost extends Character {
 		this.grid = grid;
 		assetImagePath = "assets/";
 		loadImages();
+		edible = false;
+		prev_speed = speed;
+		edibleTimer = 1;
 	}
 
 	/**
 	 * Handles character's death
 	 */
 	public void death() {
+		x = startX;
+		y = startY;
+		edible = false;
+		edibleTimer = 0;
+	}
+
+	/**
+	 * Handles character's death with set coordinates
+	 */
+	public void death(int newX, int newY)
+	{
+		x = newX;
+		y = newY;
+		edible = false;
+		edibleTimer = 0;
 	}
 
 	/**
@@ -54,7 +79,10 @@ public class Ghost extends Character {
 	 */
 	@Override
 	public void draw(Graphics2D g, JComponent canvas) {
-		g.drawImage(ghost, x + 4, y + 4, canvas);
+		if(edible)
+			g.drawImage(scared_ghost, x + 4, y + 4, canvas);
+		else
+			g.drawImage(ghost, x + 4, y + 4, canvas);
 	}
 
 	/**
@@ -64,8 +92,9 @@ public class Ghost extends Character {
 	public void loadImages() {
 		try {
 			if (playerNum == GHOST1) ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostred.png"));
-			else if (playerNum == GHOST2) ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostblue.png"));
+			else if (playerNum == GHOST2) ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostpink.png"));
 			else ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostred.png"));
+			scared_ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostblue.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -183,7 +212,7 @@ public class Ghost extends Character {
 	@Override
 	public void move(Grid grid) {
 		short ch;
-
+		
 		if (reqdx == -dx && reqdy == -dy) {
 			dx = reqdx;
 			dy = reqdy;
@@ -231,43 +260,50 @@ public class Ghost extends Character {
 		move();
 		if(c.length == 0) //Nothing to chase.  Should never happen
 			return;
-
-		int[][] coord = new int[c.length][2];
-		int count = 0;
-
-		for(Character p : c)
-		{
-			double distance = Math.sqrt(Math.pow(this.x - p.x, 2.0) + Math.pow(this.y - p.y, 2.0));
-			if(p.alive && distance < 150.0)// && Math.random() < 0.6)
-			{
-				coord[count][0] = p.x;
-				coord[count][1] = p.y;
-				count++;
-			}
+		if(edible) {
+			edibleTimer--;	
+			if(edibleTimer <= 0)
+				death(x,y);	
+			moveRandom(grid);
 		}
-
-		if(count > 0 && hasChoice(grid))
-		{
-			Node bestDir = pathFind(grid, coord[0][0] / Board.BLOCKSIZE, coord[0][1] / Board.BLOCKSIZE);
-			Node tempDir;
-			for (int i = 1; i < count; i++) //Loop through each pacman
+		else {
+			int[][] coord = new int[c.length][2];
+			int count = 0;
+	
+			for(Character p : c)
 			{
-				tempDir = pathFind(grid, coord[i][0] / Board.BLOCKSIZE, coord[i][1] / Board.BLOCKSIZE);
-				if (tempDir.distance.value < bestDir.distance.value) //If new path is shorter
-					bestDir = tempDir;
+				double distance = Math.sqrt(Math.pow(this.x - p.x, 2.0) + Math.pow(this.y - p.y, 2.0));
+				if(p.alive && distance < 150.0)// && Math.random() < 0.6)
+				{
+					coord[count][0] = p.x;
+					coord[count][1] = p.y;
+					count++;
+				}
 			}
-
-			if (bestDir.x - this.x / Board.BLOCKSIZE == 0 && bestDir.y - this.y / Board.BLOCKSIZE == 0) //ghost on pacman
-				moveRandom(grid);
+	
+			if(count > 0 && hasChoice(grid))
+			{
+				Node bestDir = pathFind(grid, coord[0][0] / Board.BLOCKSIZE, coord[0][1] / Board.BLOCKSIZE);
+				Node tempDir;
+				for (int i = 1; i < count; i++) //Loop through each pacman
+				{
+					tempDir = pathFind(grid, coord[i][0] / Board.BLOCKSIZE, coord[i][1] / Board.BLOCKSIZE);
+					if (tempDir.distance.value < bestDir.distance.value) //If new path is shorter
+						bestDir = tempDir;
+				}
+	
+				if (bestDir.x - this.x / Board.BLOCKSIZE == 0 && bestDir.y - this.y / Board.BLOCKSIZE == 0) //ghost on pacman
+					moveRandom(grid);
+				else
+				{
+					dx = bestDir.x - this.x / Board.BLOCKSIZE;
+					dy = bestDir.y - this.y / Board.BLOCKSIZE;
+				}
+			}
 			else
 			{
-				dx = bestDir.x - this.x / Board.BLOCKSIZE;
-				dy = bestDir.y - this.y / Board.BLOCKSIZE;
+				moveRandom(grid);
 			}
-		}
-		else
-		{
-			moveRandom(grid);
 		}
 	}
 

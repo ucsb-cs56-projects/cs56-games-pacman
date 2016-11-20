@@ -133,6 +133,13 @@ public class PacPlayer extends Character {
 				playAudio(1);
 			}
 
+			if ((ch & 64) != 0) {
+				//Toggles pill bit
+				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 64);
+				playAudio(1);
+				Board.score+=5;
+			}
+
 			//passes key commands to movement
 			if(reqdx != 0 || reqdy != 0) {
 				if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) ||

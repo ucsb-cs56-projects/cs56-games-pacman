@@ -10,10 +10,11 @@ public class GridData implements Serializable {
 
 	final public static byte GRID_CELL_BORDER_LEFT = 1;
 	final public static byte GRID_CELL_BORDER_TOP = 2;
-    final public static byte GRID_CELL_BORDER_RIGHT = 4;
-    final public static byte GRID_CELL_BORDER_BOTTOM = 8;
-    final public static byte GRID_CELL_PELLET = 16;
-    final public static byte GRID_CELL_FRUIT = 32;
+    	final public static byte GRID_CELL_BORDER_RIGHT = 4;
+    	final public static byte GRID_CELL_BORDER_BOTTOM = 8;
+	final public static byte GRID_CELL_PELLET = 16;
+	final public static byte GRID_CELL_FRUIT = 32;
+	final public static byte GRID_CELL_POWER_PILL = 64;	
 
 	public GridData(int grid_width, short[] grid_data) {
 		this.grid_width = grid_width;

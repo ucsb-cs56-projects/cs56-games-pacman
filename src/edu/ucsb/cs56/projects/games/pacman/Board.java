@@ -52,6 +52,7 @@ public class Board extends JPanel implements ActionListener
 	private int numGhosts = 6, numBoardsCleared = 0;
 	private int curSpeed = 3;
 	private int numPellet;
+	private int numPills;
 	private Timer timer;
 	private Audio beginningAudio;
 
@@ -70,6 +71,7 @@ public class Board extends JPanel implements ActionListener
 		setBackground(Color.black);
 		setDoubleBuffered(true);
 		ghosts = new ArrayList<Ghost>();
+		numPills = 4;
 		timer = new Timer(40, this);
 		timer.start();
 
@@ -106,6 +108,13 @@ public class Board extends JPanel implements ActionListener
 			{
 				pacman.move(grid);
 				pacman.draw(g2d, this);
+				if(grid.getPillNum() != numPills) {
+					for(Ghost g : ghosts) {
+						g.edible = true;
+						g.edibleTimer = 200;
+					}
+					numPills = grid.getPillNum();
+				}
 			}
 			switch (gt)
 			{
@@ -115,7 +124,6 @@ public class Board extends JPanel implements ActionListener
 						g.moveAI(grid, pacmen);
 						g.draw(g2d, this);
 					}
-					//increment in here so you don't in versus mode
 					grid.incrementFruit(numBoardsCleared);
 					detectCollision(ghosts);
 					break;
@@ -130,7 +138,6 @@ public class Board extends JPanel implements ActionListener
 						g.moveAI(grid, pacmen);
 						g.draw(g2d, this);
 					}
-					//increment in here so you don't in versus mode
 					grid.incrementFruit(numBoardsCleared);
 					detectCollision(ghosts);
 					break;
@@ -273,11 +280,11 @@ public class Board extends JPanel implements ActionListener
 		g.drawString("S - Move Down", bx + 30, by + 280);
 		g.drawString("D - Move Right", bx + 30, by + 300);
 
-		g.drawString("Ghost 2", bx + 170, by + 220);
-		g.drawString("I - Move Up", bx + 190, by + 240);
-		g.drawString("J - Move Left", bx + 190, by + 260);
-		g.drawString("K - Move Down", bx + 190, by + 280);
-		g.drawString("L - Move Right", bx + 190, by + 300);
+		g.drawString("Ghost 2", bx + 220, by + 220);
+		g.drawString("I - Move Up", bx + 240, by + 240);
+		g.drawString("J - Move Left", bx + 240, by + 260);
+		g.drawString("K - Move Down", bx + 240, by + 280);
+		g.drawString("L - Move Right", bx + 240, by + 300);
 
 		g.drawString("Press 'h' to return...", bx + 245, by + 330);
 	}
@@ -360,11 +367,17 @@ public class Board extends JPanel implements ActionListener
 	{
 		for (Character pacman : pacmen)
 		{
-			for (Character ghost : ghosts)
+			for (Ghost ghost : ghosts)
 			{
-				if (Math.abs(pacman.x - ghost.x) < 20 &&
-					Math.abs(pacman.y - ghost.y) < 20 )
+				if ((Math.abs(pacman.x - ghost.x) < 20 &&
+					Math.abs(pacman.y - ghost.y) < 20) && ghost.edible == false)
 					pacman.death();
+				
+				if ((Math.abs(pacman.x - ghost.x) < 20 &&
+					Math.abs(pacman.y - ghost.y) < 20) && ghost.edible == true) {
+					ghost.death();
+					score+=40;
+				}
 			}
 		}
 	}
@@ -391,7 +404,7 @@ public class Board extends JPanel implements ActionListener
 		levelContinue();
 		score = 0;
 		numGhosts = 6;
-		curSpeed = 2;
+		curSpeed = 3;
 
 		try {
 			this.beginningAudio.play();
@@ -426,7 +439,7 @@ public class Board extends JPanel implements ActionListener
 	 */
 	public void levelContinue()
 	{
-		numPellet = grid.getPelletNum();
+		numPellet = grid.getPelletNum() + grid.getPillNum();
 		ghosts.clear();
 		if(gt == GameType.VERSUS)
 		{
