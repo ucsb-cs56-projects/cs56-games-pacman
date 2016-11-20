@@ -49,7 +49,7 @@ public class LeaderboardGUI {
 	private int WIDTH = 380;
 	private int HEIGHT = 420;
 	private int displayNum = 1;
-
+	private String name = "";
 	/**
 	 * Constructor for LeaderboardGui--initializes the JComponents of leaderboardgui
 	 */
@@ -136,6 +136,7 @@ public class LeaderboardGUI {
 	 */
 
 	private void showLeaderboard(String userName, Date d, int score, int type) {
+		name = userName;
 		submitBtn.removeActionListener(this.submitListener);
 		//add and save new GamePlayed object
 		if(type == 1) {
@@ -154,41 +155,8 @@ public class LeaderboardGUI {
 		this.panel.removeAll();
 
 		//get the values from Leaderboard
-		String top3S = this.leaderBoardSingle.getTopThree();
-		String playerTop3S = this.leaderBoardSingle.getPlayerTopThree(userName);
+		showDifferentLeaderboard(displayNum);
 		
-		String top3C = this.leaderBoardCoop.getTopThree();
-		String playerTop3C = this.leaderBoardCoop.getPlayerTopThree(userName);
-		
-		String top3V = this.leaderBoardVersus.getTopThree();
-		String playerTop3V = this.leaderBoardVersus.getPlayerTopThree(userName);
-		
-		top3S = top3S.replace("\n", " <br> ");
-		playerTop3S = playerTop3S.replace("\n", " <br> ");
-		
-		top3C = top3C.replace("\n", " <br> ");
-		playerTop3C = playerTop3C.replace("\n", " <br> ");
-		
-		top3V = top3V.replace("\n", " <br> ");
-		playerTop3V = playerTop3V.replace("\n", " <br> ");
-
-		heading.setText("High Scores!");
-		switch(displayNum)
-		{	
-			case 1:	
-				topThree.setText("<html>" + top3S + "</html>");
-				playersTopThree.setText("<html> " + playerTop3S + "</html>");
-				break;
-			case 2:
-				topThree.setText("<html>" + top3C + "</html>");
-				playersTopThree.setText("<html> " + playerTop3C + "</html>");
-				break;
-			case 3:
-				topThree.setText("<html>" + top3V + "</html>");
-				playersTopThree.setText("<html> " + playerTop3V + "</html>");
-				break;
-			default: break;
-		}
 		playerScoresHeading.setText("Your Top Scores:");
 
 		heading.setFont(new Font("Serif", Font.PLAIN, 32));
@@ -296,7 +264,8 @@ public class LeaderboardGUI {
 		public void actionPerformed(ActionEvent e) {
 			displayNum = 1;
 			String userName = LeaderboardGUI.this.field.getText();
-			showLeaderboard(userName, this.d, this.score, this.type);
+			showDifferentLeaderboard(1);
+			//showLeaderboard(userName, this.d, this.score, this.type);
 		}
 	}
 	
@@ -314,7 +283,8 @@ public class LeaderboardGUI {
 		public void actionPerformed(ActionEvent e) {
                         displayNum = 2;
 			String userName = LeaderboardGUI.this.field.getText();
-			showLeaderboard(userName, this.d, this.score, this.type);
+			showDifferentLeaderboard(2);
+			//showLeaderboard(userName, this.d, this.score, this.type);
                 }
         }
 
@@ -332,7 +302,47 @@ public class LeaderboardGUI {
 		public void actionPerformed(ActionEvent e) {
                         displayNum = 3;
 			String userName = LeaderboardGUI.this.field.getText();
-			showLeaderboard(userName, this.d, this.score, this.type);
+			showDifferentLeaderboard(3);
+			//showLeaderboard(userName, this.d, this.score, this.type);
                 }
-        }	
+        }
+
+	private void showDifferentLeaderboard(int displayNum) {
+		String top3S = this.leaderBoardSingle.getTopThree();
+		String playerTop3S = this.leaderBoardSingle.getPlayerTopThree(name);
+		
+		String top3C = this.leaderBoardCoop.getTopThree();
+		String playerTop3C = this.leaderBoardCoop.getPlayerTopThree(name);
+		
+		String top3V = this.leaderBoardVersus.getTopThree();
+		String playerTop3V = this.leaderBoardVersus.getPlayerTopThree(name);
+		
+		top3S = top3S.replace("\n", " <br> ");
+		playerTop3S = playerTop3S.replace("\n", " <br> ");
+		
+		top3C = top3C.replace("\n", " <br> ");
+		playerTop3C = playerTop3C.replace("\n", " <br> ");
+		
+		top3V = top3V.replace("\n", " <br> ");
+		playerTop3V = playerTop3V.replace("\n", " <br> ");
+
+		heading.setText("High Scores!");
+		switch(displayNum)
+		{	
+			case 1:	
+				topThree.setText("<html>" + top3S + "</html>");
+				playersTopThree.setText("<html> " + playerTop3S + "</html>");
+				break;
+			case 2:
+				topThree.setText("<html>" + top3C + "</html>");
+				playersTopThree.setText("<html> " + playerTop3C + "</html>");
+				break;
+			case 3:
+				topThree.setText("<html>" + top3V + "</html>");
+				playersTopThree.setText("<html> " + playerTop3V + "</html>");
+				break;
+			default: break;
+
+		}
+	}
 }

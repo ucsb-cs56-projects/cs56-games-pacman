@@ -212,7 +212,11 @@ public class Ghost extends Character {
 	@Override
 	public void move(Grid grid) {
 		short ch;
-		
+		if(edible) {
+			edibleTimer--;	
+			if(edibleTimer <= 0)
+				death(x,y);	
+		}
 		if (reqdx == -dx && reqdy == -dy) {
 			dx = reqdx;
 			dy = reqdy;
