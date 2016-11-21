@@ -123,22 +123,25 @@ public class PacPlayer extends Character {
 				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 16);
 				playAudio(0);
 				Board.score++;
+				speed = 3;
 			}
-
 			//if fruit, eat and increase score
-			if ((ch & 32) != 0) {
+			else if ((ch & 32) != 0) {
 				//Toggles fruit bit
 				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 32);
 				Board.score+=10;
 				playAudio(1);
+				speed = 3;
 			}
-
-			if ((ch & 64) != 0) {
+			else if((ch & 64) != 0) {
 				//Toggles pill bit
 				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 64);
 				playAudio(1);
 				Board.score+=5;
+				speed = 3;
 			}
+			else
+				speed = 4;
 
 			//passes key commands to movement
 			if(reqdx != 0 || reqdy != 0) {
