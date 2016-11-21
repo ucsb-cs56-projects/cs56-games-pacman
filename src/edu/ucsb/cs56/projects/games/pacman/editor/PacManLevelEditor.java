@@ -12,7 +12,9 @@ import edu.ucsb.cs56.projects.games.pacman.Board;
  *
  * @author Ryan Tse
  * @author Chris Beser
- * @version CS56 W16
+ * @author Joseph Kompella
+ * @author Kekoa Sato
+ * @version CS56 F16
  */
 public class PacManLevelEditor extends JFrame {
 	private JMenuBar menu_bar;
@@ -35,6 +37,7 @@ public class PacManLevelEditor extends JFrame {
 	private JToggleButton toggle_cell_pellet;
 	private JToggleButton toggle_cell_border_right;
 	private JToggleButton toggle_cell_border_bottom;
+	private JToggleButton toggle_cell_power_pill;
 	private short[][] grid_data;
 	private Point current_grid_selection;
 	private String save_path;
@@ -162,6 +165,7 @@ public class PacManLevelEditor extends JFrame {
 			toggle_cell_border_right.setEnabled(false);
 			toggle_cell_border_bottom.setEnabled(false);
 			toggle_cell_pellet.setEnabled(false);
+			toggle_cell_power_pill.setEnabled(false);
 			return;
 		}
 		
@@ -170,13 +174,15 @@ public class PacManLevelEditor extends JFrame {
 		toggle_cell_border_right.setEnabled(true);
 		toggle_cell_border_bottom.setEnabled(true);
 		toggle_cell_pellet.setEnabled(true);
+		toggle_cell_power_pill.setEnabled(true);
 
 		// The toggles are set based upon the state of the grid data.
 		toggle_cell_pellet.setSelected((this.grid_data[grid_selection.y][grid_selection.x] & GridData.GRID_CELL_PELLET) != 0);
 		toggle_cell_border_left.setSelected((this.grid_data[grid_selection.y][grid_selection.x] & GridData.GRID_CELL_BORDER_LEFT) != 0);
 		toggle_cell_border_right.setSelected((this.grid_data[grid_selection.y][grid_selection.x] & GridData.GRID_CELL_BORDER_RIGHT) != 0);
 		toggle_cell_border_top.setSelected((this.grid_data[grid_selection.y][grid_selection.x] & GridData.GRID_CELL_BORDER_TOP) != 0);
-		toggle_cell_border_bottom.setSelected((this.grid_data[grid_selection.y][grid_selection.x] & GridData.GRID_CELL_BORDER_BOTTOM) != 0) ;
+		toggle_cell_border_bottom.setSelected((this.grid_data[grid_selection.y][grid_selection.x] & GridData.GRID_CELL_BORDER_BOTTOM) != 0);
+		toggle_cell_power_pill.setSelected((this.grid_data[grid_selection.y][grid_selection.x] & GridData.GRID_CELL_POWER_PILL) != 0);
 	}
 
 	private void initComponents() {
@@ -201,7 +207,7 @@ public class PacManLevelEditor extends JFrame {
 		toggle_cell_pellet = new JToggleButton();
 		toggle_cell_border_right = new JToggleButton();
 		toggle_cell_border_bottom = new JToggleButton();
-
+		toggle_cell_power_pill = new JToggleButton();
 		// Resusable insets value for objects that should have
 		// no inset value.
 		Insets default_no_inset = new Insets(0, 0, 0, 0);
@@ -359,6 +365,13 @@ public class PacManLevelEditor extends JFrame {
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
 			default_no_inset, 0, 0));
 
+		toggle_cell_power_pill.setText("Power Pill");
+		toggle_cell_power_pill.setEnabled(false);
+		toggle_cell_power_pill.addActionListener(button_listener);
+		panel_cell_properties.add(toggle_cell_power_pill, new GridBagConstraints(4, 4, 1, 1, 0.0, 0.0,
+			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+			default_no_inset, 0, 0));
+
 		panel_editor.add(panel_cell_properties, new GridBagConstraints(0, 8, 1, 1, 0.0, 0.0,
 			GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
 			default_no_inset, 0, 0));
@@ -405,8 +418,8 @@ public class PacManLevelEditor extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			PacManLevelEditor parent = PacManLevelEditor.this;
 			// These two arrays are in parallel with each other.
-			JToggleButton[] buttons = {parent.toggle_cell_border_left, parent.toggle_cell_border_right, parent.toggle_cell_border_top, parent.toggle_cell_border_bottom, parent.toggle_cell_pellet}; 
-			byte[] bits = {GridData.GRID_CELL_BORDER_LEFT, GridData.GRID_CELL_BORDER_RIGHT, GridData.GRID_CELL_BORDER_TOP, GridData.GRID_CELL_BORDER_BOTTOM, GridData.GRID_CELL_PELLET};
+			JToggleButton[] buttons = {parent.toggle_cell_border_left, parent.toggle_cell_border_right, parent.toggle_cell_border_top, parent.toggle_cell_border_bottom, parent.toggle_cell_pellet, parent.toggle_cell_power_pill}; 
+			byte[] bits = {GridData.GRID_CELL_BORDER_LEFT, GridData.GRID_CELL_BORDER_RIGHT, GridData.GRID_CELL_BORDER_TOP, GridData.GRID_CELL_BORDER_BOTTOM, GridData.GRID_CELL_PELLET, GridData.GRID_CELL_POWER_PILL};
 
 			for(int i = 0; i < buttons.length; i++) {
 				if(e.getSource() == buttons[i]) {

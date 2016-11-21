@@ -34,13 +34,22 @@ public class LeaderboardGUI {
 	private JLabel scoreLabel = new JLabel();
 	private BufferedImage pacmanImage;
 	private JLabel picLabel;
+	private JButton single = new JButton("Single Player");
+	private JButton coop = new JButton("Cooperative");
+	private JButton versus = new JButton("Versus");
 	private JButton playAgain = new JButton("Play Again");
-	private Leaderboard leaderBoard = new Leaderboard();
+	private Leaderboard leaderBoardSingle = new Leaderboard();
+	private Leaderboard leaderBoardCoop = new Leaderboard();
+	private Leaderboard leaderBoardVersus = new Leaderboard();
 	private playAgainBtnListener playAgainListener;
+	private singBtnListener SingleListener;
+	private coopBtnListener CoopListener;
+	private versBtnListener VersusListener;
 
 	private int WIDTH = 380;
 	private int HEIGHT = 420;
-
+	private int displayNum = 1;
+	private String name = "";
 	/**
 	 * Constructor for LeaderboardGui--initializes the JComponents of leaderboardgui
 	 */
@@ -77,7 +86,7 @@ public class LeaderboardGUI {
 	 * @param score the player's score
 	 * @param d the date of the game
 	 */
-	public void showEndGameScreen(int score, Date d) {
+	public void showEndGameScreen(int score, Date d, int type) {
 		//clear the panel in between games
 		this.panel.removeAll();
 
@@ -107,8 +116,10 @@ public class LeaderboardGUI {
 		picLabel.setAlignmentX(picLabel.CENTER_ALIGNMENT);
 		this.panel.add(picLabel);
 
-		this.leaderBoard.load();
-		this.submitListener = new submitBtnListener(score, d);
+		this.leaderBoardSingle.load();
+		this.leaderBoardCoop.load();
+		this.leaderBoardVersus.load();
+		this.submitListener = new submitBtnListener(score, d, type);
 		this.submitBtn.addActionListener(this.submitListener);
 		this.submitBtn.setAlignmentX(this.submitBtn.CENTER_ALIGNMENT);
 		this.frame.setVisible(true);
@@ -124,26 +135,29 @@ public class LeaderboardGUI {
 	 * @param score    the player's score
 	 */
 
-	private void showLeaderboard(String userName, Date d, int score) {
+	private void showLeaderboard(String userName, Date d, int score, int type) {
+		name = userName;
 		submitBtn.removeActionListener(this.submitListener);
 		//add and save new GamePlayed object
-		this.leaderBoard.add(userName, d, score);
-		this.leaderBoard.save();
-
+		if(type == 1) {
+			this.leaderBoardSingle.add(userName, d, score);
+			this.leaderBoardSingle.save();
+		}
+		else if(type == 2) {
+			this.leaderBoardCoop.add(userName, d, score);
+			this.leaderBoardCoop.save();
+		}
+		else {
+			this.leaderBoardVersus.add(userName, d, score);
+			this.leaderBoardVersus.save();
+		}
 		//removes old textField and submitBtn
 		this.panel.removeAll();
 
 		//get the values from Leaderboard
-		String top3 = this.leaderBoard.getTopThree();
-		String playerTop3 = this.leaderBoard.getPlayerTopThree(userName);
-
-		top3 = top3.replace("\n", " <br> ");
-		playerTop3 = playerTop3.replace("\n", " <br> ");
-
-		heading.setText("High Scores!");
-		topThree.setText("<html>" + top3 + "</html>");
+		showDifferentLeaderboard(displayNum);
+		
 		playerScoresHeading.setText("Your Top Scores:");
-		playersTopThree.setText("<html> " + playerTop3 + "</html>");
 
 		heading.setFont(new Font("Serif", Font.PLAIN, 32));
 		topThree.setFont(new Font("Serif", Font.PLAIN, 18));
@@ -157,9 +171,23 @@ public class LeaderboardGUI {
 
 		playAgainListener = new playAgainBtnListener();
 		playAgain.addActionListener(playAgainListener);
+		
+		SingleListener = new singBtnListener(score, d, type);
+		single.addActionListener(SingleListener);
 
+		CoopListener = new coopBtnListener(score, d, type);
+		coop.addActionListener(CoopListener);
+
+		VersusListener = new versBtnListener(score, d, type);
+		versus.addActionListener(VersusListener);
 
 		//add JLabels to panel
+		JPanel tabPanel = new JPanel(new FlowLayout());
+		tabPanel.add(single);
+		tabPanel.add(coop);
+		tabPanel.add(versus);
+		panel.add(tabPanel);
+
 		JPanel headingPanel = new JPanel();
 		headingPanel.add(heading);
 		panel.add(headingPanel);
@@ -190,8 +218,10 @@ public class LeaderboardGUI {
 	 *
 	 * @param args - a string version of the command line arguments
 	 */
-	public void setLeaderBoardFileName(String args) {
-		leaderBoard.setFileName(args);
+	public void setLeaderBoardFileName(String [] files) {
+		leaderBoardSingle.setFileName(files[0]);
+		leaderBoardCoop.setFileName(files[1]);
+		leaderBoardVersus.setFileName(files[2]);
 	}
 
 	/**
@@ -200,21 +230,119 @@ public class LeaderboardGUI {
 	private class submitBtnListener implements ActionListener {
 		private int score;
 		private Date d;
-
-		public submitBtnListener(int score, Date d) {
+		private int type;
+		
+		public submitBtnListener(int score, Date d, int type) {
 			this.score = score;
 			this.d = d;
+			this.type = type;
 		}
 
 		public void actionPerformed(ActionEvent ev) {
 			String userName = LeaderboardGUI.this.field.getText();
-			LeaderboardGUI.this.showLeaderboard(userName, this.d, this.score);
+			LeaderboardGUI.this.showLeaderboard(userName, this.d, this.score, this.type);
 		}
 	}
 
 	private class playAgainBtnListener implements ActionListener {
 		public void actionPerformed(ActionEvent ev) {
 			frame.dispose();
+		}
+	}
+
+	private class singBtnListener implements ActionListener {
+		private int score;
+		private Date d;
+		private int type;
+
+		public singBtnListener(int score, Date d, int type) {
+			this.score = score;
+			this.d = d;
+			this.type = type;
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			displayNum = 1;
+			String userName = LeaderboardGUI.this.field.getText();
+			showDifferentLeaderboard(1);
+			//showLeaderboard(userName, this.d, this.score, this.type);
+		}
+	}
+	
+	 private class coopBtnListener implements ActionListener {
+                private int score;
+		private Date d;
+		private int type;
+
+		public coopBtnListener(int score, Date d, int type) {
+			this.score = score;
+			this.d = d;
+			this.type = type;
+		}
+
+		public void actionPerformed(ActionEvent e) {
+                        displayNum = 2;
+			String userName = LeaderboardGUI.this.field.getText();
+			showDifferentLeaderboard(2);
+			//showLeaderboard(userName, this.d, this.score, this.type);
+                }
+        }
+
+	 private class versBtnListener implements ActionListener {
+                private int score;
+		private Date d;
+		private int type;
+
+		public versBtnListener(int score, Date d, int type) {
+			this.score = score;
+			this.d = d;
+			this.type = type;
+		}
+
+		public void actionPerformed(ActionEvent e) {
+                        displayNum = 3;
+			String userName = LeaderboardGUI.this.field.getText();
+			showDifferentLeaderboard(3);
+			//showLeaderboard(userName, this.d, this.score, this.type);
+                }
+        }
+
+	private void showDifferentLeaderboard(int displayNum) {
+		String top3S = this.leaderBoardSingle.getTopThree();
+		String playerTop3S = this.leaderBoardSingle.getPlayerTopThree(name);
+		
+		String top3C = this.leaderBoardCoop.getTopThree();
+		String playerTop3C = this.leaderBoardCoop.getPlayerTopThree(name);
+		
+		String top3V = this.leaderBoardVersus.getTopThree();
+		String playerTop3V = this.leaderBoardVersus.getPlayerTopThree(name);
+		
+		top3S = top3S.replace("\n", " <br> ");
+		playerTop3S = playerTop3S.replace("\n", " <br> ");
+		
+		top3C = top3C.replace("\n", " <br> ");
+		playerTop3C = playerTop3C.replace("\n", " <br> ");
+		
+		top3V = top3V.replace("\n", " <br> ");
+		playerTop3V = playerTop3V.replace("\n", " <br> ");
+
+		heading.setText("High Scores!");
+		switch(displayNum)
+		{	
+			case 1:	
+				topThree.setText("<html>" + top3S + "</html>");
+				playersTopThree.setText("<html> " + playerTop3S + "</html>");
+				break;
+			case 2:
+				topThree.setText("<html>" + top3C + "</html>");
+				playersTopThree.setText("<html> " + playerTop3C + "</html>");
+				break;
+			case 3:
+				topThree.setText("<html>" + top3V + "</html>");
+				playersTopThree.setText("<html> " + playerTop3V + "</html>");
+				break;
+			default: break;
+
 		}
 	}
 }
