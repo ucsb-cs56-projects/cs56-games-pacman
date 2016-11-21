@@ -446,7 +446,8 @@ public class Board extends JPanel implements ActionListener
     public void levelContinue()
     {
         numPellet = grid.getPelletNum() + grid.getPillNum();
-        ghosts.clear();
+        numPills = grid.getPillNum();
+	ghosts.clear();
         if(gt == GameType.VERSUS)
         {
             ghosts.add(ghost1);
