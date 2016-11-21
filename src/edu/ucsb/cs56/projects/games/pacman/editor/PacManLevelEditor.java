@@ -12,7 +12,9 @@ import edu.ucsb.cs56.projects.games.pacman.Board;
  *
  * @author Ryan Tse
  * @author Chris Beser
- * @version CS56 W16
+ * @author Joseph Kompella
+ * @author Kekoa Sato
+ * @version CS56 F16
  */
 public class PacManLevelEditor extends JFrame {
 	private JMenuBar menu_bar;

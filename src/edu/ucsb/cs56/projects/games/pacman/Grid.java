@@ -8,7 +8,9 @@ import java.io.*;
  * Class representing the map layout
  *
  * @author Yuxiang Zhu
- * @version CS56, W15
+ * @author Joseph Kompella
+ * @author Kekoa Sato
+ * @version CS56 F16
  */
 
 public class Grid

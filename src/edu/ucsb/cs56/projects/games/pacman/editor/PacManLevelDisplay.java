@@ -10,7 +10,9 @@ import edu.ucsb.cs56.projects.games.pacman.GridData;
  *
  * @author Ryan Tse
  * @author Chris Beser
- * @version CS56 W16
+ * @author Joseph Kompella
+ * @author Kekoa Sato
+ * @version CS56 F16
  */
 public class PacManLevelDisplay extends JPanel {
 	private short[][] grid_data;

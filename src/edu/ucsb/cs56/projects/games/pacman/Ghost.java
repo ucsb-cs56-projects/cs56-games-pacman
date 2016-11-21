@@ -16,7 +16,9 @@ import java.util.PriorityQueue;
  * @author Dario Castellanos Anaya
  * @author Daniel Ly
  * @author Kelvin Yang
- * @version CS56, W15
+ * @author Joseph Kompella
+ * @author Kekoa Sato
+ * @version CS56 F16
  */
 public class Ghost extends Character {
 	public static final int GHOST1 = 1;
@@ -28,10 +30,12 @@ public class Ghost extends Character {
 	public boolean edible;
 	public int prev_speed;
 	public int edibleTimer;
+	public int type;
 
-	public Ghost(int x, int y, int speed) {
+	public Ghost(int x, int y, int speed, int type) {
 		super(x, y);
 		this.speed = speed;
+		this.type = type;
 		assetImagePath = "assets/";
 		loadImages();
 		edible = false;
@@ -91,9 +95,18 @@ public class Ghost extends Character {
 	@Override
 	public void loadImages() {
 		try {
-			if (playerNum == GHOST1) ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostred.png"));
-			else if (playerNum == GHOST2) ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostpink.png"));
-			else ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostred.png"));
+			if (type == 0) {
+				ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostred.png"));
+			}
+			else if (type == 1)
+				ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostpink.png"));
+			else {
+				if (playerNum == GHOST1) {
+					ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostred.png"));
+				} else if (playerNum == GHOST2) { 
+					ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostpink.png"));
+				}
+			} 
 			scared_ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostblue.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -276,7 +289,32 @@ public class Ghost extends Character {
 	
 			for(Character p : c)
 			{
-				double distance = Math.sqrt(Math.pow(this.x - p.x, 2.0) + Math.pow(this.y - p.y, 2.0));
+				double distance = 0;
+				if (type == 0) {
+					distance = Math.sqrt(Math.pow(this.x - p.x, 2.0) + Math.pow(this.y - p.y, 2.0));
+				} else if (type == 1) {
+					int aheadX = p.x;
+					int aheadY = p.y;
+					PacPlayer pacman = (PacPlayer)p;
+					if (pacman.direction == 1)
+						aheadX = p.x - 4;
+					else if (pacman.direction == 2)
+						aheadX = p.y - 4;
+					else if (pacman.direction == 3)
+						aheadX = p.x + 4;
+					else 
+						aheadY= p.y + 4;
+
+					if(aheadX > 16)
+						aheadX = 16;
+					else if(aheadX < 0)
+						aheadX = 0;
+					if(aheadY > 16)
+						aheadY = 16;
+					else if (aheadY < 0)
+						aheadY = 0;
+					distance = Math.sqrt(Math.pow(this.x - aheadX, 2.0) + Math.pow(this.y - aheadY, 2.0));
+				}
 				if(p.alive && distance < 150.0)// && Math.random() < 0.6)
 				{
 					coord[count][0] = p.x;

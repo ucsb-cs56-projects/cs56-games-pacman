@@ -23,7 +23,9 @@ import java.util.Date;
  * @author Kateryna Fomenko
  * @author Yuxiang Zhu
  * @author Kelvin Yang
- * @version CS56 W15
+ * @author Joseph Kompella
+ * @author Kekoa Sato
+ * @version CS56 F16
  */
 public class Board extends JPanel implements ActionListener
 {
@@ -458,7 +460,7 @@ public class Board extends JPanel implements ActionListener
             for (int i = 0; i < numGhosts; i++)
             {
                 int random = (int) (Math.random() * curSpeed) + 1;
-                ghosts.add(new Ghost((i+6) * BLOCKSIZE, 2 * BLOCKSIZE, random));
+                ghosts.add(new Ghost((i+6) * BLOCKSIZE, 2 * BLOCKSIZE, random, i % 2));
             }
         }
         switch (gt)

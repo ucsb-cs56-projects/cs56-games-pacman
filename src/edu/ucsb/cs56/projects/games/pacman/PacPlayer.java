@@ -15,7 +15,9 @@ import java.io.IOException;
  * @author Dario Castellanos
  * @author Daniel Ly
  * @author Kelvin Yang
- * @version CS56 W15
+ * @author Joseph Kompella
+ * @author Kekoa Sato
+ * @version CS56 F16
  */
 public class PacPlayer extends Character {
 	public final static int PACMAN = 1;
@@ -30,7 +32,7 @@ public class PacPlayer extends Character {
 
 	// need these so that when pacman collides with wall and stops moving
 	// he keeps facing wall instead of facing default position
-	private int direction;	
+	public int direction;	
 
 	private Image[] pacmanUp, pacmanDown, pacmanLeft, pacmanRight;
 	private Audio[] pacmanAudio;
