@@ -15,7 +15,9 @@ import java.io.IOException;
  * @author Dario Castellanos
  * @author Daniel Ly
  * @author Kelvin Yang
- * @version CS56 W15
+ * @author Joseph Kompella
+ * @author Kekoa Sato
+ * @version CS56 F16
  */
 public class PacPlayer extends Character {
 	public final static int PACMAN = 1;
@@ -30,7 +32,7 @@ public class PacPlayer extends Character {
 
 	// need these so that when pacman collides with wall and stops moving
 	// he keeps facing wall instead of facing default position
-	private int direction;	
+	public int direction;	
 
 	private Image[] pacmanUp, pacmanDown, pacmanLeft, pacmanRight;
 	private Audio[] pacmanAudio;
@@ -123,15 +125,25 @@ public class PacPlayer extends Character {
 				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 16);
 				playAudio(0);
 				Board.score++;
+				speed = 3;
 			}
-
 			//if fruit, eat and increase score
-			if ((ch & 32) != 0) {
+			else if ((ch & 32) != 0) {
 				//Toggles fruit bit
 				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 32);
 				Board.score+=10;
 				playAudio(1);
+				speed = 3;
 			}
+			else if((ch & 64) != 0) {
+				//Toggles pill bit
+				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 64);
+				playAudio(1);
+				Board.score+=5;
+				speed = 3;
+			}
+			else
+				speed = 4;
 
 			//passes key commands to movement
 			if(reqdx != 0 || reqdy != 0) {

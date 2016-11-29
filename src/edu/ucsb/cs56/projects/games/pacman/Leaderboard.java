@@ -16,7 +16,7 @@ import java.util.Date;
 
  //extend TreeSet (Auto-sort) will simplify many of the methods...
 public class Leaderboard extends TreeSet<GamePlayed> implements Serializable {
-	private static String filename;
+	private String filename;
 
 	/**
 	 * Setter for filename

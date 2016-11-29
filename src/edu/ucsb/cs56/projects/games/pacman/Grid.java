@@ -8,7 +8,9 @@ import java.io.*;
  * Class representing the map layout
  *
  * @author Yuxiang Zhu
- * @version CS56, W15
+ * @author Joseph Kompella
+ * @author Kekoa Sato
+ * @version CS56 F16
  */
 
 public class Grid
@@ -69,7 +71,7 @@ public class Grid
 	public boolean checkMaze() {
 		for (int i = 0; i < Board.NUMBLOCKS; i++) {
 			for (int j = 0; j < Board.NUMBLOCKS; j++) {
-				if ((screenData[i][j] & GridData.GRID_CELL_PELLET) != 0)
+				if ((screenData[i][j] & (GridData.GRID_CELL_PELLET ^ GridData.GRID_CELL_POWER_PILL)) != 0)
 					return false;
 			}
 		}
@@ -90,6 +92,22 @@ public class Grid
 			}
 		}
 		return numOfPellet;
+	}
+
+	/**
+	 * Count the number of power pills left for Pacman to eat
+	 *
+	 * @return An int indicating how many pills are left
+	 */
+	public int getPillNum() {
+		int numOfPill = 0;
+                for (int i = 0; i < Board.NUMBLOCKS; i++) {
+                        for (int j = 0; j < Board.NUMBLOCKS; j++) {
+                                if ((screenData[i][j] & GridData.GRID_CELL_POWER_PILL) != 0)
+                                        numOfPill++;
+                        }
+                }
+                return numOfPill;	
 	}
 
 	/**
@@ -203,7 +221,9 @@ public class Grid
 				g2d.setColor(dotColor);
 				if ((screenData[i][j] & GridData.GRID_CELL_PELLET) != 0) // draws pellet
 					g2d.fillRect(x + 11, y + 11, 2, 2);
-
+				
+				if ((screenData[i][j] & GridData.GRID_CELL_POWER_PILL) != 0) // draws power pill
+					g2d.fillOval(x + 6, y + 6, 12, 12);
 				g2d.setColor(fruitColor);
 				if ((screenData[i][j] & GridData.GRID_CELL_FRUIT) != 0) // draws fruit
 					g2d.fillRect(x + 10, y + 10, 4, 4);
