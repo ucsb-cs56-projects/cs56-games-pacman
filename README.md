@@ -29,3 +29,6 @@ Project History
 
 **W16 Final Remarks** <br>
 As of W16, there is now a level editor for the game. There is still work to do to allow loading of new levels outside of the five levels contained in ``/assets/levels``. Also, the ghosts still need additional work for movement. Additionally, a substantial rewrite could be undertaken to provide better support for player movement.
+
+**F16 Final Remarks** <br>
+As of F16, we have added another AI personality for the pink ghost, added multiple leaderboards for the different game modes, improved pacman's movement, improved versus mode so that it is now playable on laptops, and added "power pills" so that ghosts can now be eaten. We recommend that the easiest way to understand the code is to read the classes to get an idea of how they all interact with each other. Specifially, Board.java, PacPlayer.java, Ghost.java, and Character.java are ones we recommend to read up on.
