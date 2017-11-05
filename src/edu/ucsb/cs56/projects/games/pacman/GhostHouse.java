@@ -49,12 +49,12 @@ public class GhostHouse{
     public void update(){
 	long currentTime = System.currentTimeMillis() / 1000; //in seconds
 	if(ghosts.size() == 0){
-	    lastReleaseTime = System.currentTimeMillis() / 1000;
+	    lastReleaseTime = currentTime;
 	    return;
 	}
 	if(currentTime - lastReleaseTime > releaseTime){
 	    releaseGhost();
-	    lastReleaseTime = System.currentTimeMillis() / 1000;
+	    lastReleaseTime = currentTime;
 	}
     }
 
@@ -71,5 +71,8 @@ public class GhostHouse{
 	
 	System.out.println("Spawning Point: " + releaseLocation.getX() + ", " + releaseLocation.getY());
     }
-
+    
+    public void resetTimer(){
+	lastReleaseTime = 0;
+    }
 }
