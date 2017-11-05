@@ -98,7 +98,7 @@ public class Board extends JPanel implements ActionListener
     }
     
     /**
-     * Main game logic loop
+    * Main game logic loop
      *
      * @param g2d a Graphics 2D object
      */
@@ -146,6 +146,7 @@ public class Board extends JPanel implements ActionListener
                     }
                     grid.incrementFruit(numBoardsCleared);
                     detectCollision(ghosts);
+		    ghostHouse.update();
                     break;
                 case VERSUS:
                     for (Character ghost : ghosts)
@@ -164,6 +165,7 @@ public class Board extends JPanel implements ActionListener
                     }
                     grid.incrementFruit(numBoardsCleared);
                     detectCollision(ghosts);
+		    ghostHouse.update();
                     break;
             }
             if (grid.checkMaze())
@@ -387,6 +389,7 @@ public class Board extends JPanel implements ActionListener
                 if ((Math.abs(pacman.x - ghost.x) < 20 &&
                      Math.abs(pacman.y - ghost.y) < 20) && ghost.edible == true) {
                     ghost.death();
+		    ghostHouse.addGhost(ghost);
                     score+=40;
                 }
             }
@@ -466,9 +469,13 @@ public class Board extends JPanel implements ActionListener
         {
             for (int i = 0; i < numGhosts; i++)
             {
-               
-                ghosts.add(new Ghost(ghostHouse.getTopLeft().getX() * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
-		ghostHouse.addGhost(ghosts.get(i));
+		//first ghost will get set outside, other ghosts get set inside ghost house
+		if(i == 0){
+		    ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + i) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
+		}else{
+		    ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + (i-1)) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
+		}
+		    ghostHouse.addGhost(ghosts.get(i));
             }
         }
         switch (gt)

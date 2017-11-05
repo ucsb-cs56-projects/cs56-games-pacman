@@ -48,6 +48,10 @@ public class GhostHouse{
 
     public void update(){
 	long currentTime = System.currentTimeMillis() / 1000; //in seconds
+	if(ghosts.size() == 0){
+	    lastReleaseTime = System.currentTimeMillis() / 1000;
+	    return;
+	}
 	if(currentTime - lastReleaseTime > releaseTime){
 	    releaseGhost();
 	    lastReleaseTime = System.currentTimeMillis() / 1000;
