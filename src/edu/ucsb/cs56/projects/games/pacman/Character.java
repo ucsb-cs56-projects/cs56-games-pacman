@@ -143,4 +143,17 @@ public abstract class Character
 			y = ((y / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 		}
 	}
+        //sets x-coordinate
+        public void setX(int x){
+	    this.x = x;
+        }
+        //sets y-coordinate
+        public void setY(int y){
+	    this.y = y;
+        }
+    
+        public void setSpeed(int speed){
+	    this.speed = speed;
+        }
+
 }
