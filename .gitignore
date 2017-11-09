@@ -1,6 +1,7 @@
 build/
 *.class
 *.ser
+*#
 *.idea
 *.iml
 *~

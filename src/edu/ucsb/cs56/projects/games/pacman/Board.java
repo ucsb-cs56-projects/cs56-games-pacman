@@ -25,6 +25,8 @@ import java.util.Date;
  * @author Kelvin Yang
  * @author Joseph Kompella
  * @author Kekoa Sato
+ * @author Wei Tung Chen
+ * @author Nicholas Duncan
  * @version CS56 F16
  */
 public class Board extends JPanel implements ActionListener
@@ -51,12 +53,13 @@ public class Board extends JPanel implements ActionListener
     private Ghost ghost1, ghost2;
     private Character[] pacmen;
     private ArrayList<Ghost> ghosts;
-    private int numGhosts = 6, numBoardsCleared = 0;
+    private int numGhosts = 4, numBoardsCleared = 0;
     private int curSpeed = 3;
     private int numPellet;
     private int numPills;
     private Timer timer;
     private Audio beginningAudio;
+    private GhostHouse ghostHouse;
     
     /**
      * Constructor for Board object
@@ -95,7 +98,7 @@ public class Board extends JPanel implements ActionListener
     }
     
     /**
-     * Main game logic loop
+    * Main game logic loop
      *
      * @param g2d a Graphics 2D object
      */
@@ -128,6 +131,7 @@ public class Board extends JPanel implements ActionListener
                     }
                     grid.incrementFruit(numBoardsCleared);
                     detectCollision(ghosts);
+		    ghostHouse.update();
                     break;
                 case COOPERATIVE:
                     if (msPacman.alive)
@@ -142,6 +146,7 @@ public class Board extends JPanel implements ActionListener
                     }
                     grid.incrementFruit(numBoardsCleared);
                     detectCollision(ghosts);
+		    ghostHouse.update();
                     break;
                 case VERSUS:
                     for (Character ghost : ghosts)
@@ -160,6 +165,7 @@ public class Board extends JPanel implements ActionListener
                     }
                     grid.incrementFruit(numBoardsCleared);
                     detectCollision(ghosts);
+		    ghostHouse.update();
                     break;
             }
             if (grid.checkMaze())
@@ -377,12 +383,22 @@ public class Board extends JPanel implements ActionListener
             for (Ghost ghost : ghosts)
             {
                 if ((Math.abs(pacman.x - ghost.x) < 20 &&
-                     Math.abs(pacman.y - ghost.y) < 20) && ghost.edible == false)
+                     Math.abs(pacman.y - ghost.y) < 20) && ghost.edible == false) {
                     pacman.death();
+		    //sends ghosts back to ghost house on pacman's death
+		    for (Ghost ghost1 : ghosts) {
+			ghost1.death();
+			ghostHouse.addGhost(ghost1);
+		    }
+		    //Resets time so ghosts will respawn on time
+		    ghostHouse.resetTimer();
+		    return;
+		}
                 
                 if ((Math.abs(pacman.x - ghost.x) < 20 &&
                      Math.abs(pacman.y - ghost.y) < 20) && ghost.edible == true) {
                     ghost.death();
+		    ghostHouse.addGhost(ghost);
                     score+=40;
                 }
             }
@@ -410,7 +426,7 @@ public class Board extends JPanel implements ActionListener
         grid.levelInit(numBoardsCleared);
         levelContinue();
         score = 0;
-        numGhosts = 6;
+        numGhosts = 4;
         curSpeed = 3;
         numPills = 4;
         
@@ -450,6 +466,9 @@ public class Board extends JPanel implements ActionListener
         numPellet = grid.getPelletNum() + grid.getPillNum();
         numPills = grid.getPillNum();
 	ghosts.clear();
+	//ghost house is located in the center of each map its width is currently 3
+	//as the number of ghosts is 4. Can be adjusted for different level designs
+	this.ghostHouse = new GhostHouse(new Location(7,8) , this.numGhosts - 1, this.BLOCKSIZE);
         if(gt == GameType.VERSUS)
         {
             ghosts.add(ghost1);
@@ -459,8 +478,13 @@ public class Board extends JPanel implements ActionListener
         {
             for (int i = 0; i < numGhosts; i++)
             {
-                int random = (int) (Math.random() * curSpeed) + 1;
-                ghosts.add(new Ghost((i+6) * BLOCKSIZE, 2 * BLOCKSIZE, random, i % 2));
+		//first ghost will get set outside, other ghosts get set inside ghost house
+		if(i == 0){
+		    ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + i) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
+		}else{
+		    ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + (i-1)) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
+		}
+		    ghostHouse.addGhost(ghosts.get(i));
             }
         }
         switch (gt)

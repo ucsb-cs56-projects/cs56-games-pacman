@@ -76,13 +76,17 @@ public class Node extends Point implements Comparable<Node>
 	 */
 	public void setDir(int dx, int dy)
 	{
+	    try{
 		if(Math.abs(dx + dy) != 1)
-			throw new IllegalArgumentException("Cannot set direction " + dx + ", " + dy + ".");
+		    throw new IllegalArgumentException("Cannot set direction " + dx + ", " + dy + ".");
 
 		if(dx == -1) dir = 1;       //left
 		else if(dy == -1) dir = 2;  //up
 		else if(dx == 1) dir = 3;   //right
 		else if(dy == 1) dir = 4;   //down
+	    }catch(IllegalArgumentException ex){
+		System.out.println("Cannot set direction error");
+	    }
 	}
 
 	/**

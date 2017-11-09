@@ -23,8 +23,9 @@ import java.util.PriorityQueue;
 public class Ghost extends Character {
 	public static final int GHOST1 = 1;
 	public static final int GHOST2 = 2;
+        public static int defaultSpeed = 3;
 
-	private Image ghost;
+        private Image ghost;
 	private Image scared_ghost;
 	private Grid grid;
 	public boolean edible;
@@ -432,9 +433,11 @@ public class Ghost extends Character {
 			ArrayList<Point> list = moveList(grid);
 
 			//randomly pick an available move
-			int rand = (int) (Math.random() * list.size());
-			this.dx = list.get(rand).x;
-			this.dy = list.get(rand).y;
+			if (list.size() > 0) {
+			    int rand = (int) (Math.random() * list.size());
+			    this.dx = list.get(rand).x;
+			    this.dy = list.get(rand).y;
+			}
 		}
 	}
 
