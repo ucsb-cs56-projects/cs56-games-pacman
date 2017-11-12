@@ -38,26 +38,24 @@ public class Ghost extends Character {
 	public int type;
 
 	public Ghost(int x, int y, int speed, int type) {
-		super(x, y);
-		this.speed = speed;
-		this.type = type;
-		assetImagePath = IMAGE_PATH;
-		loadImages();
-		edible = false;
-		prev_speed = speed;
-		edibleTimer = 1;
+		this(x, y, speed, type, 1, null);
 	}
 
 	public Ghost(int x, int y, int speed, int playerNum, Grid grid) {
-		super(x, y, playerNum);
-		this.speed = speed;
-		this.grid = grid;
-		assetImagePath = IMAGE_PATH;
-		loadImages();
-		edible = false;
-		prev_speed = speed;
-		edibleTimer = 1;
+		this(x, y, speed, 0, playerNum, grid);
 	}
+
+	public Ghost(int x, int y, int speed, int type, int playerNum, Grid grid) {
+                super(x, y, playerNum);
+                this.speed = speed;
+		this.type = type;
+                this.grid = grid;
+                assetImagePath = IMAGE_PATH;
+                loadImages();
+                edible = false;
+                prev_speed = speed;
+                edibleTimer = 1;
+        }
 
 	/**
 	 * Handles character's death
