@@ -21,6 +21,10 @@ import java.util.PriorityQueue;
  * @version CS56 F16
  */
 public class Ghost extends Character {
+
+	public static final String IMAGE_PATH = "assets/";
+	public static final int TYPE_RED = 0;
+	public static final int TYPE_PINK = 1;
 	public static final int GHOST1 = 1;
 	public static final int GHOST2 = 2;
         public static int defaultSpeed = 3;
@@ -37,7 +41,7 @@ public class Ghost extends Character {
 		super(x, y);
 		this.speed = speed;
 		this.type = type;
-		assetImagePath = "assets/";
+		assetImagePath = IMAGE_PATH;
 		loadImages();
 		edible = false;
 		prev_speed = speed;
@@ -48,7 +52,7 @@ public class Ghost extends Character {
 		super(x, y, playerNum);
 		this.speed = speed;
 		this.grid = grid;
-		assetImagePath = "assets/";
+		assetImagePath = IMAGE_PATH;
 		loadImages();
 		edible = false;
 		prev_speed = speed;
@@ -84,10 +88,11 @@ public class Ghost extends Character {
 	 */
 	@Override
 	public void draw(Graphics2D g, JComponent canvas) {
+		int offset = 4;
 		if(edible)
-			g.drawImage(scared_ghost, x + 4, y + 4, canvas);
+			g.drawImage(scared_ghost, x + offset, y + offset, canvas);
 		else
-			g.drawImage(ghost, x + 4, y + 4, canvas);
+			g.drawImage(ghost, x + offset, y + offset, canvas);
 	}
 
 	/**
@@ -96,10 +101,10 @@ public class Ghost extends Character {
 	@Override
 	public void loadImages() {
 		try {
-			if (type == 0) {
+			if (type == TYPE_RED) {
 				ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostred.png"));
 			}
-			else if (type == 1)
+			else if (type == TYPE_PINK)
 				ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostpink.png"));
 			else {
 				if (playerNum == GHOST1) {
@@ -242,22 +247,26 @@ public class Ghost extends Character {
 
 			ch = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
 
-			if((ch & 32) != 0) {
-				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 32);
+			if((ch & GridData.GRID_CELL_FRUIT) != 0) {
+				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_FRUIT);
 				Board.score -= 5;
 			}
 
 			if (reqdx != 0 || reqdy != 0) {
-				if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) || (reqdx == 1 && reqdy == 0 && (ch & 4) != 0) ||
-						(reqdx == 0 && reqdy == -1 && (ch & 2) != 0) || (reqdx == 0 && reqdy == 1 && (ch & 8) != 0))) {
+				if ( !(reqdx == -1 && reqdy == 0 && (ch & GridData.GRID_CELL_BORDER_LEFT) != 0) && 
+				     !(reqdx == 1 && reqdy == 0 && (ch & GridData.GRID_CELL_BORDER_RIGHT) != 0) &&
+				     !(reqdx == 0 && reqdy == -1 && (ch & GridData.GRID_CELL_BORDER_TOP) != 0) && 
+				     !(reqdx == 0 && reqdy == 1 && (ch & GridData.GRID_CELL_BORDER_BOTTOM) != 0) ) {
 					dx = reqdx;
 					dy = reqdy;
 				}
 			}
 
 			// Check for standstill
-			if ((dx == -1 && dy == 0 && (ch & 1) != 0) || (dx == 1 && dy == 0 && (ch & 4) != 0) ||
-					(dx == 0 && dy == -1 && (ch & 2) != 0) || (dx == 0 && dy == 1 && (ch & 8) != 0)) {
+			if ( (dx == -1 && dy == 0 && (ch & GridData.GRID_CELL_BORDER_LEFT) != 0) || 
+			     (dx == 1 && dy == 0 && (ch & GridData.GRID_CELL_BORDER_RIGHT) != 0) ||
+			     (dx == 0 && dy == -1 && (ch & GridData.GRID_CELL_BORDER_TOP) != 0) || 
+			     (dx == 0 && dy == 1 && (ch & GridData.GRID_CELL_BORDER_BOTTOM) != 0) ) {
 				dx = 0;
 				dy = 0;
 			}
@@ -291,9 +300,9 @@ public class Ghost extends Character {
 			for(Character p : c)
 			{
 				double distance = 0;
-				if (type == 0) {
+				if (type == TYPE_RED) {
 					distance = Math.sqrt(Math.pow(this.x - p.x, 2.0) + Math.pow(this.y - p.y, 2.0));
-				} else if (type == 1) {
+				} else if (type == TYPE_PINK) {
 					int aheadX = p.x;
 					int aheadY = p.y;
 					PacPlayer pacman = (PacPlayer)p;
@@ -386,25 +395,25 @@ public class Ghost extends Character {
 			block = grid.screenData[current.y][current.x];
 
 			//If can move, not abrupt, and unvisited, add to opened
-			if((block & 1) == 0 && current.dir != 3) //Can move and not abrupt
+			if((block & GridData.GRID_CELL_BORDER_LEFT) == 0 && current.dir != 3) //Can move and not abrupt
 			{
 				temp = current.getChild(-1, 0); //get child node
 				if(!closed.contains(temp)) //Unvisited
 					opened.add(temp);
 			}
-			if((block & 2) == 0 && current.dir != 4)
+			if((block & GridData.GRID_CELL_BORDER_TOP) == 0 && current.dir != 4)
 			{
 				temp = current.getChild(0, -1);
 				if(!closed.contains(temp))
 					opened.add(temp);
 			}
-			if((block & 4) == 0 && current.dir != 1)
+			if((block & GridData.GRID_CELL_BORDER_RIGHT) == 0 && current.dir != 1)
 			{
 				temp = current.getChild(1, 0);
 				if(!closed.contains(temp))
 					opened.add(temp);
 			}
-			if((block & 8) == 0 && current.dir != 2)
+			if((block & GridData.GRID_CELL_BORDER_BOTTOM) == 0 && current.dir != 2)
 			{
 				temp = current.getChild(0, 1);
 				if(!closed.contains(temp))
@@ -453,13 +462,13 @@ public class Ghost extends Character {
 
 		// First condition prevents checks collision with wall
 		// Second condition prevents switching direction abruptly (left -> right) (up -> down)
-		if ((block & 1) == 0 && this.dx != 1)
+		if ((block & GridData.GRID_CELL_BORDER_LEFT) == 0 && this.dx != 1)
 			moves.add(new Point(-1, 0));
-		if ((block & 2) == 0 && this.dy != 1)
+		if ((block & GridData.GRID_CELL_BORDER_TOP) == 0 && this.dy != 1)
 			moves.add(new Point(0, -1));
-		if ((block & 4) == 0 && this.dx != -1)
+		if ((block & GridData.GRID_CELL_BORDER_RIGHT) == 0 && this.dx != -1)
 			moves.add(new Point(1, 0));
-		if ((block & 8) == 0 && this.dy != -1)
+		if ((block & GridData.GRID_CELL_BORDER_BOTTOM) == 0 && this.dy != -1)
 			moves.add(new Point(0, 1));
 
 		return moves;
@@ -470,10 +479,10 @@ public class Ghost extends Character {
 		if (this.x % Board.BLOCKSIZE == 0 && this.y % Board.BLOCKSIZE == 0)
 		{
 			int block = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
-			int count = (block & 1) == 0 && this.dx != 1 ? 1 : 0;
-			count += (block & 2) == 0 && this.dy != 1 ? 1 : 0;
-			count += (block & 4) == 0 && this.dx != -1 ? 1 : 0;
-			count += (block & 8) == 0 && this.dy != -1 ? 1 : 0;
+			int count = (block & GridData.GRID_CELL_BORDER_LEFT) == 0 && this.dx != 1 ? 1 : 0;
+			count += (block & GridData.GRID_CELL_BORDER_TOP) == 0 && this.dy != 1 ? 1 : 0;
+			count += (block & GridData.GRID_CELL_BORDER_RIGHT) == 0 && this.dx != -1 ? 1 : 0;
+			count += (block & GridData.GRID_CELL_BORDER_BOTTOM) == 0 && this.dy != -1 ? 1 : 0;
 			if(count > 1)
 				return true;
 		}
