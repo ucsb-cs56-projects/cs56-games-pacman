@@ -27,9 +27,9 @@ public class Ghost extends Character {
 	public static final int TYPE_PINK = 1;
 	public static final int GHOST1 = 1;
 	public static final int GHOST2 = 2;
-        public static int defaultSpeed = 3;
+    public static int defaultSpeed = 3;
 
-        private Image ghost;
+    private Image ghost;
 	private Image scared_ghost;
 	private Grid grid;
 	public boolean edible;
@@ -38,24 +38,24 @@ public class Ghost extends Character {
 	public int type;
 
 	public Ghost(int x, int y, int speed, int type) {
-		this(x, y, speed, type, 1, null);
+		this(x, y, speed, type, GHOST1, null);
 	}
 
 	public Ghost(int x, int y, int speed, int playerNum, Grid grid) {
-		this(x, y, speed, 0, playerNum, grid);
+		this(x, y, speed, TYPE_RED, playerNum, grid);
 	}
 
 	public Ghost(int x, int y, int speed, int type, int playerNum, Grid grid) {
-                super(x, y, playerNum);
-                this.speed = speed;
+        super(x, y, playerNum);
+        this.speed = speed;
 		this.type = type;
-                this.grid = grid;
-                assetImagePath = IMAGE_PATH;
-                loadImages();
-                edible = false;
-                prev_speed = speed;
-                edibleTimer = 1;
-        }
+        this.grid = grid;
+        assetImagePath = IMAGE_PATH;
+        loadImages();
+        edible = false;
+        prev_speed = speed;
+        edibleTimer = 1;
+    }
 
 	/**
 	 * Handles character's death
