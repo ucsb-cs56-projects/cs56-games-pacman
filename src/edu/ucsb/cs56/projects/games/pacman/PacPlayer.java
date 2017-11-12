@@ -119,24 +119,24 @@ public class PacPlayer extends Character {
 			//if pellet, eat and increase score
 			if ((ch & GridData.GRID_CELL_PELLET) != 0) {
 				//Toggles pellet bit
-				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 16);
+				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_PELLET);
 				playAudio(0);
-				Board.score++;
+				Board.score += Board.SCORE_PELLET;
 				speed = 3;
 			}
 			//if fruit, eat and increase score
 			else if ((ch & GridData.GRID_CELL_FRUIT) != 0) {
 				//Toggles fruit bit
-				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 32);
-				Board.score+=10;
+				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_FRUIT);
+				Board.score += Board.SCORE_FRUIT;
 				playAudio(1);
 				speed = 3;
 			}
 			else if((ch & GridData.GRID_CELL_POWER_PILL) != 0) {
 				//Toggles pill bit
-				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 64);
+				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_POWER_PILL);
 				playAudio(1);
-				Board.score+=5;
+				Board.score += Board.SCORE_POWER_PILL;
 				speed = 3;
 			}
 			else

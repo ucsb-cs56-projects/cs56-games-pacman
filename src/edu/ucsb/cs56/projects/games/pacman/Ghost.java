@@ -245,7 +245,7 @@ public class Ghost extends Character {
 
 			if((ch & GridData.GRID_CELL_FRUIT) != 0) {
 				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_FRUIT);
-				Board.score -= 5;
+				Board.score -= Board.SCORE_FRUIT / 2;
 			}
 
 			if (reqdx != 0 || reqdy != 0) {
