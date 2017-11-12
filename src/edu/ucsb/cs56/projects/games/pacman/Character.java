@@ -130,12 +130,12 @@ public abstract class Character
 		x = x + speed * dx;
 		y = y + speed * dy;
 
-		if (x % Board.BLOCKSIZE == 0 && y % Board.BLOCKSIZE == 0)
-		{
+		if (x % Board.BLOCKSIZE == 0 && y % Board.BLOCKSIZE == 0) {
 			x = ((x / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 			y = ((y / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 		}
 	}
+
         //sets x-coordinate
         public void setX(int x){
 	    this.x = x;
