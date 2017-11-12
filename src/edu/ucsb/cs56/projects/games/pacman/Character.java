@@ -30,12 +30,7 @@ public abstract class Character
 	 * @param y the starting y coordinate of pacman
 	 */
 	public Character(int x, int y) {
-		startX = x;
-		startY = y;
-		playerNum = 1;
-		deathTimer = PacPlayer.PACMAN;
-		alive = true;
-		reset();
+		this(x, y, 1);
 	}
 
 	/**
@@ -49,8 +44,6 @@ public abstract class Character
 		startX = x;
 		startY = y;
 		this.playerNum = playerNum;
-		deathTimer = 0;
-		alive = true;
 		reset();
 	}
 
