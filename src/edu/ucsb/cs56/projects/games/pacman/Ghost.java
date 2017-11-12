@@ -306,11 +306,11 @@ public class Ghost extends Character {
 					int aheadX = p.x;
 					int aheadY = p.y;
 					PacPlayer pacman = (PacPlayer)p;
-					if (pacman.direction == 1)
+					if (pacman.direction == Direction.LEFT)
 						aheadX = p.x - 4;
-					else if (pacman.direction == 2)
+					else if (pacman.direction == Direction.UP)
 						aheadX = p.y - 4;
-					else if (pacman.direction == 3)
+					else if (pacman.direction == Direction.RIGHT)
 						aheadX = p.x + 4;
 					else 
 						aheadY= p.y + 4;
@@ -395,25 +395,25 @@ public class Ghost extends Character {
 			block = grid.screenData[current.y][current.x];
 
 			//If can move, not abrupt, and unvisited, add to opened
-			if((block & GridData.GRID_CELL_BORDER_LEFT) == 0 && current.dir != 3) //Can move and not abrupt
+			if((block & GridData.GRID_CELL_BORDER_LEFT) == 0 && current.dir != Direction.RIGHT) //Can move and not abrupt
 			{
 				temp = current.getChild(-1, 0); //get child node
 				if(!closed.contains(temp)) //Unvisited
 					opened.add(temp);
 			}
-			if((block & GridData.GRID_CELL_BORDER_TOP) == 0 && current.dir != 4)
+			if((block & GridData.GRID_CELL_BORDER_TOP) == 0 && current.dir != Direction.DOWN)
 			{
 				temp = current.getChild(0, -1);
 				if(!closed.contains(temp))
 					opened.add(temp);
 			}
-			if((block & GridData.GRID_CELL_BORDER_RIGHT) == 0 && current.dir != 1)
+			if((block & GridData.GRID_CELL_BORDER_RIGHT) == 0 && current.dir != Direction.LEFT)
 			{
 				temp = current.getChild(1, 0);
 				if(!closed.contains(temp))
 					opened.add(temp);
 			}
-			if((block & GridData.GRID_CELL_BORDER_BOTTOM) == 0 && current.dir != 2)
+			if((block & GridData.GRID_CELL_BORDER_BOTTOM) == 0 && current.dir != Direction.UP)
 			{
 				temp = current.getChild(0, 1);
 				if(!closed.contains(temp))

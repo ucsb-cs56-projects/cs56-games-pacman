@@ -49,7 +49,7 @@ public class PacPlayer extends Character {
 		super(x, y);
 		speed = pacmanspeed;
 		lives = 3;
-		direction = 3;
+		direction = Direction.RIGHT;
 		assetImagePath = "assets/pacman/";
 		assetAudioPath = "assets/audio/";
 		loadImages();
@@ -69,7 +69,7 @@ public class PacPlayer extends Character {
 		speed = pacmanspeed;
 		this.grid = grid;
 		lives = 3;
-		direction = 3;
+		direction = Direction.RIGHT;
 		if (playerNum == PACMAN) assetImagePath = "assets/pacman/";
 		else if (playerNum == MSPACMAN) assetImagePath = "assets/mspacman/";
 		assetAudioPath = "assets/audio/";
@@ -80,7 +80,7 @@ public class PacPlayer extends Character {
 	public void resetPos()
 	{
 		super.resetPos();
-		direction = 3;
+		direction = Direction.RIGHT;
 	}
 
 	public void death() {
@@ -154,13 +154,13 @@ public class PacPlayer extends Character {
 					dx = reqdx;
 					dy = reqdy;
 					if(reqdx == -1 && reqdy == 0 && (ch & 1) == 0)
-						direction = 1;
+						direction = Direction.LEFT;
 					if(reqdx == 0 && reqdy == -1 && (ch & 2) == 0)
-                                                direction = 2;
+                                                direction = Direction.UP;
 					if(reqdx == 1 && reqdy == 0 && (ch & 4) == 0)
-                                                direction = 3;
+                                                direction = Direction.RIGHT;
 					if(reqdx == 0 && reqdy == 1 && (ch & 8) == 0)
-                                                direction = 4;
+                                                direction = Direction.DOWN;
 				}
 			}
 
@@ -185,11 +185,11 @@ public class PacPlayer extends Character {
 	public void draw(Graphics2D g2d, JComponent canvas) {
 		if (deathTimer % 5 > 3) return; // Flicker while invincibile
 		doAnim();
-		if (direction == 1)
+		if (direction == Direction.LEFT)
 			g2d.drawImage(pacmanLeft[pacmananimpos], x + 4, y + 4, canvas);
-		else if (direction == 2)
+		else if (direction == Direction.UP)
 			g2d.drawImage(pacmanUp[pacmananimpos], x + 4, y + 4, canvas);
-		else if (direction == 4)
+		else if (direction == Direction.DOWN)
 			g2d.drawImage(pacmanDown[pacmananimpos], x + 4, y + 4, canvas);
 		else 
 			g2d.drawImage(pacmanRight[pacmananimpos], x + 4, y + 4, canvas);
