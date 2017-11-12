@@ -45,7 +45,7 @@ public class CharacterTest {
 		character.dy = 5;
 		character.speed = 5;
 		character.move();
-                assertEquals(5, character.x);
-                assertEquals(1, character.y);
+                assertEquals(30, character.x);
+                assertEquals(26, character.y);
 	}
 }
