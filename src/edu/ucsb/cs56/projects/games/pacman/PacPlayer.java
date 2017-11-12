@@ -46,14 +46,7 @@ public class PacPlayer extends Character {
 	 * @param y the starting y coordinate of pacman
 	 */
 	public PacPlayer(int x, int y) {
-		super(x, y);
-		speed = pacmanspeed;
-		lives = 3;
-		direction = Direction.RIGHT;
-		assetImagePath = "assets/pacman/";
-		assetAudioPath = "assets/audio/";
-		loadImages();
-		loadAudio();
+		this(x, y, PACMAN, null);
 	}
 
 	/**
