@@ -20,9 +20,12 @@ import java.io.IOException;
  * @version CS56 F16
  */
 public class PacPlayer extends Character {
+
+	public final static String PATH_IMAGE_PACMAN = "assets/pacman/";
+	public final static String PATH_IMAGE_MSPACMAN = "assets/mspacman/";
+	public final static String PATH_AUDIO = "assets/audio/";
 	public final static int PACMAN = 1;
 	public final static int MSPACMAN = 2;
-
 	private final int pacanimdelay = 2;
 	private final int pacmananimcount = 4;
 	private final int pacmanspeed = 4;
@@ -63,15 +66,16 @@ public class PacPlayer extends Character {
 		this.grid = grid;
 		lives = 3;
 		direction = Direction.RIGHT;
-		if (playerNum == PACMAN) assetImagePath = "assets/pacman/";
-		else if (playerNum == MSPACMAN) assetImagePath = "assets/mspacman/";
-		assetAudioPath = "assets/audio/";
+		if (playerNum == PACMAN) 
+			assetImagePath = PATH_IMAGE_PACMAN;
+		else if (playerNum == MSPACMAN) 
+			assetImagePath = PATH_IMAGE_MSPACMAN;
+		assetAudioPath = PATH_AUDIO;
 		loadImages();
 		loadAudio();
 	}
 
-	public void resetPos()
-	{
+	public void resetPos() {
 		super.resetPos();
 		direction = Direction.RIGHT;
 	}
@@ -113,7 +117,7 @@ public class PacPlayer extends Character {
 			ch = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
 
 			//if pellet, eat and increase score
-			if ((ch & 16) != 0) {
+			if ((ch & GridData.GRID_CELL_PELLET) != 0) {
 				//Toggles pellet bit
 				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 16);
 				playAudio(0);
@@ -121,14 +125,14 @@ public class PacPlayer extends Character {
 				speed = 3;
 			}
 			//if fruit, eat and increase score
-			else if ((ch & 32) != 0) {
+			else if ((ch & GridData.GRID_CELL_FRUIT) != 0) {
 				//Toggles fruit bit
 				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 32);
 				Board.score+=10;
 				playAudio(1);
 				speed = 3;
 			}
-			else if((ch & 64) != 0) {
+			else if((ch & GridData.GRID_CELL_POWER_PILL) != 0) {
 				//Toggles pill bit
 				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 64);
 				playAudio(1);
@@ -140,28 +144,28 @@ public class PacPlayer extends Character {
 
 			//passes key commands to movement
 			if(reqdx != 0 || reqdy != 0) {
-				if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) ||
-						(reqdx == 1 && reqdy == 0 && (ch & 4) != 0) ||
-						(reqdx == 0 && reqdy == -1 && (ch & 2) != 0) ||
-						(reqdx == 0 && reqdy == 1 && (ch & 8) != 0))) {
+				if ( !(reqdx == -1 && reqdy == 0 && (ch & GridData.GRID_CELL_BORDER_LEFT) != 0) &&
+				     !(reqdx == 1 && reqdy == 0 && (ch & GridData.GRID_CELL_BORDER_RIGHT) != 0) &&
+				     !(reqdx == 0 && reqdy == -1 && (ch & GridData.GRID_CELL_BORDER_TOP) != 0) &&
+				     !(reqdx == 0 && reqdy == 1 && (ch & GridData.GRID_CELL_BORDER_BOTTOM) != 0) ) {
 					dx = reqdx;
 					dy = reqdy;
-					if(reqdx == -1 && reqdy == 0 && (ch & 1) == 0)
+					if(reqdx == -1 && reqdy == 0 && (ch & GridData.GRID_CELL_BORDER_LEFT) == 0)
 						direction = Direction.LEFT;
-					if(reqdx == 0 && reqdy == -1 && (ch & 2) == 0)
+					if(reqdx == 0 && reqdy == -1 && (ch & GridData.GRID_CELL_BORDER_TOP) == 0)
                                                 direction = Direction.UP;
-					if(reqdx == 1 && reqdy == 0 && (ch & 4) == 0)
+					if(reqdx == 1 && reqdy == 0 && (ch & GridData.GRID_CELL_BORDER_RIGHT) == 0)
                                                 direction = Direction.RIGHT;
-					if(reqdx == 0 && reqdy == 1 && (ch & 8) == 0)
+					if(reqdx == 0 && reqdy == 1 && (ch & GridData.GRID_CELL_BORDER_BOTTOM) == 0)
                                                 direction = Direction.DOWN;
 				}
 			}
 
 			// Check for standstill, stop movement if hit wall
-			if ((dx == -1 && dy == 0 && (ch & 1) != 0) ||
-					(dx == 1 && dy == 0 && (ch & 4) != 0) ||
-					(dx == 0 && dy == -1 && (ch & 2) != 0) ||
-					(dx == 0 && dy == 1 && (ch & 8) != 0)) {
+			if ( (dx == -1 && dy == 0 && (ch & GridData.GRID_CELL_BORDER_LEFT) != 0) ||
+			     (dx == 1 && dy == 0 && (ch & GridData.GRID_CELL_BORDER_RIGHT) != 0) ||
+			     (dx == 0 && dy == -1 && (ch & GridData.GRID_CELL_BORDER_TOP) != 0) ||
+			     (dx == 0 && dy == 1 && (ch & GridData.GRID_CELL_BORDER_BOTTOM) != 0)) {
 				dx = 0;
 				dy = 0;
 			}
