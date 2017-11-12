@@ -149,4 +149,24 @@ public abstract class Character
 	    this.speed = speed;
         }
 
+
+	/**
+	 * Check if the direction has no wall and moveable
+	 * @param dx x-direction move
+	 * @param dy y-direction move
+	 * @param grid grid data
+	 * @return true if the direction is moveable
+	 */
+	public static boolean moveable(int dx, int dy, short grid) {
+		if (dx == -1 && dy == 0)
+			return (grid & GridData.GRID_CELL_BORDER_LEFT) == 0;
+		if (dx == 1 && dy == 0)
+			return (grid & GridData.GRID_CELL_BORDER_RIGHT) == 0;
+		if (dx == 0 && dy == -1)
+			return (grid & GridData.GRID_CELL_BORDER_TOP) == 0;
+		if (dx == 0 && dy == 1)
+			return (grid & GridData.GRID_CELL_BORDER_BOTTOM) == 0;
+		return true;
+	}
+
 }

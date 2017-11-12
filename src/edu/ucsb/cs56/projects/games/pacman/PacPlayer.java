@@ -144,28 +144,22 @@ public class PacPlayer extends Character {
 
 			//passes key commands to movement
 			if(reqdx != 0 || reqdy != 0) {
-				if ( !(reqdx == -1 && reqdy == 0 && (ch & GridData.GRID_CELL_BORDER_LEFT) != 0) &&
-				     !(reqdx == 1 && reqdy == 0 && (ch & GridData.GRID_CELL_BORDER_RIGHT) != 0) &&
-				     !(reqdx == 0 && reqdy == -1 && (ch & GridData.GRID_CELL_BORDER_TOP) != 0) &&
-				     !(reqdx == 0 && reqdy == 1 && (ch & GridData.GRID_CELL_BORDER_BOTTOM) != 0) ) {
+				if ( Character.moveable(reqdx, reqdy, ch) ) {
 					dx = reqdx;
 					dy = reqdy;
 					if(reqdx == -1 && reqdy == 0 && (ch & GridData.GRID_CELL_BORDER_LEFT) == 0)
 						direction = Direction.LEFT;
 					if(reqdx == 0 && reqdy == -1 && (ch & GridData.GRID_CELL_BORDER_TOP) == 0)
-                                                direction = Direction.UP;
+						direction = Direction.UP;
 					if(reqdx == 1 && reqdy == 0 && (ch & GridData.GRID_CELL_BORDER_RIGHT) == 0)
-                                                direction = Direction.RIGHT;
+						direction = Direction.RIGHT;
 					if(reqdx == 0 && reqdy == 1 && (ch & GridData.GRID_CELL_BORDER_BOTTOM) == 0)
-                                                direction = Direction.DOWN;
+						direction = Direction.DOWN;
 				}
 			}
 
 			// Check for standstill, stop movement if hit wall
-			if ( (dx == -1 && dy == 0 && (ch & GridData.GRID_CELL_BORDER_LEFT) != 0) ||
-			     (dx == 1 && dy == 0 && (ch & GridData.GRID_CELL_BORDER_RIGHT) != 0) ||
-			     (dx == 0 && dy == -1 && (ch & GridData.GRID_CELL_BORDER_TOP) != 0) ||
-			     (dx == 0 && dy == 1 && (ch & GridData.GRID_CELL_BORDER_BOTTOM) != 0)) {
+			if ( !Character.moveable(dx, dy, ch) ) {
 				dx = 0;
 				dy = 0;
 			}
