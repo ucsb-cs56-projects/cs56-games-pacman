@@ -72,8 +72,7 @@ public class Ghost extends Character {
 	/**
 	 * Handles character's death with set coordinates
 	 */
-	public void death(int newX, int newY)
-	{
+	public void death(int newX, int newY) {
 		x = newX;
 		y = newY;
 		edible = false;
@@ -101,19 +100,18 @@ public class Ghost extends Character {
 	@Override
 	public void loadImages() {
 		try {
-			if (type == TYPE_RED) {
+			if (type == TYPE_RED)
 				ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostred.png"));
-			}
 			else if (type == TYPE_PINK)
 				ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostpink.png"));
 			else {
-				if (playerNum == GHOST1) {
+				if (playerNum == GHOST1)
 					ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostred.png"));
-				} else if (playerNum == GHOST2) { 
+				else if (playerNum == GHOST2) 
 					ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostpink.png"));
-				}
 			} 
 			scared_ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostblue.png"));
+		
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -297,8 +295,7 @@ public class Ghost extends Character {
 			int[][] coord = new int[c.length][2];
 			int count = 0;
 	
-			for(Character p : c)
-			{
+			for(Character p : c) {
 				double distance = 0;
 				if (type == TYPE_RED) {
 					distance = Math.sqrt(Math.pow(this.x - p.x, 2.0) + Math.pow(this.y - p.y, 2.0));
@@ -325,20 +322,20 @@ public class Ghost extends Character {
 						aheadY = 0;
 					distance = Math.sqrt(Math.pow(this.x - aheadX, 2.0) + Math.pow(this.y - aheadY, 2.0));
 				}
-				if(p.alive && distance < 150.0)// && Math.random() < 0.6)
-				{
+				if(p.alive && distance < 150.0) { // && Math.random() < 0.6)
 					coord[count][0] = p.x;
 					coord[count][1] = p.y;
 					count++;
 				}
 			}
 	
-			if(count > 0 && hasChoice(grid))
-			{
+			if(count > 0 && hasChoice(grid)) {
+
 				Node bestDir = pathFind(grid, coord[0][0] / Board.BLOCKSIZE, coord[0][1] / Board.BLOCKSIZE);
 				Node tempDir;
-				for (int i = 1; i < count; i++) //Loop through each pacman
-				{
+
+				//Loop through each pacman
+				for (int i = 1; i < count; i++) {
 					tempDir = pathFind(grid, coord[i][0] / Board.BLOCKSIZE, coord[i][1] / Board.BLOCKSIZE);
 					if (tempDir.distance.value < bestDir.distance.value) //If new path is shorter
 						bestDir = tempDir;
@@ -346,14 +343,12 @@ public class Ghost extends Character {
 	
 				if (bestDir.x - this.x / Board.BLOCKSIZE == 0 && bestDir.y - this.y / Board.BLOCKSIZE == 0) //ghost on pacman
 					moveRandom(grid);
-				else
-				{
+				else {
 					dx = bestDir.x - this.x / Board.BLOCKSIZE;
 					dy = bestDir.y - this.y / Board.BLOCKSIZE;
 				}
-			}
-			else
-			{
+
+			} else {
 				moveRandom(grid);
 			}
 		}
@@ -367,8 +362,7 @@ public class Ghost extends Character {
 	 * @param y target y coordinate in grid form
 	 * @return The next move to make for the ghost
 	 */
-	public Node pathFind(Grid grid, int x, int y)
-	{
+	public Node pathFind(Grid grid, int x, int y) {
 		//Set target x, y
 		Node.tx = x;
 		Node.ty = y;
@@ -384,8 +378,8 @@ public class Ghost extends Character {
 		temp.setDir(dx, dy);
 		opened.offer(temp);
 
-		while(!opened.isEmpty())
-		{
+		while(!opened.isEmpty()) {
+
 			current = opened.poll(); //get best node
 			closed.add(current); //add node to closed set (visited)
 
@@ -395,26 +389,22 @@ public class Ghost extends Character {
 			block = grid.screenData[current.y][current.x];
 
 			//If can move, not abrupt, and unvisited, add to opened
-			if((block & GridData.GRID_CELL_BORDER_LEFT) == 0 && current.dir != Direction.RIGHT) //Can move and not abrupt
-			{
+			if((block & GridData.GRID_CELL_BORDER_LEFT) == 0 && current.dir != Direction.RIGHT) {
 				temp = current.getChild(-1, 0); //get child node
 				if(!closed.contains(temp)) //Unvisited
 					opened.add(temp);
 			}
-			if((block & GridData.GRID_CELL_BORDER_TOP) == 0 && current.dir != Direction.DOWN)
-			{
+			if((block & GridData.GRID_CELL_BORDER_TOP) == 0 && current.dir != Direction.DOWN) {
 				temp = current.getChild(0, -1);
 				if(!closed.contains(temp))
 					opened.add(temp);
 			}
-			if((block & GridData.GRID_CELL_BORDER_RIGHT) == 0 && current.dir != Direction.LEFT)
-			{
+			if((block & GridData.GRID_CELL_BORDER_RIGHT) == 0 && current.dir != Direction.LEFT) {
 				temp = current.getChild(1, 0);
 				if(!closed.contains(temp))
 					opened.add(temp);
 			}
-			if((block & GridData.GRID_CELL_BORDER_BOTTOM) == 0 && current.dir != Direction.UP)
-			{
+			if((block & GridData.GRID_CELL_BORDER_BOTTOM) == 0 && current.dir != Direction.UP) {
 				temp = current.getChild(0, 1);
 				if(!closed.contains(temp))
 					opened.add(temp);
@@ -434,11 +424,9 @@ public class Ghost extends Character {
 	 *
 	 * @param grid The Grid to be used for collision
 	 */
-	public void moveRandom(Grid grid)
-	{
+	public void moveRandom(Grid grid) {
 		//Makes sure ghost is in a grid and not in movement
-		if (this.x % Board.BLOCKSIZE == 0 && this.y % Board.BLOCKSIZE == 0)
-		{
+		if (this.x % Board.BLOCKSIZE == 0 && this.y % Board.BLOCKSIZE == 0) {
 			ArrayList<Point> list = moveList(grid);
 
 			//randomly pick an available move
@@ -455,8 +443,7 @@ public class Ghost extends Character {
 	 *
 	 * @param grid
 	 */
-	private ArrayList<Point> moveList(Grid grid)
-	{
+	private ArrayList<Point> moveList(Grid grid) {
 		ArrayList<Point> moves = new ArrayList<Point>();
 		int block = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
 
@@ -474,10 +461,8 @@ public class Ghost extends Character {
 		return moves;
 	}
 
-	private boolean hasChoice(Grid grid)
-	{
-		if (this.x % Board.BLOCKSIZE == 0 && this.y % Board.BLOCKSIZE == 0)
-		{
+	private boolean hasChoice(Grid grid) {
+		if (this.x % Board.BLOCKSIZE == 0 && this.y % Board.BLOCKSIZE == 0) {
 			int block = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
 			int count = (block & GridData.GRID_CELL_BORDER_LEFT) == 0 && this.dx != 1 ? 1 : 0;
 			count += (block & GridData.GRID_CELL_BORDER_TOP) == 0 && this.dy != 1 ? 1 : 0;
