@@ -5,12 +5,12 @@ import java.util.LinkedList;
 
 
 /**
-   This is a class to represent a Ghost House which holds ghost
-   starting coordinates and tracks when ghosts are released onto
-   the map to chase Pacman
-
-   @author Wei Tung Chen
-   @author Nicholas Duncan
+ *  This is a class to represent a Ghost House which holds ghost
+ *  starting coordinates and tracks when ghosts are released onto
+ *  the map to chase Pacman
+ *
+ *  @author Wei Tung Chen
+ *  @author Nicholas Duncan
 */
 
 public class GhostHouse{

@@ -38,10 +38,14 @@ public class Board extends JPanel implements ActionListener
     public static final int BLOCKSIZE = 24;
     public static final int NUMBLOCKS = 17;
     public static final int SCRSIZE = NUMBLOCKS * BLOCKSIZE;
+    public static final int SCORE_PELLET = 1;
+    public static final int SCORE_FRUIT = 10;
+    public static final int SCORE_POWER_PILL = 5;
+    public static final int SCORE_ENEMY = 40;
+    public static final int SCORE_WIN = 50;
     
     private final int MAX_GHOSTS = 12;
     private final int MAX_SPEED = 6;
-    
     
     public static int score;
     private ScoreLoader sl = new ScoreLoader("highScores.txt");
@@ -170,7 +174,7 @@ public class Board extends JPanel implements ActionListener
             }
             if (grid.checkMaze())
             {
-                score += 50;
+                score += SCORE_WIN;
                 numBoardsCleared++;
                 
                 numGhosts = (numGhosts + 1) % MAX_GHOSTS;
@@ -399,7 +403,7 @@ public class Board extends JPanel implements ActionListener
                      Math.abs(pacman.y - ghost.y) < 20) && ghost.edible == true) {
                     ghost.death();
 		    ghostHouse.addGhost(ghost);
-                    score+=40;
+                    score += SCORE_ENEMY;
                 }
             }
         }

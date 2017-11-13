@@ -30,12 +30,7 @@ public abstract class Character
 	 * @param y the starting y coordinate of pacman
 	 */
 	public Character(int x, int y) {
-		startX = x;
-		startY = y;
-		playerNum = 1;
-		deathTimer = PacPlayer.PACMAN;
-		alive = true;
-		reset();
+		this(x, y, 1);
 	}
 
 	/**
@@ -49,8 +44,6 @@ public abstract class Character
 		startX = x;
 		startY = y;
 		this.playerNum = playerNum;
-		deathTimer = 0;
-		alive = true;
 		reset();
 	}
 
@@ -137,12 +130,12 @@ public abstract class Character
 		x = x + speed * dx;
 		y = y + speed * dy;
 
-		if (x % Board.BLOCKSIZE == 0 && y % Board.BLOCKSIZE == 0)
-		{
+		if (x % Board.BLOCKSIZE == 0 && y % Board.BLOCKSIZE == 0) {
 			x = ((x / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 			y = ((y / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 		}
 	}
+
         //sets x-coordinate
         public void setX(int x){
 	    this.x = x;
@@ -155,5 +148,25 @@ public abstract class Character
         public void setSpeed(int speed){
 	    this.speed = speed;
         }
+
+
+	/**
+	 * Check if the direction has no wall and moveable
+	 * @param dx x-direction move
+	 * @param dy y-direction move
+	 * @param grid grid data
+	 * @return true if the direction is moveable
+	 */
+	public static boolean moveable(int dx, int dy, short grid) {
+		if (dx == -1 && dy == 0)
+			return (grid & GridData.GRID_CELL_BORDER_LEFT) == 0;
+		if (dx == 1 && dy == 0)
+			return (grid & GridData.GRID_CELL_BORDER_RIGHT) == 0;
+		if (dx == 0 && dy == -1)
+			return (grid & GridData.GRID_CELL_BORDER_TOP) == 0;
+		if (dx == 0 && dy == 1)
+			return (grid & GridData.GRID_CELL_BORDER_BOTTOM) == 0;
+		return true;
+	}
 
 }
