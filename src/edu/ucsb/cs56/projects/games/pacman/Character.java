@@ -10,7 +10,9 @@ import java.awt.*;
  * @author Dario Castellanos Anaya
  * @author Daniel Ly
  * @author Kelvin Yang
- * @version CS56, W15
+ * @author Nicholas Duncan
+ * @author Wei Tung Chen
+ * @version CS56, F17
  */
 public abstract class Character
 {

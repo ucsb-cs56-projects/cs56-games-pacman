@@ -6,6 +6,7 @@ package edu.ucsb.cs56.projects.games.pacman;
  *
  *  @author Wei Tung Chen
  *  @author Nicholas Duncan
+ *  @version CS56 F17
 */
 
 public class Location{

@@ -13,7 +13,9 @@ import java.awt.*;
  * heuristic to be admissable.
  *
  * @author Kelvin Yang
- * @version CS56, W15
+ * @author Nicholas Duncan
+ * @author Wei Tung Chen
+ * @version CS56, F17
  */
 public class Node extends Point implements Comparable<Node>
 {

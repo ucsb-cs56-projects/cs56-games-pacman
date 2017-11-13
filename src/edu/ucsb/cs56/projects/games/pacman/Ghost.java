@@ -18,7 +18,9 @@ import java.util.PriorityQueue;
  * @author Kelvin Yang
  * @author Joseph Kompella
  * @author Kekoa Sato
- * @version CS56 F16
+ * @author Nicholas Duncan
+ * @author Wei Tung Chen
+ * @version CS56 F17
  */
 public class Ghost extends Character {
 

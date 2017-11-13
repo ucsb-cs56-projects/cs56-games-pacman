@@ -27,7 +27,7 @@ import java.util.Date;
  * @author Kekoa Sato
  * @author Wei Tung Chen
  * @author Nicholas Duncan
- * @version CS56 F16
+ * @version CS56 F17
  */
 public class Board extends JPanel implements ActionListener
 {

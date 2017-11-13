@@ -17,7 +17,9 @@ import java.io.IOException;
  * @author Kelvin Yang
  * @author Joseph Kompella
  * @author Kekoa Sato
- * @version CS56 F16
+ * @author Nicholas Duncan
+ * @author Wei Tung Chen
+ * @version CS56 F17
  */
 public class PacPlayer extends Character {
 

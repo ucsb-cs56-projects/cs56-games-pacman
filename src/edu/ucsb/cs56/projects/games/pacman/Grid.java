@@ -10,7 +10,9 @@ import java.io.*;
  * @author Yuxiang Zhu
  * @author Joseph Kompella
  * @author Kekoa Sato
- * @version CS56 F16
+ * @author Nicholas Duncan
+ * @author Wei Tung Chen
+ * @version CS56 F17
  */
 
 public class Grid

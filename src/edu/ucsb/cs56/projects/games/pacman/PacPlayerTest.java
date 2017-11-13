@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Nicholas Duncan
  * @author Wei Tung Chen
- * @version CS56, Fall 2017
+ * @version CS56 F17
  * @see PacPlayer
  */
 
