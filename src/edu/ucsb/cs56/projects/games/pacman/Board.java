@@ -388,7 +388,7 @@ public class Board extends JPanel implements ActionListener
             {
                 if ((Math.abs(pacman.x - ghost.x) < 20 && Math.abs(pacman.y - ghost.y) < 20)) {
 
-                    if (ghost.edible) {
+                    if (!ghost.edible) {
                         pacman.death();
                         //sends ghosts back to ghost house on pacman's death
                         for (Ghost ghost1 : ghosts) {
