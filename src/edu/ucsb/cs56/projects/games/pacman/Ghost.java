@@ -38,7 +38,7 @@ public class Ghost extends Character {
 	public int type;
 
 	public Ghost(int x, int y, int speed, int type) {
-		this(x, y, speed, type, GHOST1, null);
+		this(x, y, speed, type, 0, null);
 	}
 
 	public Ghost(int x, int y, int speed, int playerNum, Grid grid) {
@@ -97,17 +97,18 @@ public class Ghost extends Character {
 	 */
 	@Override
 	public void loadImages() {
+
+		String ghostImage = "";
 		try {
-			if (type == TYPE_RED)
-				ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostred.png"));
-			else if (type == TYPE_PINK)
-				ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostpink.png"));
-			else {
-				if (playerNum == GHOST1)
-					ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostred.png"));
-				else if (playerNum == GHOST2) 
-					ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostpink.png"));
-			} 
+
+			if (type == TYPE_RED || playerNum == GHOST1)
+				ghostImage = "ghostred.png";
+			else
+				ghostImage = "ghostpink.png";
+
+			if (!ghostImage.isEmpty())
+				ghost = ImageIO.read(getClass().getResource(assetImagePath + ghostImage));
+
 			scared_ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostblue.png"));
 		
 		} catch (IOException e) {
