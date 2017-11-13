@@ -114,57 +114,60 @@ public class PacPlayer extends Character {
 			x = ((x / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 			y = ((y / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 
+			//Consume special item on current grid
 			ch = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
+			consumeGridItem(ch);
 
-			//if pellet, eat and increase score
-			if ((ch & GridData.GRID_CELL_PELLET) != 0) {
-				//Toggles pellet bit
-				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_PELLET);
-				playAudio(0);
-				Board.score += Board.SCORE_PELLET;
-				speed = 3;
-			}
-			//if fruit, eat and increase score
-			else if ((ch & GridData.GRID_CELL_FRUIT) != 0) {
-				//Toggles fruit bit
-				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_FRUIT);
-				Board.score += Board.SCORE_FRUIT;
-				playAudio(1);
-				speed = 3;
-			}
-			else if((ch & GridData.GRID_CELL_POWER_PILL) != 0) {
-				//Toggles pill bit
-				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_POWER_PILL);
-				playAudio(1);
-				Board.score += Board.SCORE_POWER_PILL;
-				speed = 3;
-			}
-			else
-				speed = 4;
-
-			//passes key commands to movement
+			//Passes key commands to movement
 			if(reqdx != 0 || reqdy != 0) {
 				if ( Character.moveable(reqdx, reqdy, ch) ) {
 					dx = reqdx;
 					dy = reqdy;
-					if(reqdx == -1 && reqdy == 0 && (ch & GridData.GRID_CELL_BORDER_LEFT) == 0)
-						direction = Direction.LEFT;
-					if(reqdx == 0 && reqdy == -1 && (ch & GridData.GRID_CELL_BORDER_TOP) == 0)
-						direction = Direction.UP;
-					if(reqdx == 1 && reqdy == 0 && (ch & GridData.GRID_CELL_BORDER_RIGHT) == 0)
-						direction = Direction.RIGHT;
-					if(reqdx == 0 && reqdy == 1 && (ch & GridData.GRID_CELL_BORDER_BOTTOM) == 0)
-						direction = Direction.DOWN;
+					if(reqdx == -1 && reqdy == 0) direction = Direction.LEFT;
+					if(reqdx == 0 && reqdy == -1) direction = Direction.UP;
+					if(reqdx == 1 && reqdy == 0) direction = Direction.RIGHT;
+					if(reqdx == 0 && reqdy == 1) direction = Direction.DOWN;
 				}
 			}
 
-			// Check for standstill, stop movement if hit wall
+			//Check for standstill, stop movement if hit wall
 			if ( !Character.moveable(dx, dy, ch) ) {
 				dx = 0;
 				dy = 0;
 			}
 		}
 		move();
+	}
+
+	/*
+	 * Consume special items on a specific grid and increase score.
+	 * @param ch grid data
+	 */
+	private void consumeGridItem(short ch) {
+
+		if ((ch & GridData.GRID_CELL_PELLET) != 0) {
+			//Toggles pellet bit
+			grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_PELLET);
+			playAudio(0);
+			Board.score += Board.SCORE_PELLET;
+			speed = 3;
+		}
+		else if ((ch & GridData.GRID_CELL_FRUIT) != 0) {
+			//Toggles fruit bit
+			grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_FRUIT);
+			Board.score += Board.SCORE_FRUIT;
+			playAudio(1);
+			speed = 3;
+		}
+		else if((ch & GridData.GRID_CELL_POWER_PILL) != 0) {
+			//Toggles pill bit
+			grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_POWER_PILL);
+			playAudio(1);
+			Board.score += Board.SCORE_POWER_PILL;
+			speed = 3;
+		}
+		else
+			speed = 4;
 	}
 
 	/**

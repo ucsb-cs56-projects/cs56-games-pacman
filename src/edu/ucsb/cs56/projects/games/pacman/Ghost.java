@@ -237,17 +237,16 @@ public class Ghost extends Character {
 			dy = reqdy;
 		}
 		if (x % Board.BLOCKSIZE == 0 && y % Board.BLOCKSIZE == 0) {
+
 			//Tunnel effect
 			x = ((x / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 			y = ((y / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 
+			//Consume special item on current grid
 			ch = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
+			consumeGridItem(ch);
 
-			if((ch & GridData.GRID_CELL_FRUIT) != 0) {
-				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_FRUIT);
-				Board.score -= Board.SCORE_FRUIT / 2;
-			}
-
+			//Movement and boundary check
 			if (reqdx != 0 || reqdy != 0) {
 				if ( Character.moveable(reqdx, reqdy, ch) ) {
 					dx = reqdx;
@@ -262,6 +261,17 @@ public class Ghost extends Character {
 			}
 		}
 		move();
+	}
+
+	/*
+	 * Consume special items on a specific grid and decrease player score.
+	 * @param ch grid data
+	 */
+	private void consumeGridItem(short ch) {
+		if((ch & GridData.GRID_CELL_FRUIT) != 0) {
+			grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_FRUIT);
+			Board.score -= Board.SCORE_FRUIT / 2;
+		}
 	}
 
 	/**
