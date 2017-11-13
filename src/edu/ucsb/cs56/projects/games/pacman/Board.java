@@ -386,24 +386,25 @@ public class Board extends JPanel implements ActionListener
         {
             for (Ghost ghost : ghosts)
             {
-                if ((Math.abs(pacman.x - ghost.x) < 20 &&
-                     Math.abs(pacman.y - ghost.y) < 20) && ghost.edible == false) {
-                    pacman.death();
-		    //sends ghosts back to ghost house on pacman's death
-		    for (Ghost ghost1 : ghosts) {
-			ghost1.death();
-			ghostHouse.addGhost(ghost1);
-		    }
-		    //Resets time so ghosts will respawn on time
-		    ghostHouse.resetTimer();
-		    return;
-		}
-                
-                if ((Math.abs(pacman.x - ghost.x) < 20 &&
-                     Math.abs(pacman.y - ghost.y) < 20) && ghost.edible == true) {
-                    ghost.death();
-		    ghostHouse.addGhost(ghost);
-                    score += SCORE_ENEMY;
+                if ((Math.abs(pacman.x - ghost.x) < 20 && Math.abs(pacman.y - ghost.y) < 20)) {
+
+                    if (ghost.edible) {
+                        pacman.death();
+                        //sends ghosts back to ghost house on pacman's death
+                        for (Ghost ghost1 : ghosts) {
+                            ghost1.death();
+                            ghostHouse.addGhost(ghost1);
+                        }
+                        //Resets time so ghosts will respawn on time
+                        ghostHouse.resetTimer();
+                        return;
+
+                    } else {
+                        ghost.death();
+                        ghostHouse.addGhost(ghost);
+                        score += SCORE_ENEMY;
+                    }
+
                 }
             }
         }
@@ -469,10 +470,10 @@ public class Board extends JPanel implements ActionListener
     {
         numPellet = grid.getPelletNum() + grid.getPillNum();
         numPills = grid.getPillNum();
-	ghosts.clear();
-	//ghost house is located in the center of each map its width is currently 3
-	//as the number of ghosts is 4. Can be adjusted for different level designs
-	this.ghostHouse = new GhostHouse(new Location(7,8) , this.numGhosts - 1, this.BLOCKSIZE);
+        ghosts.clear();
+        //ghost house is located in the center of each map its width is currently 3
+        //as the number of ghosts is 4. Can be adjusted for different level designs
+        this.ghostHouse = new GhostHouse(new Location(7,8) , this.numGhosts - 1, this.BLOCKSIZE);
         if(gt == GameType.VERSUS)
         {
             ghosts.add(ghost1);
@@ -482,13 +483,13 @@ public class Board extends JPanel implements ActionListener
         {
             for (int i = 0; i < numGhosts; i++)
             {
-		//first ghost will get set outside, other ghosts get set inside ghost house
-		if(i == 0){
-		    ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + i) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
-		}else{
-		    ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + (i-1)) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
-		}
-		    ghostHouse.addGhost(ghosts.get(i));
+                //first ghost will get set outside, other ghosts get set inside ghost house
+                if(i == 0){
+                    ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + i) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
+                }else{
+                    ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + (i-1)) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
+                }
+                ghostHouse.addGhost(ghosts.get(i));
             }
         }
         switch (gt)
