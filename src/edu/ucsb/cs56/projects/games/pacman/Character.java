@@ -160,15 +160,21 @@ public abstract class Character
 	 * @return true if the direction is moveable
 	 */
 	public static boolean moveable(int dx, int dy, short grid) {
+		boolean moveable = false;
+
 		if (dx == -1 && dy == 0)
-			return (grid & GridData.GRID_CELL_BORDER_LEFT) == 0;
-		if (dx == 1 && dy == 0)
-			return (grid & GridData.GRID_CELL_BORDER_RIGHT) == 0;
-		if (dx == 0 && dy == -1)
-			return (grid & GridData.GRID_CELL_BORDER_TOP) == 0;
-		if (dx == 0 && dy == 1)
-			return (grid & GridData.GRID_CELL_BORDER_BOTTOM) == 0;
-		return true;
+			moveable = (grid & GridData.GRID_CELL_BORDER_LEFT) == 0;
+
+		else if (dx == 1 && dy == 0)
+			moveable = (grid & GridData.GRID_CELL_BORDER_RIGHT) == 0;
+
+		else if (dx == 0 && dy == -1)
+			moveable = (grid & GridData.GRID_CELL_BORDER_TOP) == 0;
+
+		else if (dx == 0 && dy == 1)
+			moveable = (grid & GridData.GRID_CELL_BORDER_BOTTOM) == 0;
+
+		return moveable;
 	}
 
 }

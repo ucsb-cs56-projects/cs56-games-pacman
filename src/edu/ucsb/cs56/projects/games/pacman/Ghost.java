@@ -469,11 +469,14 @@ public class Ghost extends Character {
 	private boolean hasChoice(Grid grid) {
 		if (this.x % Board.BLOCKSIZE == 0 && this.y % Board.BLOCKSIZE == 0) {
 			int block = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
-			int count = (block & GridData.GRID_CELL_BORDER_LEFT) == 0 && this.dx != 1 ? 1 : 0;
-			count += (block & GridData.GRID_CELL_BORDER_TOP) == 0 && this.dy != 1 ? 1 : 0;
-			count += (block & GridData.GRID_CELL_BORDER_RIGHT) == 0 && this.dx != -1 ? 1 : 0;
-			count += (block & GridData.GRID_CELL_BORDER_BOTTOM) == 0 && this.dy != -1 ? 1 : 0;
-			if(count > 1)
+
+			int count = 0;
+			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_LEFT) == 0 && this.dx != 1) count += 1;
+			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_TOP) == 0 && this.dy != 1) count += 1;
+			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_RIGHT) == 0 && this.dx != -1) count += 1;
+			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_BOTTOM) == 0 && this.dy != -1) count += 1;
+
+			if (count > 1)
 				return true;
 		}
 		return false;

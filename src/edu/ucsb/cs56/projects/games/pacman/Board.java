@@ -380,32 +380,25 @@ public class Board extends JPanel implements ActionListener
      *
      * @param ghosts An array of Ghost
      */
-    public void detectCollision(ArrayList<Ghost> ghosts)
-    {
-        for (Character pacman : pacmen)
-        {
-            for (Ghost ghost : ghosts)
-            {
+    public void detectCollision(ArrayList<Ghost> ghosts) {
+
+        for (Character pacman : pacmen) {
+            for (Ghost ghost : ghosts) {
+
                 if ((Math.abs(pacman.x - ghost.x) < 20 && Math.abs(pacman.y - ghost.y) < 20)) {
 
                     if (!ghost.edible) {
                         pacman.death();
-                        //sends ghosts back to ghost house on pacman's death
-                        for (Ghost ghost1 : ghosts) {
-                            ghost1.death();
-                            ghostHouse.addGhost(ghost1);
-                        }
-                        //Resets time so ghosts will respawn on time
-                        ghostHouse.resetTimer();
+                        ghostHouse.addGhosts(ghosts); //Reset ghosts back to ghost house
+                        ghostHouse.resetTimer(); //Resets time so ghosts will respawn on time
                         return;
-
                     } else {
                         ghost.death();
                         ghostHouse.addGhost(ghost);
                         score += SCORE_ENEMY;
                     }
-
                 }
+
             }
         }
     }
