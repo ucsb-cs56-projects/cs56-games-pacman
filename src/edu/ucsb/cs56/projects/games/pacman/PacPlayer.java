@@ -125,10 +125,7 @@ public class PacPlayer extends Character {
 				if ( Character.moveable(reqdx, reqdy, ch) ) {
 					dx = reqdx;
 					dy = reqdy;
-					if(reqdx == -1 && reqdy == 0) direction = Direction.LEFT;
-					if(reqdx == 0 && reqdy == -1) direction = Direction.UP;
-					if(reqdx == 1 && reqdy == 0) direction = Direction.RIGHT;
-					if(reqdx == 0 && reqdy == 1) direction = Direction.DOWN;
+					direction = Direction.getDirection(dx, dy);
 				}
 			}
 

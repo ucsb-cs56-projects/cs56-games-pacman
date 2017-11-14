@@ -454,13 +454,13 @@ public class Ghost extends Character {
 
 		// First condition prevents checks collision with wall
 		// Second condition prevents switching direction abruptly (left -> right) (up -> down)
-		if ((block & GridData.GRID_CELL_BORDER_LEFT) == 0 && this.dx != 1)
+		if ((block & GridData.GRID_CELL_BORDER_LEFT) == 0 && !Direction.goingRight(dx, dy))
 			moves.add(new Point(-1, 0));
-		if ((block & GridData.GRID_CELL_BORDER_TOP) == 0 && this.dy != 1)
+		if ((block & GridData.GRID_CELL_BORDER_TOP) == 0 && !Direction.goingDown(dx, dy))
 			moves.add(new Point(0, -1));
-		if ((block & GridData.GRID_CELL_BORDER_RIGHT) == 0 && this.dx != -1)
+		if ((block & GridData.GRID_CELL_BORDER_RIGHT) == 0 && !Direction.goingLeft(dx, dy))
 			moves.add(new Point(1, 0));
-		if ((block & GridData.GRID_CELL_BORDER_BOTTOM) == 0 && this.dy != -1)
+		if ((block & GridData.GRID_CELL_BORDER_BOTTOM) == 0 && !Direction.goingUp(dx, dy))
 			moves.add(new Point(0, 1));
 
 		return moves;
@@ -471,10 +471,14 @@ public class Ghost extends Character {
 			int block = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
 
 			int count = 0;
-			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_LEFT) == 0 && this.dx != 1) count += 1;
-			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_TOP) == 0 && this.dy != 1) count += 1;
-			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_RIGHT) == 0 && this.dx != -1) count += 1;
-			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_BOTTOM) == 0 && this.dy != -1) count += 1;
+			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_LEFT) == 0 && !Direction.goingRight(dx, dy)) 
+				count += 1;
+			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_TOP) == 0 && !Direction.goingDown(dx, dy)) 
+				count += 1;
+			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_RIGHT) == 0 && !Direction.goingLeft(dx, dy)) 
+				count += 1;
+			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_BOTTOM) == 0 && !Direction.goingUp(dx, dy)) 
+				count += 1;
 
 			if (count > 1)
 				return true;

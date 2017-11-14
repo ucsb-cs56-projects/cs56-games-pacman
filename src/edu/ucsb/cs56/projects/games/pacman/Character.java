@@ -162,16 +162,16 @@ public abstract class Character
 	public static boolean moveable(int dx, int dy, short grid) {
 		boolean moveable = false;
 
-		if (dx == -1 && dy == 0)
+		if (Direction.goingLeft(dx, dy))
 			moveable = (grid & GridData.GRID_CELL_BORDER_LEFT) == 0;
 
-		else if (dx == 1 && dy == 0)
+		else if (Direction.goingRight(dx, dy))
 			moveable = (grid & GridData.GRID_CELL_BORDER_RIGHT) == 0;
 
-		else if (dx == 0 && dy == -1)
+		else if (Direction.goingUp(dx, dy))
 			moveable = (grid & GridData.GRID_CELL_BORDER_TOP) == 0;
 
-		else if (dx == 0 && dy == 1)
+		else if (Direction.goingDown(dx, dy))
 			moveable = (grid & GridData.GRID_CELL_BORDER_BOTTOM) == 0;
 
 		return moveable;
