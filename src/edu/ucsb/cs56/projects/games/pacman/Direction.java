@@ -31,10 +31,11 @@ public class Direction {
 	}
 
 	public static int getDirection(int dx, int dy) {
-		if (goingLeft(dx, dy)) return LEFT;
-		if (goingUp(dx, dy)) return UP;
-		if (goingRight(dx, dy)) return RIGHT;
-		if (goingDown(dx, dy)) return DOWN;
-		return NONE;
+		int result = 0;
+		if (goingLeft(dx, dy)) result = LEFT;
+		if (goingUp(dx, dy)) result = UP;
+		if (goingRight(dx, dy)) result = RIGHT;
+		if (goingDown(dx, dy)) result = DOWN;
+		return result;
 	}
 }
