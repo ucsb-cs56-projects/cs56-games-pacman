@@ -10,15 +10,18 @@ import java.util.HashSet;
 import java.util.PriorityQueue;
 
 /**
- * Class representing enemy ghosts in single player mode
- * and player ghosts in multiplayer mode
+ * A class used to represent the ghost enemies
+ * used for AI-controlled ghosts in the standard mode
+ * and for player controlled ghosts in multiplayer
  *
  * @author Dario Castellanos Anaya
  * @author Daniel Ly
  * @author Kelvin Yang
  * @author Joseph Kompella
  * @author Kekoa Sato
- * @version CS56 F16
+ * @author Wei Tung Chen
+ * @author Nicholas Duncan
+ * @version CS56 F17
  */
 public class Ghost extends Character {
 	public static final int GHOST1 = 1;
@@ -32,7 +35,14 @@ public class Ghost extends Character {
 	public int prev_speed;
 	public int edibleTimer;
 	public int type;
-
+    
+       /**
+	* Ghost class constructor for singleplayer
+	* @param x x-position of ghost
+	* @param y y-position of ghost
+	* @param speed the ghost's initial movement speed
+	* @param type the type of ghost
+	*/
 	public Ghost(int x, int y, int speed, int type) {
 		super(x, y);
 		this.speed = speed;
@@ -44,6 +54,14 @@ public class Ghost extends Character {
 		edibleTimer = 1;
 	}
 
+        /**
+	 * Ghost class constructor for multiplayer
+	 * @param x x-position
+	 * @param y y-position
+	 * @param speed initial 
+	 * @param playerNum a number to indicate which player is controlling this ghost
+	 * @param grid the grid used to determine movement/collision
+	 */
 	public Ghost(int x, int y, int speed, int playerNum, Grid grid) {
 		super(x, y, playerNum);
 		this.speed = speed;
@@ -57,6 +75,9 @@ public class Ghost extends Character {
 
 	/**
 	 * Handles character's death
+	 * coordinates are reset to the coordinates that
+	 * the ghost initially started at and the ghost
+	 * becomes inedible
 	 */
 	public void death() {
 		x = startX;
@@ -66,7 +87,10 @@ public class Ghost extends Character {
 	}
 
 	/**
-	 * Handles character's death with set coordinates
+	 * Handles character's death and allows specification of a new location
+	 * for the character to spawn at
+	 * @param newX the new x-coordinate that the ghost will respawn at
+	 * @param newY the new y-coordinate that the ghost will respawn at
 	 */
 	public void death(int newX, int newY)
 	{
@@ -79,8 +103,8 @@ public class Ghost extends Character {
 	/**
 	 * Draws the ghost
 	 *
-	 * @param g a Graphics2D object
-	 * @param canvas A Jcomponent object to be drawn on
+	 * @param g used to draw the "ghost" or "scared_ghost" sprites
+	 * @param canvas the component that the ghost sprites are drawn onto
 	 */
 	@Override
 	public void draw(Graphics2D g, JComponent canvas) {
@@ -91,7 +115,7 @@ public class Ghost extends Character {
 	}
 
 	/**
-	 * Load game sprites from images folder
+	 * Load ghost sprites from images folder
 	 */
 	@Override
 	public void loadImages() {
@@ -117,7 +141,7 @@ public class Ghost extends Character {
 	/**
 	 * Returns the image used for displaying remaining lives
 	 *
-	 * @return Image of character
+	 * @return Image of ghost
 	 */
 	@Override
 	public Image getLifeImage() {
@@ -125,7 +149,7 @@ public class Ghost extends Character {
 	}
 
 	/**
-	 * Handles key presses for game controls
+	 * Handles player keyboard input
 	 *
 	 * @param key Integer representing the key pressed
 	 */
@@ -177,6 +201,10 @@ public class Ghost extends Character {
 	}
 
 	@Override
+	/**
+	 * handles player key releases
+	 * @param key an integer that represents which key was pressed
+	 */
 	public void keyReleased(int key) {
 		move(this.grid);
 		if (playerNum == GHOST1) {

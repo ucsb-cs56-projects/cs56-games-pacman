@@ -27,10 +27,11 @@ import java.util.Date;
  * @author Kekoa Sato
  * @author Wei Tung Chen
  * @author Nicholas Duncan
- * @version CS56 F16
+ * @version CS56 F17
  */
 public class Board extends JPanel implements ActionListener
 {
+    //enum that represents which gametype you're playing
     enum GameType {
         INTRO, HELP, SINGLEPLAYER, COOPERATIVE, VERSUS, LEADERBOARD
     }
@@ -98,8 +99,11 @@ public class Board extends JPanel implements ActionListener
     }
     
     /**
-    * Main game logic loop
-     *
+     *Main game logic loop
+     *Anything related to the updating of game objects and state occurs in this
+     *method. The game logic is updated based on which game mode is selected
+     *this also controls some scoring and level changing parts of the game
+     *(consider refactoring)
      * @param g2d a Graphics 2D object
      */
     public void playGame(Graphics2D g2d) {
@@ -236,8 +240,8 @@ public class Board extends JPanel implements ActionListener
     }
     
     /**
-     * Shows help
-     *
+     * Shows help screen detailing game mode instructions,
+     * movement commands, and other game controls
      * @param g a Graphics object
      */
     public void showHelpScreen(Graphics g)
@@ -298,8 +302,11 @@ public class Board extends JPanel implements ActionListener
     }
     
     /**
-     * Display the current score on the bottom right of the screen
-     *
+     * Display game information such as:
+     * the number of pellets left,
+     * the current score,
+     * the number of lives left for pacman and possibly Ms. Pacman
+     * (consider renaming as does more than just score)
      * @param g a Graphics object
      */
     public void drawScore(Graphics g)
@@ -325,7 +332,7 @@ public class Board extends JPanel implements ActionListener
     }
     
     /**
-     * Displays a list of scores on the bottom of the screen
+     * Displays a list of high scores on the bottom of the screen
      *
      * @param g a Graphics object
      */
@@ -373,7 +380,8 @@ public class Board extends JPanel implements ActionListener
     
     /**
      * Detects when ghosts and pacman collide
-     *
+     * Ghosts are sent back to the 'ghost house' (center of map)
+     * when pacman dies
      * @param ghosts An array of Ghost
      */
     public void detectCollision(ArrayList<Ghost> ghosts)
