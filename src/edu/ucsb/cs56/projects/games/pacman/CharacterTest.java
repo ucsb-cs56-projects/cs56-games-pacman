@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Nicholas Duncan
  * @author Wei Tung Chen
- * @version CS56, Fall 2017
+ * @version CS56 F17
  * @see Character
  */
 
@@ -45,7 +45,7 @@ public class CharacterTest {
 		character.dy = 5;
 		character.speed = 5;
 		character.move();
-                assertEquals(5, character.x);
-                assertEquals(1, character.y);
+                assertEquals(30, character.x);
+                assertEquals(26, character.y);
 	}
 }
