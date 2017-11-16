@@ -137,16 +137,21 @@ public abstract class Character
 			y = ((y / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 		}
 	}
-
-        //sets x-coordinate
+        /**
+         *sets the x-coordiante of the character on the screen
+         */
         public void setX(int x){
 	    this.x = x;
         }
-        //sets y-coordinate
+        /**
+	 *sets the y-coordinate of the character on the screen
+	 */
         public void setY(int y){
 	    this.y = y;
         }
-    
+        /**
+	 *sets the speed of the character
+	 */
         public void setSpeed(int speed){
 	    this.speed = speed;
         }
