@@ -14,7 +14,10 @@ import static org.junit.Assert.assertEquals;
  */
 
 public class CharacterTest {
-	
+        /**
+	 * Runs a test on the character constructor
+	 * for debugging purposes
+	 */
 	@Test
 	public void test_constructor_simple() {
 		Character character = new PacPlayer(5, 1);
@@ -23,7 +26,9 @@ public class CharacterTest {
 		assertEquals(1, character.playerNum);
 		assertEquals(true, character.alive);
 	}
-
+        /**
+	 * A test to debug the reset method of the PacPlayer class
+	 */
 	@Test
 	public void test_reset() {
 		Character character = new PacPlayer(5, 1);
@@ -37,7 +42,9 @@ public class CharacterTest {
 		assertEquals(0, character.dx);
                 assertEquals(0, character.dy);
 	}
-
+        /**
+	 * A test to debug the character class's 'move' method
+	 */
 	@Test
 	public void test_move() {
 		Character character = new PacPlayer(5, 1);

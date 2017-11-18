@@ -10,7 +10,7 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 /**
- * Player controlled pacman character.
+ * A class to represent the player controlled pacman character.
  *
  * @author Dario Castellanos
  * @author Daniel Ly
@@ -57,10 +57,11 @@ public class PacPlayer extends Character {
 	}
 
 	/**
-	 * Constructor for PacPlayer class
+	 * Constructor for PacPlayer class for use
+	 * when multiple players are playing the game
 	 *
-	 * @param x         the starting x coordinate of pacman
-	 * @param y         the starting y coordinate of pacman
+	 * @param x         the starting x-coordinate of pacman
+	 * @param y         the starting y-coordinate of pacman
 	 * @param playerNum int representing who the player is controlling
 	 * @param grid      the grid in which PacPlayer is part of.
 	 */
@@ -76,13 +77,19 @@ public class PacPlayer extends Character {
 		loadImages();
 		loadAudio();
 	}
-
+    
+        /**
+	 * Resets the player's position
+	 */
 	public void resetPos()
 	{
 		super.resetPos();
 		direction = 3;
 	}
-
+        /**
+	 * Handles PacMan's death by taking away lives,
+	 * resetting the death timer, and resetting position
+	 */
 	public void death() {
 		if (deathTimer <= 0) {
 			lives--;
@@ -179,8 +186,8 @@ public class PacPlayer extends Character {
 	/**
 	 * Calls the appropriate draw method for the direction Pacman is facing
 	 *
-	 * @param g2d    a Graphics2D object
-	 * @param canvas A Jcomponent object to be drawn on
+	 * @param g2d    a Graphics2D object for drawing the pacman sprite
+	 * @param canvas The component that the sprite is drawn on
 	 */
 	public void draw(Graphics2D g2d, JComponent canvas) {
 		if (deathTimer % 5 > 3) return; // Flicker while invincibile
@@ -196,9 +203,10 @@ public class PacPlayer extends Character {
 	}
 
 	/**
-	 * Moves character's current position with the board's collision
+	 * Moves character's current position while detecting for collision
+	 * within the board
 	 *
-	 * @param grid The Grid to be used for collision
+	 * @param grid The Grid to be used for collision detection
 	 */
 	@Override
 	public void moveAI(Grid grid, Character[] c) {
@@ -268,6 +276,12 @@ public class PacPlayer extends Character {
 		}
 	}
 
+
+        /**
+	 * Handles the release of a key by the player
+	 *
+	 * @param key int representing the key that was pressed
+	 */ 
 	@Override
 	public void keyReleased(int key) {
 		move(this.grid);

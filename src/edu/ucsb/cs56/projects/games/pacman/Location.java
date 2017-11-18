@@ -13,11 +13,11 @@ public class Location{
     private int y; //y coordinate of location
 
     /**
-       Location constructor takes an x and y
-       integer to track location of object
-       @constructor
-       @param x x-coordinate
-       @param y y-coordinate
+     * Location constructor takes an x and y
+     * integer to track location of object
+     * @constructor
+     * @param x x-coordinate
+     * @param y y-coordinate
      */
     public Location(int x, int y){
 	this.x = x;
@@ -25,28 +25,36 @@ public class Location{
     }
 
     /**
-       @return x-coordinate
+     * Gets the x-coordinate of the location
+     *
+     * @return x-coordinate
      */
     public int getX(){
 	return this.x;
     }
 
     /**
-       @return y-coordinate
+     * Get the y-coordinate of the location
+     *
+     *  @return y-coordinate
      */
     public int getY(){
 	return this.y;
     }
 
     /**
-       @param x new x-coordinate
+     * Changes the x-coordinate to the specified coordinate
+     *
+     * @param x new x-coordinate
      */
     public void setX(int x){
 	this.x = x;
     }
 
     /**
-       @param y new y-coordinate
+     * Changes the y-coordinate to the specified coordinate
+     *
+     * @param y new y-coordinate
      */
     public void setY(int y){
 	this.y = y;

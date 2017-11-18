@@ -242,6 +242,7 @@ public class Board extends JPanel implements ActionListener
     /**
      * Shows help screen detailing game mode instructions,
      * movement commands, and other game controls
+     *
      * @param g a Graphics object
      */
     public void showHelpScreen(Graphics g)
@@ -652,7 +653,10 @@ public class Board extends JPanel implements ActionListener
                 }
             }
         }
-        
+	/**
+	 * Handles the release of a key by a player
+	 *
+	 * @param e holds information about the key pressed
         public void keyReleased(KeyEvent e) {
             int key = e.getKeyCode();
             

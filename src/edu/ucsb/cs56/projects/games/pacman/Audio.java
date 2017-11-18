@@ -31,6 +31,7 @@ public class Audio {
 	}
        /**
 	*Gets the sound bytes from the stream
+	*
 	*@param inputStream the stream used to get the sound bytes
 	*@return ByteArrayInputStream
 	*/
@@ -52,6 +53,7 @@ public class Audio {
 
         /**
 	 *Plays a sound clip once and will not replay until the clip has finished
+	 *
 	 *@throws UnsupportedAudioFileException
 	 *@throws LineUnavailableException
          */
@@ -60,6 +62,7 @@ public class Audio {
 	}
         /**
 	 *Plays a sound clip once and will not replay until the clip has finished
+	 *
 	 *@param playOnlyOnce boolean that dictates whether the sound should replay
 	 *@throws UnsupportedAudioFileException
 	 *@throws LineUnavailableException

@@ -14,7 +14,11 @@ import static org.junit.Assert.assertEquals;
  */
 
 public class PacPlayerTest {
-	
+
+        /**
+	 * Testing to debug the PacPlayer constructor by 
+	 * testing values for position, lives, direction, and speed 
+	 */
 	@Test
 	public void test_constructor_simple() {
 		PacPlayer player = new PacPlayer(0, 9);
@@ -24,6 +28,11 @@ public class PacPlayerTest {
 		assertEquals(3, player.direction);
 		assertEquals(4, player.speed);
 	}
+        /**
+	 * Testing to debug the PacPlayer constructor by
+	 * testing values for positin, lives, direction, speed, and
+	 * testing for 'Ms PacMan'
+	 */
 	
 	@Test
 	public void test_constructor_complex() {
@@ -46,6 +55,9 @@ public class PacPlayerTest {
 		assertEquals(player.startY, player.y);
 	}
 
+        /**
+	 * Testing to debug the death method of the PacPlayer class
+	 */
 	@Test
 	public void test_death() {
 		PacPlayer player = new PacPlayer(3, 4);

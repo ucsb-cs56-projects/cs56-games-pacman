@@ -5,13 +5,13 @@ import java.util.LinkedList;
 
 
 /**
-   This is a class to represent a Ghost House which holds ghost
-   starting coordinates and tracks when ghosts are released onto
-   the map to chase Pacman
-
-   @author Wei Tung Chen
-   @author Nicholas Duncan
-*/
+ * This is a class to represent a Ghost House which holds ghost
+ * starting coordinates and tracks when ghosts are released onto
+ * the map to chase Pacman
+ *
+ * @author Wei Tung Chen
+ * @author Nicholas Duncan
+ */
 
 public class GhostHouse{
     private Queue<Ghost> ghosts; //ghosts held in the ghosthouse
@@ -23,11 +23,12 @@ public class GhostHouse{
     private int blockSize; //size in pixels of a block on the map (from board class)
 
     /**
-     *Constructor for a ghosthouse object
-     *note that location must matched with the level map data that is created
-     *@param topLeft Location of the top left corner of the ghost house
-     *@param width how many "blocks" the house encompasses (typically 1 block per ghost)
-     *@param blockSize the size of each block as defined by the board class (must pass this in)
+     * Constructor for a ghosthouse object
+     * note that location must matched with the level map data that is created
+     * 
+     * @param topLeft Location of the top left corner of the ghost house
+     * @param width how many "blocks" the house encompasses (typically 1 block per ghost)
+     * @param blockSize the size of each block as defined by the board class (must pass this in)
      */
     public GhostHouse(Location topLeft, int width, int blockSize){
 	ghosts = new LinkedList<Ghost>();
@@ -40,9 +41,10 @@ public class GhostHouse{
     }
 
     /**
-     *Method to add a ghost to a ghost house object
-     *Ghosts in ghost house will properly spawn and respawn
-     *@param ghost the ghost desired to be put into the ghost house
+     * Method to add a ghost to a ghost house object
+     * Ghosts in ghost house will properly spawn and respawn
+     *     
+     * @param ghost the ghost desired to be put into the ghost house
      */
     public void addGhost(Ghost ghost){
 	ghosts.add(ghost);
@@ -50,14 +52,14 @@ public class GhostHouse{
     }
 
     /**
-     *returns the top left location of the ghost house
+     * returns the top left location of the ghost house
      */
     public Location getTopLeft(){
 	return topLeft;
     }
 
     /**
-     *returns the width of the ghost house
+     * returns the width of the ghost house
      */
     public int getWidth(){
 	return width;
@@ -80,8 +82,8 @@ public class GhostHouse{
     }
 
     /**
-     *Takes a ghost out of the ghost house and spawns it at the location 
-     *above the ghost house
+     * Takes a ghost out of the ghost house and spawns it at the location 
+     * above the ghost house
      */
     private void releaseGhost(){
 	if(ghosts.size() <= 0){
@@ -97,8 +99,8 @@ public class GhostHouse{
 	System.out.println("Spawning Point: " + releaseLocation.getX() + ", " + releaseLocation.getY());
     }
     /**
-     *Resets the timer on the ghost house
-     *must wait a full time interval before the next ghost is released
+     * Resets the timer on the ghost house
+     * must wait a full time interval before the next ghost is released
      */
     public void resetTimer(){
 	lastReleaseTime = 0;

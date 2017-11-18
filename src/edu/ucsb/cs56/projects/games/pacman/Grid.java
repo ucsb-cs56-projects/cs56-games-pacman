@@ -129,7 +129,7 @@ public class Grid
 	}
 
 	/**
-	 * Initialize level
+	 * Initialize level with data containing game object information
 	 * @param numBoardsCleared the number of levels that have been cleared
 	 */
 	public void levelInit(int numBoardsCleared) {
@@ -162,7 +162,9 @@ public class Grid
 	forever to find an open space.  That's why having this list of possible
 	spaces is the best way I can think of.
 	 */
-
+        /**
+	 * A method to set the x and y coordinates to a random number on the board
+	 */
 	public void randomBlock(){
 		this.x = (int) (Math.random() * Board.NUMBLOCKS);
 		this.y = (int) (Math.random() * Board.NUMBLOCKS);
