@@ -19,16 +19,20 @@ import java.util.PriorityQueue;
  * @author Kelvin Yang
  * @author Joseph Kompella
  * @author Kekoa Sato
- * @author Wei Tung Chen
  * @author Nicholas Duncan
+ * @author Wei Tung Chen
  * @version CS56 F17
  */
 public class Ghost extends Character {
+
+	public static final String IMAGE_PATH = "assets/";
+	public static final int TYPE_RED = 0;
+	public static final int TYPE_PINK = 1;
 	public static final int GHOST1 = 1;
 	public static final int GHOST2 = 2;
-        public static int defaultSpeed = 3;
+    	public static int defaultSpeed = 3;
 
-        private Image ghost;
+    	private Image ghost;
 	private Image scared_ghost;
 	private Grid grid;
 	public boolean edible;
@@ -44,14 +48,7 @@ public class Ghost extends Character {
 	* @param type the type of ghost
 	*/
 	public Ghost(int x, int y, int speed, int type) {
-		super(x, y);
-		this.speed = speed;
-		this.type = type;
-		assetImagePath = "assets/";
-		loadImages();
-		edible = false;
-		prev_speed = speed;
-		edibleTimer = 1;
+		this(x, y, speed, type, 0, null);
 	}
 
         /**
@@ -63,15 +60,20 @@ public class Ghost extends Character {
 	 * @param grid the grid used to determine movement/collision
 	 */
 	public Ghost(int x, int y, int speed, int playerNum, Grid grid) {
+		this(x, y, speed, TYPE_RED, playerNum, grid);
+	}
+
+	public Ghost(int x, int y, int speed, int type, int playerNum, Grid grid) {
 		super(x, y, playerNum);
 		this.speed = speed;
+		this.type = type;
 		this.grid = grid;
-		assetImagePath = "assets/";
+		assetImagePath = IMAGE_PATH;
 		loadImages();
 		edible = false;
 		prev_speed = speed;
 		edibleTimer = 1;
-	}
+    }
 
 	/**
 	 * Handles character's death
@@ -92,8 +94,7 @@ public class Ghost extends Character {
 	 * @param newX the new x-coordinate that the ghost will respawn at
 	 * @param newY the new y-coordinate that the ghost will respawn at
 	 */
-	public void death(int newX, int newY)
-	{
+	public void death(int newX, int newY) {
 		x = newX;
 		y = newY;
 		edible = false;
@@ -108,10 +109,11 @@ public class Ghost extends Character {
 	 */
 	@Override
 	public void draw(Graphics2D g, JComponent canvas) {
+		int offset = 4;
 		if(edible)
-			g.drawImage(scared_ghost, x + 4, y + 4, canvas);
+			g.drawImage(scared_ghost, x + offset, y + offset, canvas);
 		else
-			g.drawImage(ghost, x + 4, y + 4, canvas);
+			g.drawImage(ghost, x + offset, y + offset, canvas);
 	}
 
 	/**
@@ -119,20 +121,20 @@ public class Ghost extends Character {
 	 */
 	@Override
 	public void loadImages() {
+
+		String ghostImage = "";
 		try {
-			if (type == 0) {
-				ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostred.png"));
-			}
-			else if (type == 1)
-				ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostpink.png"));
-			else {
-				if (playerNum == GHOST1) {
-					ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostred.png"));
-				} else if (playerNum == GHOST2) { 
-					ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostpink.png"));
-				}
-			} 
+
+			if (type == TYPE_RED || playerNum == GHOST1)
+				ghostImage = "ghostred.png";
+			else
+				ghostImage = "ghostpink.png";
+
+			if (!ghostImage.isEmpty())
+				ghost = ImageIO.read(getClass().getResource(assetImagePath + ghostImage));
+
 			scared_ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostblue.png"));
+		
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -263,33 +265,41 @@ public class Ghost extends Character {
 			dy = reqdy;
 		}
 		if (x % Board.BLOCKSIZE == 0 && y % Board.BLOCKSIZE == 0) {
+
 			//Tunnel effect
 			x = ((x / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 			y = ((y / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 
+			//Consume special item on current grid
 			ch = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
+			consumeGridItem(ch);
 
-			if((ch & 32) != 0) {
-				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 32);
-				Board.score -= 5;
-			}
-
+			//Movement and boundary check
 			if (reqdx != 0 || reqdy != 0) {
-				if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) || (reqdx == 1 && reqdy == 0 && (ch & 4) != 0) ||
-						(reqdx == 0 && reqdy == -1 && (ch & 2) != 0) || (reqdx == 0 && reqdy == 1 && (ch & 8) != 0))) {
+				if ( Character.moveable(reqdx, reqdy, ch) ) {
 					dx = reqdx;
 					dy = reqdy;
 				}
 			}
 
 			// Check for standstill
-			if ((dx == -1 && dy == 0 && (ch & 1) != 0) || (dx == 1 && dy == 0 && (ch & 4) != 0) ||
-					(dx == 0 && dy == -1 && (ch & 2) != 0) || (dx == 0 && dy == 1 && (ch & 8) != 0)) {
+			if ( !Character.moveable(dx, dy, ch) ) {
 				dx = 0;
 				dy = 0;
 			}
 		}
 		move();
+	}
+
+	/*
+	 * Consume special items on a specific grid and decrease player score.
+	 * @param ch grid data
+	 */
+	private void consumeGridItem(short ch) {
+		if((ch & GridData.GRID_CELL_FRUIT) != 0) {
+			grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_FRUIT);
+			Board.score -= Board.SCORE_FRUIT / 2;
+		}
 	}
 
 	/**
@@ -315,20 +325,19 @@ public class Ghost extends Character {
 			int[][] coord = new int[c.length][2];
 			int count = 0;
 	
-			for(Character p : c)
-			{
+			for(Character p : c) {
 				double distance = 0;
-				if (type == 0) {
+				if (type == TYPE_RED) {
 					distance = Math.sqrt(Math.pow(this.x - p.x, 2.0) + Math.pow(this.y - p.y, 2.0));
-				} else if (type == 1) {
+				} else if (type == TYPE_PINK) {
 					int aheadX = p.x;
 					int aheadY = p.y;
 					PacPlayer pacman = (PacPlayer)p;
-					if (pacman.direction == 1)
+					if (pacman.direction == Direction.LEFT)
 						aheadX = p.x - 4;
-					else if (pacman.direction == 2)
+					else if (pacman.direction == Direction.UP)
 						aheadX = p.y - 4;
-					else if (pacman.direction == 3)
+					else if (pacman.direction == Direction.RIGHT)
 						aheadX = p.x + 4;
 					else 
 						aheadY= p.y + 4;
@@ -343,20 +352,20 @@ public class Ghost extends Character {
 						aheadY = 0;
 					distance = Math.sqrt(Math.pow(this.x - aheadX, 2.0) + Math.pow(this.y - aheadY, 2.0));
 				}
-				if(p.alive && distance < 150.0)// && Math.random() < 0.6)
-				{
+				if(p.alive && distance < 150.0) { // && Math.random() < 0.6)
 					coord[count][0] = p.x;
 					coord[count][1] = p.y;
 					count++;
 				}
 			}
 	
-			if(count > 0 && hasChoice(grid))
-			{
+			if(count > 0 && hasChoice(grid)) {
+
 				Node bestDir = pathFind(grid, coord[0][0] / Board.BLOCKSIZE, coord[0][1] / Board.BLOCKSIZE);
 				Node tempDir;
-				for (int i = 1; i < count; i++) //Loop through each pacman
-				{
+
+				//Loop through each pacman
+				for (int i = 1; i < count; i++) {
 					tempDir = pathFind(grid, coord[i][0] / Board.BLOCKSIZE, coord[i][1] / Board.BLOCKSIZE);
 					if (tempDir.distance.value < bestDir.distance.value) //If new path is shorter
 						bestDir = tempDir;
@@ -364,14 +373,12 @@ public class Ghost extends Character {
 	
 				if (bestDir.x - this.x / Board.BLOCKSIZE == 0 && bestDir.y - this.y / Board.BLOCKSIZE == 0) //ghost on pacman
 					moveRandom(grid);
-				else
-				{
+				else {
 					dx = bestDir.x - this.x / Board.BLOCKSIZE;
 					dy = bestDir.y - this.y / Board.BLOCKSIZE;
 				}
-			}
-			else
-			{
+
+			} else {
 				moveRandom(grid);
 			}
 		}
@@ -385,8 +392,7 @@ public class Ghost extends Character {
 	 * @param y target y coordinate in grid form
 	 * @return The next move to make for the ghost
 	 */
-	public Node pathFind(Grid grid, int x, int y)
-	{
+	public Node pathFind(Grid grid, int x, int y) {
 		//Set target x, y
 		Node.tx = x;
 		Node.ty = y;
@@ -402,8 +408,8 @@ public class Ghost extends Character {
 		temp.setDir(dx, dy);
 		opened.offer(temp);
 
-		while(!opened.isEmpty())
-		{
+		while(!opened.isEmpty()) {
+
 			current = opened.poll(); //get best node
 			closed.add(current); //add node to closed set (visited)
 
@@ -413,26 +419,22 @@ public class Ghost extends Character {
 			block = grid.screenData[current.y][current.x];
 
 			//If can move, not abrupt, and unvisited, add to opened
-			if((block & 1) == 0 && current.dir != 3) //Can move and not abrupt
-			{
+			if((block & GridData.GRID_CELL_BORDER_LEFT) == 0 && current.dir != Direction.RIGHT) {
 				temp = current.getChild(-1, 0); //get child node
 				if(!closed.contains(temp)) //Unvisited
 					opened.add(temp);
 			}
-			if((block & 2) == 0 && current.dir != 4)
-			{
+			if((block & GridData.GRID_CELL_BORDER_TOP) == 0 && current.dir != Direction.DOWN) {
 				temp = current.getChild(0, -1);
 				if(!closed.contains(temp))
 					opened.add(temp);
 			}
-			if((block & 4) == 0 && current.dir != 1)
-			{
+			if((block & GridData.GRID_CELL_BORDER_RIGHT) == 0 && current.dir != Direction.LEFT) {
 				temp = current.getChild(1, 0);
 				if(!closed.contains(temp))
 					opened.add(temp);
 			}
-			if((block & 8) == 0 && current.dir != 2)
-			{
+			if((block & GridData.GRID_CELL_BORDER_BOTTOM) == 0 && current.dir != Direction.UP) {
 				temp = current.getChild(0, 1);
 				if(!closed.contains(temp))
 					opened.add(temp);
@@ -453,11 +455,9 @@ public class Ghost extends Character {
 	 *
 	 * @param grid The Grid to be used for collision
 	 */
-	public void moveRandom(Grid grid)
-	{
+	public void moveRandom(Grid grid) {
 		//Makes sure ghost is in a grid and not in movement
-		if (this.x % Board.BLOCKSIZE == 0 && this.y % Board.BLOCKSIZE == 0)
-		{
+		if (this.x % Board.BLOCKSIZE == 0 && this.y % Board.BLOCKSIZE == 0) {
 			ArrayList<Point> list = moveList(grid);
 
 			//randomly pick an available move
@@ -475,35 +475,39 @@ public class Ghost extends Character {
 	 *
 	 * @param grid
 	 */
-	private ArrayList<Point> moveList(Grid grid)
-	{
+	private ArrayList<Point> moveList(Grid grid) {
 		ArrayList<Point> moves = new ArrayList<Point>();
 		int block = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
 
 		// First condition prevents checks collision with wall
 		// Second condition prevents switching direction abruptly (left -> right) (up -> down)
-		if ((block & 1) == 0 && this.dx != 1)
+		if ((block & GridData.GRID_CELL_BORDER_LEFT) == 0 && !Direction.goingRight(dx, dy))
 			moves.add(new Point(-1, 0));
-		if ((block & 2) == 0 && this.dy != 1)
+		if ((block & GridData.GRID_CELL_BORDER_TOP) == 0 && !Direction.goingDown(dx, dy))
 			moves.add(new Point(0, -1));
-		if ((block & 4) == 0 && this.dx != -1)
+		if ((block & GridData.GRID_CELL_BORDER_RIGHT) == 0 && !Direction.goingLeft(dx, dy))
 			moves.add(new Point(1, 0));
-		if ((block & 8) == 0 && this.dy != -1)
+		if ((block & GridData.GRID_CELL_BORDER_BOTTOM) == 0 && !Direction.goingUp(dx, dy))
 			moves.add(new Point(0, 1));
 
 		return moves;
 	}
 
-	private boolean hasChoice(Grid grid)
-	{
-		if (this.x % Board.BLOCKSIZE == 0 && this.y % Board.BLOCKSIZE == 0)
-		{
+	private boolean hasChoice(Grid grid) {
+		if (this.x % Board.BLOCKSIZE == 0 && this.y % Board.BLOCKSIZE == 0) {
 			int block = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
-			int count = (block & 1) == 0 && this.dx != 1 ? 1 : 0;
-			count += (block & 2) == 0 && this.dy != 1 ? 1 : 0;
-			count += (block & 4) == 0 && this.dx != -1 ? 1 : 0;
-			count += (block & 8) == 0 && this.dy != -1 ? 1 : 0;
-			if(count > 1)
+
+			int count = 0;
+			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_LEFT) == 0 && !Direction.goingRight(dx, dy)) 
+				count += 1;
+			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_TOP) == 0 && !Direction.goingDown(dx, dy)) 
+				count += 1;
+			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_RIGHT) == 0 && !Direction.goingLeft(dx, dy)) 
+				count += 1;
+			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_BOTTOM) == 0 && !Direction.goingUp(dx, dy)) 
+				count += 1;
+
+			if (count > 1)
 				return true;
 		}
 		return false;

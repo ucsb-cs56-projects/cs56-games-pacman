@@ -1,6 +1,7 @@
 package edu.ucsb.cs56.projects.games.pacman;
 
 import java.util.Queue;
+import java.util.List;
 import java.util.LinkedList;
 
 
@@ -12,7 +13,6 @@ import java.util.LinkedList;
  * @author Wei Tung Chen
  * @author Nicholas Duncan
  */
-
 public class GhostHouse{
     private Queue<Ghost> ghosts; //ghosts held in the ghosthouse
     private Location topLeft; //location of the top left block of the GhostHouse
@@ -51,8 +51,26 @@ public class GhostHouse{
 	ghost.setSpeed(0); //ghost speed is now set to 0 so that ghosts won't run through ghost house walls
     }
 
-    /**
+   /**
      * returns the top left location of the ghost house
+     *Method to add ghosts to a ghost house object
+     *Ghosts in ghost house will properly spawn and respawn
+     *@param ghosts the ghosts desired to be put into the ghost house
+     */
+    public void addGhosts(List<Ghost> ghosts){
+        //Empty ghost house
+        while (this.ghosts.size() != 0)
+            this.ghosts.remove();
+
+        //Add ghosts to ghost house
+        for (Ghost ghost1 : ghosts) {
+            ghost1.death();
+            addGhost(ghost1);
+        }
+    }
+
+    /**
+     *returns the top left location of the ghost house
      */
     public Location getTopLeft(){
 	return topLeft;
