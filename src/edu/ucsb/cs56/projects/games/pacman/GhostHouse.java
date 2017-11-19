@@ -1,18 +1,19 @@
 package edu.ucsb.cs56.projects.games.pacman;
 
 import java.util.Queue;
+import java.util.List;
 import java.util.LinkedList;
 
 
 /**
-   This is a class to represent a Ghost House which holds ghost
-   starting coordinates and tracks when ghosts are released onto
-   the map to chase Pacman
-
-   @author Wei Tung Chen
-   @author Nicholas Duncan
-*/
-
+ * This is a class to represent a Ghost House which holds ghost
+ * starting coordinates and tracks when ghosts are released onto
+ * the map to chase Pacman
+ *
+ * @author Wei Tung Chen
+ * @author Nicholas Duncan
+ * @version CS56 F17
+ */
 public class GhostHouse{
     private Queue<Ghost> ghosts; //ghosts held in the ghosthouse
     private Location topLeft; //location of the top left block of the GhostHouse
@@ -47,6 +48,23 @@ public class GhostHouse{
     public void addGhost(Ghost ghost){
 	ghosts.add(ghost);
 	ghost.setSpeed(0); //ghost speed is now set to 0 so that ghosts won't run through ghost house walls
+    }
+
+    /**
+     *Method to add ghosts to a ghost house object
+     *Ghosts in ghost house will properly spawn and respawn
+     *@param ghosts the ghosts desired to be put into the ghost house
+     */
+    public void addGhosts(List<Ghost> ghosts){
+        //Empty ghost house
+        while (this.ghosts.size() != 0)
+            this.ghosts.remove();
+
+        //Add ghosts to ghost house
+        for (Ghost ghost1 : ghosts) {
+            ghost1.death();
+            addGhost(ghost1);
+        }
     }
 
     /**

@@ -17,12 +17,17 @@ import java.io.IOException;
  * @author Kelvin Yang
  * @author Joseph Kompella
  * @author Kekoa Sato
- * @version CS56 F16
+ * @author Nicholas Duncan
+ * @author Wei Tung Chen
+ * @version CS56 F17
  */
 public class PacPlayer extends Character {
+
+	public final static String PATH_IMAGE_PACMAN = "assets/pacman/";
+	public final static String PATH_IMAGE_MSPACMAN = "assets/mspacman/";
+	public final static String PATH_AUDIO = "assets/audio/";
 	public final static int PACMAN = 1;
 	public final static int MSPACMAN = 2;
-
 	private final int pacanimdelay = 2;
 	private final int pacmananimcount = 4;
 	private final int pacmanspeed = 4;
@@ -46,14 +51,7 @@ public class PacPlayer extends Character {
 	 * @param y the starting y coordinate of pacman
 	 */
 	public PacPlayer(int x, int y) {
-		super(x, y);
-		speed = pacmanspeed;
-		lives = 3;
-		direction = 3;
-		assetImagePath = "assets/pacman/";
-		assetAudioPath = "assets/audio/";
-		loadImages();
-		loadAudio();
+		this(x, y, PACMAN, null);
 	}
 
 	/**
@@ -69,18 +67,19 @@ public class PacPlayer extends Character {
 		speed = pacmanspeed;
 		this.grid = grid;
 		lives = 3;
-		direction = 3;
-		if (playerNum == PACMAN) assetImagePath = "assets/pacman/";
-		else if (playerNum == MSPACMAN) assetImagePath = "assets/mspacman/";
-		assetAudioPath = "assets/audio/";
+		direction = Direction.RIGHT;
+		if (playerNum == PACMAN) 
+			assetImagePath = PATH_IMAGE_PACMAN;
+		else if (playerNum == MSPACMAN) 
+			assetImagePath = PATH_IMAGE_MSPACMAN;
+		assetAudioPath = PATH_AUDIO;
 		loadImages();
 		loadAudio();
 	}
 
-	public void resetPos()
-	{
+	public void resetPos() {
 		super.resetPos();
-		direction = 3;
+		direction = Direction.RIGHT;
 	}
 
 	public void death() {
@@ -117,63 +116,57 @@ public class PacPlayer extends Character {
 			x = ((x / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 			y = ((y / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 
+			//Consume special item on current grid
 			ch = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
+			consumeGridItem(ch);
 
-			//if pellet, eat and increase score
-			if ((ch & 16) != 0) {
-				//Toggles pellet bit
-				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 16);
-				playAudio(0);
-				Board.score++;
-				speed = 3;
-			}
-			//if fruit, eat and increase score
-			else if ((ch & 32) != 0) {
-				//Toggles fruit bit
-				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 32);
-				Board.score+=10;
-				playAudio(1);
-				speed = 3;
-			}
-			else if((ch & 64) != 0) {
-				//Toggles pill bit
-				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 64);
-				playAudio(1);
-				Board.score+=5;
-				speed = 3;
-			}
-			else
-				speed = 4;
-
-			//passes key commands to movement
+			//Passes key commands to movement
 			if(reqdx != 0 || reqdy != 0) {
-				if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) ||
-						(reqdx == 1 && reqdy == 0 && (ch & 4) != 0) ||
-						(reqdx == 0 && reqdy == -1 && (ch & 2) != 0) ||
-						(reqdx == 0 && reqdy == 1 && (ch & 8) != 0))) {
+				if ( Character.moveable(reqdx, reqdy, ch) ) {
 					dx = reqdx;
 					dy = reqdy;
-					if(reqdx == -1 && reqdy == 0 && (ch & 1) == 0)
-						direction = 1;
-					if(reqdx == 0 && reqdy == -1 && (ch & 2) == 0)
-                                                direction = 2;
-					if(reqdx == 1 && reqdy == 0 && (ch & 4) == 0)
-                                                direction = 3;
-					if(reqdx == 0 && reqdy == 1 && (ch & 8) == 0)
-                                                direction = 4;
+					direction = Direction.getDirection(dx, dy);
 				}
 			}
 
-			// Check for standstill, stop movement if hit wall
-			if ((dx == -1 && dy == 0 && (ch & 1) != 0) ||
-					(dx == 1 && dy == 0 && (ch & 4) != 0) ||
-					(dx == 0 && dy == -1 && (ch & 2) != 0) ||
-					(dx == 0 && dy == 1 && (ch & 8) != 0)) {
+			//Check for standstill, stop movement if hit wall
+			if ( !Character.moveable(dx, dy, ch) ) {
 				dx = 0;
 				dy = 0;
 			}
 		}
 		move();
+	}
+
+	/*
+	 * Consume special items on a specific grid and increase score.
+	 * @param ch grid data
+	 */
+	private void consumeGridItem(short ch) {
+
+		if ((ch & GridData.GRID_CELL_PELLET) != 0) {
+			//Toggles pellet bit
+			grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_PELLET);
+			playAudio(0);
+			Board.score += Board.SCORE_PELLET;
+			speed = 3;
+		}
+		else if ((ch & GridData.GRID_CELL_FRUIT) != 0) {
+			//Toggles fruit bit
+			grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_FRUIT);
+			Board.score += Board.SCORE_FRUIT;
+			playAudio(1);
+			speed = 3;
+		}
+		else if((ch & GridData.GRID_CELL_POWER_PILL) != 0) {
+			//Toggles pill bit
+			grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_POWER_PILL);
+			playAudio(1);
+			Board.score += Board.SCORE_POWER_PILL;
+			speed = 3;
+		}
+		else
+			speed = 4;
 	}
 
 	/**
@@ -185,11 +178,11 @@ public class PacPlayer extends Character {
 	public void draw(Graphics2D g2d, JComponent canvas) {
 		if (deathTimer % 5 > 3) return; // Flicker while invincibile
 		doAnim();
-		if (direction == 1)
+		if (direction == Direction.LEFT)
 			g2d.drawImage(pacmanLeft[pacmananimpos], x + 4, y + 4, canvas);
-		else if (direction == 2)
+		else if (direction == Direction.UP)
 			g2d.drawImage(pacmanUp[pacmananimpos], x + 4, y + 4, canvas);
-		else if (direction == 4)
+		else if (direction == Direction.DOWN)
 			g2d.drawImage(pacmanDown[pacmananimpos], x + 4, y + 4, canvas);
 		else 
 			g2d.drawImage(pacmanRight[pacmananimpos], x + 4, y + 4, canvas);
