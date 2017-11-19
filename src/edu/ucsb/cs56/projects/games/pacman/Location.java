@@ -14,6 +14,11 @@ public class Location{
     private int y; //y coordinate of location
 
     /**
+     * Location constructor takes an x and y
+     * integer to track location of object
+     * @constructor
+     * @param x x-coordinate
+     * @param y y-coordinate
      *  Location constructor takes an x and y
      *  integer to track location of object
      *  @constructor
@@ -26,6 +31,9 @@ public class Location{
     }
 
     /**
+     * Gets the x-coordinate of the location
+     *
+     * @return x-coordinate
      *  @return x-coordinate
      */
     public int getX(){
@@ -33,6 +41,8 @@ public class Location{
     }
 
     /**
+     * Get the y-coordinate of the location
+     *
      *  @return y-coordinate
      */
     public int getY(){
@@ -40,6 +50,9 @@ public class Location{
     }
 
     /**
+     * Changes the x-coordinate to the specified coordinate
+     *
+     * @param x new x-coordinate
      *  @param x new x-coordinate
      */
     public void setX(int x){
@@ -47,6 +60,9 @@ public class Location{
     }
 
     /**
+     * Changes the y-coordinate to the specified coordinate
+     *
+     * @param y new y-coordinate
      *  @param y new y-coordinate
      */
     public void setY(int y){

@@ -13,7 +13,7 @@ import java.util.Date;
 
 
 /**
- * Represents the GUI elements of the Leaderboard class
+ * Represents the GUI elements of the Leaderboard class that holds high scores
  *
  * @author Kateryna Fomenko
  * @author Deanna Hartsook
@@ -216,7 +216,7 @@ public class LeaderboardGUI {
 	/**
 	 * setLeaderBoardFileName method- sets the fileName in the instance of the leaderboard class
 	 *
-	 * @param args - a string version of the command line arguments
+	 * @param files - a string version of the command line arguments
 	 */
 	public void setLeaderBoardFileName(String [] files) {
 		leaderBoardSingle.setFileName(files[0]);
@@ -243,7 +243,6 @@ public class LeaderboardGUI {
 			LeaderboardGUI.this.showLeaderboard(userName, this.d, this.score, this.type);
 		}
 	}
-
 	private class playAgainBtnListener implements ActionListener {
 		public void actionPerformed(ActionEvent ev) {
 			frame.dispose();
@@ -306,7 +305,12 @@ public class LeaderboardGUI {
 			//showLeaderboard(userName, this.d, this.score, this.type);
                 }
         }
-
+        /**
+	 * A method to choose which leaderboard (single player, coop, or versus)
+	 * gets displayed on the leaderboard
+	 * 
+	 * @param displayNum parameter that indicates which gamemode's leaderboard is displayed
+	 */
 	private void showDifferentLeaderboard(int displayNum) {
 		String top3S = this.leaderBoardSingle.getTopThree();
 		String playerTop3S = this.leaderBoardSingle.getPlayerTopThree(name);

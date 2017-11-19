@@ -2,6 +2,13 @@ package edu.ucsb.cs56.projects.games.pacman;
 
 import java.io.Serializable;
 
+
+/**
+ * A class to hold the information that is associated with a level
+ * such as walls, fruit, pellets, and power pills
+ *
+ * @version cs56 f17
+ */
 public class GridData implements Serializable {
 	private int grid_width;
 	private short[] grid_data;
@@ -16,15 +23,31 @@ public class GridData implements Serializable {
 	final public static byte GRID_CELL_FRUIT = 32;
 	final public static byte GRID_CELL_POWER_PILL = 64;	
 
+        /**
+	 * Constructor for a Grid object 
+	 *
+	 * @param grid_width the horizontal size of the grid object
+	 * @param grid_data an array that holds the information about items in the level
+	 */
 	public GridData(int grid_width, short[] grid_data) {
 		this.grid_width = grid_width;
 		this.grid_data = grid_data;
 	}
 
+        /**
+	 * A method to specify the grid's width
+	 *
+	 * @param width an integer that represents the desired width
+	 */
 	public void setGridWidth(int grid_width) {
 		this.grid_width = grid_width;
 	}
 
+        /**
+	 * Method to set the grid's data array
+	 *
+	 * @param grid_data an array of type short that holds the desired grid data
+	 */
 	public void setGridData(short[] grid_data) {
 		this.grid_data = grid_data;
 	}

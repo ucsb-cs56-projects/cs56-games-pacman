@@ -10,9 +10,7 @@ import java.io.*;
  * @author Yuxiang Zhu
  * @author Joseph Kompella
  * @author Kekoa Sato
- * @author Nicholas Duncan
- * @author Wei Tung Chen
- * @version CS56 F17
+ * @version CS56 F16
  */
 
 public class Grid
@@ -71,9 +69,13 @@ public class Grid
 	 * @return A boolean indicating whether or not the maze is finished
 	 */
 	public boolean checkMaze() {
-		int pellets = getItemNum(this.screenData, GridData.GRID_CELL_PELLET);
-		int pills = getItemNum(this.screenData, GridData.GRID_CELL_POWER_PILL);
-		return (pellets + pills == 0);
+		for (int i = 0; i < Board.NUMBLOCKS; i++) {
+			for (int j = 0; j < Board.NUMBLOCKS; j++) {
+				if ((screenData[i][j] & (GridData.GRID_CELL_PELLET ^ GridData.GRID_CELL_POWER_PILL)) != 0)
+					return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -82,7 +84,14 @@ public class Grid
 	 * @return An int indicating how many pellets are left
 	 */
 	public int getPelletNum() {
-		return getItemNum(this.screenData, GridData.GRID_CELL_PELLET);
+		int numOfPellet = 0;
+		for (int i = 0; i < Board.NUMBLOCKS; i++) {
+			for (int j = 0; j < Board.NUMBLOCKS; j++) {
+				if ((screenData[i][j] & GridData.GRID_CELL_PELLET) != 0)
+					numOfPellet++;
+			}
+		}
+		return numOfPellet;
 	}
 
 	/**
@@ -91,7 +100,14 @@ public class Grid
 	 * @return An int indicating how many pills are left
 	 */
 	public int getPillNum() {
-		return getItemNum(this.screenData, GridData.GRID_CELL_POWER_PILL);
+		int numOfPill = 0;
+                for (int i = 0; i < Board.NUMBLOCKS; i++) {
+                        for (int j = 0; j < Board.NUMBLOCKS; j++) {
+                                if ((screenData[i][j] & GridData.GRID_CELL_POWER_PILL) != 0)
+                                        numOfPill++;
+                        }
+                }
+                return numOfPill;	
 	}
 
 	/**
@@ -101,27 +117,19 @@ public class Grid
 	 * @return An int indicating how many pellets are left
 	 */
 	public int getPelletNumForMap(int numBoardsCleared) {
-		return getItemNum(this.levelsData[numBoardsCleared % this.levelsData.length], GridData.GRID_CELL_PELLET);
-	}
-
-	/**
-	 * Count the number of items on the map
-	 * @param grid_type type of item (GridData constant)
-	 * @return the number of items on the map
-	 */
-	private int getItemNum(short[][] map, byte grid_type) {
-		int count = 0;
+		int numOfPellet = 0;
 		for (int i = 0; i < Board.NUMBLOCKS; i++) {
 			for (int j = 0; j < Board.NUMBLOCKS; j++) {
-				if ((map[i][j] & grid_type) != 0)
-					count++;
+				if((this.levelsData[numBoardsCleared % this.levelsData.length][i][j] & GridData.GRID_CELL_PELLET) != 0) {
+					numOfPellet++;
+				}
 			}
 		}
-		return count;
+		return numOfPellet;
 	}
 
 	/**
-	 * Initialize level
+	 * Initialize level with data containing game object information
 	 * @param numBoardsCleared the number of levels that have been cleared
 	 */
 	public void levelInit(int numBoardsCleared) {
@@ -154,7 +162,9 @@ public class Grid
 	forever to find an open space.  That's why having this list of possible
 	spaces is the best way I can think of.
 	 */
-
+        /**
+	 * A method to set the x and y coordinates to a random number on the board
+	 */
 	public void randomBlock(){
 		this.x = (int) (Math.random() * Board.NUMBLOCKS);
 		this.y = (int) (Math.random() * Board.NUMBLOCKS);

@@ -248,10 +248,9 @@ public class Ghost extends Character {
 
 	/**
 	 * Moves character's current position with the board's collision
+	 * Handles logic pertaining to collision detection, movement, and standstill
 	 *
-	 * see PacPlayer.java for code explanation
-	 *
-	 * @param grid The Grid to be used for collision
+	 * @param grid The Grid to be used for collision detection
 	 */
 	@Override
 	public void move(Grid grid) {
@@ -451,7 +450,8 @@ public class Ghost extends Character {
 	}
 
 	/**
-	 * Moves character's current position with the board's collision
+	 * Pick a random move from the list of available movement options
+	 * for the ghost to move in
 	 *
 	 * @param grid The Grid to be used for collision
 	 */
@@ -470,7 +470,8 @@ public class Ghost extends Character {
 	}
 
 	/**
-	 * Returns an ArrayList of possible movements
+	 * Returns an ArrayList of possible movements for the ghost to take
+	 * without colliding with a wall or abruptly switching directions
 	 *
 	 * @param grid
 	 */
