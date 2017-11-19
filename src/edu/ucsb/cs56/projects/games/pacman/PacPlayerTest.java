@@ -37,11 +37,11 @@ public class PacPlayerTest {
 	@Test
 	public void test_constructor_complex() {
 		PacPlayer player = new PacPlayer(3, 0, PacPlayer.MSPACMAN, new Grid());
-                assertEquals(3, player.x);
-                assertEquals(0, player.y);
-                assertEquals(3, player.lives);
-                assertEquals(3, player.direction);
-                assertEquals(4, player.speed);
+		assertEquals(3, player.x);
+		assertEquals(0, player.y);
+		assertEquals(3, player.lives);
+		assertEquals(3, player.direction);
+		assertEquals(4, player.speed);
 		assertEquals(PacPlayer.MSPACMAN, player.playerNum);
 	}
 
