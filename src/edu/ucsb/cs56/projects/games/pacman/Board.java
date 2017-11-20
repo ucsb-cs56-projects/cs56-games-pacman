@@ -676,4 +676,58 @@ public class Board extends JPanel implements ActionListener
             }
         }
     }
+
+    public void startDevMode(){
+	JFrame devFrame = new JFrame("Developer Tools");
+	JPanel devPanel = new JPanel();
+	devPanel.setLayout(new BoxLayout(devPanel, BoxLayout.Y_AXIS));
+	
+	//factor out - makes level panel
+	JPanel levelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	levelPanel.add(new JLabel("Level: "));
+	JButton nextLevel = new JButton("Next Level");
+	//nextLevel.addActionListener( /* add level switching method */);
+	levelPanel.add(nextLevel);
+	devPanel.add(levelPanel);
+
+	//factor out - makes respawn panel
+	JPanel respawnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	respawnPanel.add(new JLabel("Respawn: "));
+	JButton respawnPacMan = new JButton("PacMan");
+	JButton respawnGhosts = new JButton("Ghosts");
+	respawnPanel.add(respawnPacMan);
+	respawnPanel.add(respawnGhosts);
+	devPanel.add(respawnPanel);
+
+	//factor out - makes PacMan options
+	JPanel pacManPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	pacManPanel.add(new JLabel("PacMan: "));
+	JCheckBox invinciblePacMan = new JCheckBox("Invincible");
+	JCheckBox pacManHalfSpeed = new JCheckBox("1/2x Speed");
+	JCheckBox pacManDoubleSpeed = new JCheckBox("2x Speed");
+	pacManPanel.add(invinciblePacMan);
+	pacManPanel.add(pacManHalfSpeed);
+	pacManPanel.add(pacManDoubleSpeed);
+	devPanel.add(pacManPanel);
+
+	//factor out - makes Ghost options
+	JPanel ghostPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	ghostPanel.add(new JLabel("Ghosts: "));
+	JCheckBox edibleGhosts = new JCheckBox("Edible");
+	JCheckBox ghostHalfSpeed = new JCheckBox("1/2x Speed");
+	JCheckBox ghostDoubleSpeed = new JCheckBox("2x Speed");
+	ghostPanel.add(edibleGhosts);
+	ghostPanel.add(ghostHalfSpeed);
+	ghostPanel.add(ghostDoubleSpeed);
+	devPanel.add(ghostPanel);
+
+	
+	
+	devFrame.add(devPanel);
+	devFrame.setVisible(true);
+	devFrame.setLocationRelativeTo(null);
+	devFrame.pack();
+
+    }
+    
 }
