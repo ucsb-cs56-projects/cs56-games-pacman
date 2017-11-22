@@ -399,6 +399,9 @@ public class Board extends JPanel implements ActionListener
      */
     public void detectCollision(ArrayList<Ghost> ghosts) {
 
+        if (devTools != null && devTools.isInvincible())
+            return;
+
         for (Character pacman : pacmen) {
             for (Ghost ghost : ghosts) {
 
@@ -691,6 +694,7 @@ public class Board extends JPanel implements ActionListener
     }
 
     class DevToolGui {
+        private boolean invincible = false;
         private JLabel pacmanLabel = new JLabel("Pacman");
         private JLabel pelletLabel = new JLabel("Pellet");
 
@@ -735,6 +739,9 @@ public class Board extends JPanel implements ActionListener
             JCheckBox invinciblePacMan = new JCheckBox("Invincible");
             JCheckBox pacManHalfSpeed = new JCheckBox("1/2x Speed");
             JCheckBox pacManDoubleSpeed = new JCheckBox("2x Speed");
+            invinciblePacMan.addItemListener( (e)->{
+                invincible = (e.getStateChange() == java.awt.event.ItemEvent.SELECTED);
+            });
             pacManHalfSpeed.addItemListener( (e)->{
                 for (PacPlayer player : pacmen) {
                     if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)
@@ -805,6 +812,10 @@ public class Board extends JPanel implements ActionListener
 
         public void updatePelletLabel() {
             pelletLabel.setText("Number of Pellets Left: " + grid.getPelletNum());
+        }
+
+        public boolean isInvincible() {
+            return invincible;
         }
 
     }
