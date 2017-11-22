@@ -785,6 +785,18 @@ public class Board extends JPanel implements ActionListener
                         ghost.speed /= 2;
                 }
             });
+            edibleGhosts.addItemListener( (e)->{
+                for (Ghost ghost : ghosts) {
+                    if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
+                        ghost.edible = true;
+                        ghost.edibleTimer = 10000;
+                    }
+                    else {
+                        ghost.edible = false;
+                        ghost.edibleTimer = 0;
+                    }
+                }
+            });
             ghostPanel.add(edibleGhosts);
             ghostPanel.add(ghostHalfSpeed);
             ghostPanel.add(ghostDoubleSpeed);
