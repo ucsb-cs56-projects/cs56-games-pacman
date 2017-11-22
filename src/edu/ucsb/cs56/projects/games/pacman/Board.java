@@ -56,7 +56,7 @@ public class Board extends JPanel implements ActionListener
     private GameType gt;
     private PacPlayer pacman, msPacman;
     private Ghost ghost1, ghost2;
-    private Character[] pacmen;
+    private PacPlayer[] pacmen;
     private ArrayList<Ghost> ghosts;
     private int numGhosts = 4, numBoardsCleared = 0;
     private int curSpeed = 3;
@@ -65,6 +65,7 @@ public class Board extends JPanel implements ActionListener
     private Timer timer;
     private Audio beginningAudio;
     private GhostHouse ghostHouse;
+    private DevToolGui devTools = null;
     
     /**
      * Constructor for Board object
@@ -129,6 +130,13 @@ public class Board extends JPanel implements ActionListener
                     numPills = grid.getPillNum();
                 }
             }
+
+            //If game starts in dev mode, update devTool info.
+            if (devTools != null) {
+                devTools.updatePacmanLabel(pacman);
+                devTools.updatePelletLabel();
+            }
+
             switch (gt)
             {
                 case SINGLEPLAYER:
@@ -446,19 +454,19 @@ public class Board extends JPanel implements ActionListener
         switch (gt)
         {
             case SINGLEPLAYER:
-                pacmen = new Character[1];
+                pacmen = new PacPlayer[1];
                 pacmen[0] = pacman;
                 pacman.reset();
                 break;
             case COOPERATIVE:
-                pacmen = new Character[2];
+                pacmen = new PacPlayer[2];
                 pacmen[0] = pacman;
                 pacmen[1] = msPacman;
                 pacman.reset();
                 msPacman.reset();
                 break;
             case VERSUS:
-                pacmen = new Character[1];
+                pacmen = new PacPlayer[1];
                 pacmen[0] = pacman;
                 pacman.reset();
                 break;
@@ -677,57 +685,127 @@ public class Board extends JPanel implements ActionListener
         }
     }
 
-    public void startDevMode(){
-	JFrame devFrame = new JFrame("Developer Tools");
-	JPanel devPanel = new JPanel();
-	devPanel.setLayout(new BoxLayout(devPanel, BoxLayout.Y_AXIS));
-	
-	//factor out - makes level panel
-	JPanel levelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-	levelPanel.add(new JLabel("Level: "));
-	JButton nextLevel = new JButton("Next Level");
-	//nextLevel.addActionListener( /* add level switching method */);
-	levelPanel.add(nextLevel);
-	devPanel.add(levelPanel);
+    public void startDevMode() {
+        devTools = new DevToolGui();
+        devTools.initialize();
+    }
 
-	//factor out - makes respawn panel
-	JPanel respawnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-	respawnPanel.add(new JLabel("Respawn: "));
-	JButton respawnPacMan = new JButton("PacMan");
-	JButton respawnGhosts = new JButton("Ghosts");
-	respawnPanel.add(respawnPacMan);
-	respawnPanel.add(respawnGhosts);
-	devPanel.add(respawnPanel);
+    class DevToolGui {
+        private JLabel pacmanLabel = new JLabel("Pacman");
+        private JLabel pelletLabel = new JLabel("Pellet");
 
-	//factor out - makes PacMan options
-	JPanel pacManPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-	pacManPanel.add(new JLabel("PacMan: "));
-	JCheckBox invinciblePacMan = new JCheckBox("Invincible");
-	JCheckBox pacManHalfSpeed = new JCheckBox("1/2x Speed");
-	JCheckBox pacManDoubleSpeed = new JCheckBox("2x Speed");
-	pacManPanel.add(invinciblePacMan);
-	pacManPanel.add(pacManHalfSpeed);
-	pacManPanel.add(pacManDoubleSpeed);
-	devPanel.add(pacManPanel);
+        public void initialize(){
+            JFrame devFrame = new JFrame("Developer Tools");
+            JPanel devPanel = new JPanel();
+            devPanel.setLayout(new BoxLayout(devPanel, BoxLayout.Y_AXIS));
+            
+            //factor out - makes level panel
+            JPanel levelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            levelPanel.add(new JLabel("Level: "));
+            JButton nextLevel = new JButton("Next Level");
+            //nextLevel.addActionListener( /* add level switching method */);
+            nextLevel.addActionListener( (e)-> {
+                score += SCORE_WIN;
+                numBoardsCleared++;
+                numGhosts = (numGhosts + 1) % MAX_GHOSTS;
+                curSpeed = (curSpeed + 1) % MAX_SPEED;
+                grid.levelInit(numBoardsCleared);
+                levelContinue();
+            } );
+            levelPanel.add(nextLevel);
+            devPanel.add(levelPanel);
 
-	//factor out - makes Ghost options
-	JPanel ghostPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-	ghostPanel.add(new JLabel("Ghosts: "));
-	JCheckBox edibleGhosts = new JCheckBox("Edible");
-	JCheckBox ghostHalfSpeed = new JCheckBox("1/2x Speed");
-	JCheckBox ghostDoubleSpeed = new JCheckBox("2x Speed");
-	ghostPanel.add(edibleGhosts);
-	ghostPanel.add(ghostHalfSpeed);
-	ghostPanel.add(ghostDoubleSpeed);
-	devPanel.add(ghostPanel);
+            //factor out - makes respawn panel
+            JPanel respawnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            respawnPanel.add(new JLabel("Respawn: "));
+            JButton respawnPacMan = new JButton("PacMan");
+            JButton respawnGhosts = new JButton("Ghosts");
+            respawnPacMan.addActionListener( (e)->{
+                for (Character ch : pacmen)
+                    ch.resetPos();
+            } );
+            respawnGhosts.addActionListener( (e)->{ghostHouse.addGhosts(ghosts);} );
+            respawnPanel.add(respawnPacMan);
+            respawnPanel.add(respawnGhosts);
+            devPanel.add(respawnPanel);
 
-	
-	
-	devFrame.add(devPanel);
-	devFrame.setVisible(true);
-	devFrame.setLocationRelativeTo(null);
-	devFrame.pack();
+            //factor out - makes PacMan options
+            JPanel pacManPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            pacManPanel.add(new JLabel("PacMan: "));
+            JCheckBox invinciblePacMan = new JCheckBox("Invincible");
+            JCheckBox pacManHalfSpeed = new JCheckBox("1/2x Speed");
+            JCheckBox pacManDoubleSpeed = new JCheckBox("2x Speed");
+            pacManHalfSpeed.addItemListener( (e)->{
+                for (PacPlayer player : pacmen) {
+                    if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)
+                        player.pacmanspeed /= 2;
+                    else
+                        player.pacmanspeed *= 2;
+                }
+            });
+            pacManDoubleSpeed.addItemListener( (e)->{
+                for (PacPlayer player : pacmen) {
+                    if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)
+                        player.pacmanspeed *= 2;
+                    else
+                        player.pacmanspeed /= 2;
+                }
+            });
+            pacManPanel.add(invinciblePacMan);
+            pacManPanel.add(pacManHalfSpeed);
+            pacManPanel.add(pacManDoubleSpeed);
+            devPanel.add(pacManPanel);
+
+            //factor out - makes Ghost options
+            JPanel ghostPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            ghostPanel.add(new JLabel("Ghosts: "));
+            JCheckBox edibleGhosts = new JCheckBox("Edible");
+            JCheckBox ghostHalfSpeed = new JCheckBox("1/2x Speed");
+            JCheckBox ghostDoubleSpeed = new JCheckBox("2x Speed");
+            ghostHalfSpeed.addItemListener( (e)->{
+                for (Ghost ghost : ghosts) {
+                    if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)
+                        ghost.speed /= 2;
+                    else
+                        ghost.speed *= 2;
+                }
+            });
+            ghostDoubleSpeed.addItemListener( (e)->{
+                for (Ghost ghost : ghosts) {
+                    if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)
+                        ghost.speed *= 2;
+                    else
+                        ghost.speed /= 2;
+                }
+            });
+            ghostPanel.add(edibleGhosts);
+            ghostPanel.add(ghostHalfSpeed);
+            ghostPanel.add(ghostDoubleSpeed);
+            devPanel.add(ghostPanel);
+
+            //intialize pacman info label
+            JPanel pacmanInfoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            pacmanInfoPanel.add(pacmanLabel);
+            devPanel.add(pacmanInfoPanel);
+
+            //intialize pellet info label
+            JPanel pelletInfoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            pelletInfoPanel.add(pelletLabel);
+            devPanel.add(pelletInfoPanel);
+
+            devFrame.add(devPanel);
+            devFrame.setVisible(true);
+            devFrame.setLocationRelativeTo(null);
+            devFrame.pack();
+        }
+
+        public void updatePacmanLabel(PacPlayer pacman) {
+            pacmanLabel.setText("Pacman X: " + pacman.x + ", Y: " + pacman.y + ", Speed: " + pacman.speed);
+        }
+
+        public void updatePelletLabel() {
+            pelletLabel.setText("Number of Pellets Left: " + grid.getPelletNum());
+        }
 
     }
-    
 }

@@ -30,7 +30,7 @@ public class Ghost extends Character {
 	public static final int TYPE_PINK = 1;
 	public static final int GHOST1 = 1;
 	public static final int GHOST2 = 2;
-    	public static int defaultSpeed = 3;
+    	public static int defaultSpeed = 2;
 
     	private Image ghost;
 	private Image scared_ghost;
