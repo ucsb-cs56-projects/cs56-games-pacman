@@ -115,7 +115,7 @@ public class GhostHouse{
             return;
         }
         Ghost ghost = ghosts.remove();
-        Location releaseLocation = new Location(topLeft.getX() + ((this.width / 2) + 1), topLeft.getY() - 1);
+        Location releaseLocation = new Location(topLeft.getX() + (this.width / 2), topLeft.getY() - 1);
         ghost.setX(releaseLocation.getX() * blockSize); //setting ghost x in pixels
         ghost.setY(releaseLocation.getY() * blockSize); //setting ghost y in pixels
 

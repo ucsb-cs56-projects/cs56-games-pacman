@@ -44,6 +44,7 @@ public class Board extends JPanel implements ActionListener
     public static final int SCORE_POWER_PILL = 5;
     public static final int SCORE_ENEMY = 40;
     public static final int SCORE_WIN = 50;
+    public static final int GHOSTHOUSE_WIDTH = 3;
     
     private final int MAX_GHOSTS = 12;
     private final int MAX_SPEED = 6;
@@ -484,9 +485,9 @@ public class Board extends JPanel implements ActionListener
         numPellet = grid.getPelletNum() + grid.getPillNum();
         numPills = grid.getPillNum();
         ghosts.clear();
-        //ghost house is located in the center of each map its width is currently 3
-        //as the number of ghosts is 4. Can be adjusted for different level designs
-        this.ghostHouse = new GhostHouse(new Location(7,8) , this.numGhosts - 1, this.BLOCKSIZE);
+
+        //Ghost house is located in the center of map with width 3.
+        this.ghostHouse = new GhostHouse(new Location(7,8) , this.GHOSTHOUSE_WIDTH, this.BLOCKSIZE);
         if(gt == GameType.VERSUS)
         {
             ghosts.add(ghost1);
@@ -496,12 +497,13 @@ public class Board extends JPanel implements ActionListener
         {
             for (int i = 0; i < numGhosts; i++)
             {
+                ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + i % ghostHouse.getWidth()) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
                 //first ghost will get set outside, other ghosts get set inside ghost house
-                if(i == 0){
-                    ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + i) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
-                }else{
-                    ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + (i-1)) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
-                }
+                // if(i == 0){
+                //     ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + i) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
+                // }else{
+                //     ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + (i-1)) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
+                // }
                 ghostHouse.addGhost(ghosts.get(i));
             }
         }
