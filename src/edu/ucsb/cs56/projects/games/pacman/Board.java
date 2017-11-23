@@ -690,24 +690,44 @@ public class Board extends JPanel implements ActionListener
 
     public void startDevMode() {
         devTools = new DevToolGui();
-        devTools.initialize();
     }
 
     class DevToolGui {
         private boolean invincible = false;
-        private JLabel pacmanLabel = new JLabel("Pacman");
-        private JLabel pelletLabel = new JLabel("Pellet");
+        private JFrame devFrame;
+        private JPanel devPanel, levelPanel, respawnPanel, pacManPanel;
+        private JPanel ghostPanel, pacmanInfoPanel, pelletInfoPanel;
+        private JLabel pacmanLabel, pelletLabel;
+        private JButton nextLevel, respawnPacMan, respawnGhosts;
+        private JCheckBox invinciblePacMan, pacManHalfSpeed, pacManDoubleSpeed;
+        private JCheckBox edibleGhosts, ghostHalfSpeed, ghostDoubleSpeed;
 
-        public void initialize(){
-            JFrame devFrame = new JFrame("Developer Tools");
-            JPanel devPanel = new JPanel();
+        public DevToolGui() {
+            initialize_levelPanel();
+            initialize_respawnPanel();
+            initialize_pacManPanel();
+            initialize_ghostPanel();
+            initialize_pacmanInfoPanel();
+            initialize_pelletInfoPanel();
+
+            devPanel = new JPanel();
             devPanel.setLayout(new BoxLayout(devPanel, BoxLayout.Y_AXIS));
-            
-            //factor out - makes level panel
-            JPanel levelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            levelPanel.add(new JLabel("Level: "));
-            JButton nextLevel = new JButton("Next Level");
-            //nextLevel.addActionListener( /* add level switching method */);
+            devPanel.add(levelPanel);
+            devPanel.add(respawnPanel);
+            devPanel.add(pacManPanel);
+            devPanel.add(ghostPanel);
+            devPanel.add(pacmanInfoPanel);
+            devPanel.add(pelletInfoPanel);
+
+            devFrame = new JFrame("Developer Tools");
+            devFrame.add(devPanel);
+            devFrame.setVisible(true);
+            devFrame.setLocationRelativeTo(null);
+            devFrame.pack();
+        }
+
+        private void initialize_levelPanel() {
+            nextLevel = new JButton("Next Level");
             nextLevel.addActionListener( (e)-> {
                 score += SCORE_WIN;
                 numBoardsCleared++;
@@ -715,33 +735,39 @@ public class Board extends JPanel implements ActionListener
                 curSpeed = (curSpeed + 1) % MAX_SPEED;
                 grid.levelInit(numBoardsCleared);
                 levelContinue();
-            } );
-            levelPanel.add(nextLevel);
-            devPanel.add(levelPanel);
+                //clearSelections();
+            });
 
-            //factor out - makes respawn panel
-            JPanel respawnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            respawnPanel.add(new JLabel("Respawn: "));
-            JButton respawnPacMan = new JButton("PacMan");
-            JButton respawnGhosts = new JButton("Ghosts");
+            levelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            levelPanel.add(new JLabel("Level: "));
+            levelPanel.add(nextLevel);
+        }
+
+        private void initialize_respawnPanel() {
+            respawnPacMan = new JButton("PacMan");
             respawnPacMan.addActionListener( (e)->{
                 for (Character ch : pacmen)
                     ch.resetPos();
-            } );
-            respawnGhosts.addActionListener( (e)->{ghostHouse.addGhosts(ghosts);} );
+            });
+
+            respawnGhosts = new JButton("Ghosts");
+            respawnGhosts.addActionListener( (e)->{
+                ghostHouse.addGhosts(ghosts);
+            });
+
+            respawnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            respawnPanel.add(new JLabel("Respawn: "));
             respawnPanel.add(respawnPacMan);
             respawnPanel.add(respawnGhosts);
-            devPanel.add(respawnPanel);
+        }
 
-            //factor out - makes PacMan options
-            JPanel pacManPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            pacManPanel.add(new JLabel("PacMan: "));
-            JCheckBox invinciblePacMan = new JCheckBox("Invincible");
-            JCheckBox pacManHalfSpeed = new JCheckBox("1/2x Speed");
-            JCheckBox pacManDoubleSpeed = new JCheckBox("2x Speed");
+        private void initialize_pacManPanel() {
+            invinciblePacMan = new JCheckBox("Invincible");
             invinciblePacMan.addItemListener( (e)->{
                 invincible = (e.getStateChange() == java.awt.event.ItemEvent.SELECTED);
             });
+
+            pacManHalfSpeed = new JCheckBox("1/2x Speed");
             pacManHalfSpeed.addItemListener( (e)->{
                 for (PacPlayer player : pacmen) {
                     if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)
@@ -750,6 +776,8 @@ public class Board extends JPanel implements ActionListener
                         player.pacmanspeed *= 2;
                 }
             });
+
+            pacManDoubleSpeed = new JCheckBox("2x Speed");
             pacManDoubleSpeed.addItemListener( (e)->{
                 for (PacPlayer player : pacmen) {
                     if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)
@@ -758,33 +786,16 @@ public class Board extends JPanel implements ActionListener
                         player.pacmanspeed /= 2;
                 }
             });
+
+            pacManPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            pacManPanel.add(new JLabel("PacMan: "));
             pacManPanel.add(invinciblePacMan);
             pacManPanel.add(pacManHalfSpeed);
             pacManPanel.add(pacManDoubleSpeed);
-            devPanel.add(pacManPanel);
+        }
 
-            //factor out - makes Ghost options
-            JPanel ghostPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            ghostPanel.add(new JLabel("Ghosts: "));
-            JCheckBox edibleGhosts = new JCheckBox("Edible");
-            JCheckBox ghostHalfSpeed = new JCheckBox("1/2x Speed");
-            JCheckBox ghostDoubleSpeed = new JCheckBox("2x Speed");
-            ghostHalfSpeed.addItemListener( (e)->{
-                for (Ghost ghost : ghosts) {
-                    if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)
-                        ghost.speed /= 2;
-                    else
-                        ghost.speed *= 2;
-                }
-            });
-            ghostDoubleSpeed.addItemListener( (e)->{
-                for (Ghost ghost : ghosts) {
-                    if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)
-                        ghost.speed *= 2;
-                    else
-                        ghost.speed /= 2;
-                }
-            });
+        private void initialize_ghostPanel() {
+            edibleGhosts = new JCheckBox("Edible");
             edibleGhosts.addItemListener( (e)->{
                 for (Ghost ghost : ghosts) {
                     if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
@@ -797,26 +808,54 @@ public class Board extends JPanel implements ActionListener
                     }
                 }
             });
+
+            ghostHalfSpeed = new JCheckBox("1/2x Speed");
+            ghostHalfSpeed.addItemListener( (e)->{
+                for (Ghost ghost : ghosts) {
+                    if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)
+                        ghost.speed /= 2;
+                    else
+                        ghost.speed *= 2;
+                }
+            });
+
+            ghostDoubleSpeed = new JCheckBox("2x Speed");
+            ghostDoubleSpeed.addItemListener( (e)->{
+                for (Ghost ghost : ghosts) {
+                    if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)
+                        ghost.speed *= 2;
+                    else
+                        ghost.speed /= 2;
+                }
+            });
+
+            ghostPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            ghostPanel.add(new JLabel("Ghosts: "));
             ghostPanel.add(edibleGhosts);
             ghostPanel.add(ghostHalfSpeed);
             ghostPanel.add(ghostDoubleSpeed);
-            devPanel.add(ghostPanel);
-
-            //intialize pacman info label
-            JPanel pacmanInfoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            pacmanInfoPanel.add(pacmanLabel);
-            devPanel.add(pacmanInfoPanel);
-
-            //intialize pellet info label
-            JPanel pelletInfoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            pelletInfoPanel.add(pelletLabel);
-            devPanel.add(pelletInfoPanel);
-
-            devFrame.add(devPanel);
-            devFrame.setVisible(true);
-            devFrame.setLocationRelativeTo(null);
-            devFrame.pack();
         }
+
+        private void initialize_pacmanInfoPanel() {
+            pacmanInfoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            pacmanLabel = new JLabel("Pacman");
+            pacmanInfoPanel.add(pacmanLabel);
+        }
+
+        private void initialize_pelletInfoPanel() {
+            pelletInfoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            pelletLabel = new JLabel("Pellet");
+            pelletInfoPanel.add(pelletLabel);
+        }
+
+        /*private void clearSelections() {
+            invinciblePacMan.setSelected(false);
+            pacManHalfSpeed.setSelected(false);
+            pacManDoubleSpeed.setSelected(false);
+            edibleGhosts.setSelected(false);
+            ghostHalfSpeed.setSelected(false);
+            ghostDoubleSpeed.setSelected(false);
+        }*/
 
         public void updatePacmanLabel(PacPlayer pacman) {
             pacmanLabel.setText("Pacman X: " + pacman.x + ", Y: " + pacman.y + ", Speed: " + pacman.speed);
