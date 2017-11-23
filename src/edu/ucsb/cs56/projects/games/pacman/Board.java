@@ -148,7 +148,7 @@ public class Board extends JPanel implements ActionListener
                     }
                     grid.incrementFruit(numBoardsCleared);
                     detectCollision(ghosts);
-		    ghostHouse.update();
+                    ghostHouse.update();
                     break;
                 case COOPERATIVE:
                     if (msPacman.alive)
@@ -163,7 +163,7 @@ public class Board extends JPanel implements ActionListener
                     }
                     grid.incrementFruit(numBoardsCleared);
                     detectCollision(ghosts);
-		    ghostHouse.update();
+                    ghostHouse.update();
                     break;
                 case VERSUS:
                     for (Character ghost : ghosts)
@@ -182,7 +182,7 @@ public class Board extends JPanel implements ActionListener
                     }
                     grid.incrementFruit(numBoardsCleared);
                     detectCollision(ghosts);
-		    ghostHouse.update();
+                    ghostHouse.update();
                     break;
             }
             if (grid.checkMaze())
