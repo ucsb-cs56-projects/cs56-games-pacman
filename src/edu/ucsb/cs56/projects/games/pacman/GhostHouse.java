@@ -119,7 +119,7 @@ public class GhostHouse{
         ghost.setX(releaseLocation.getX() * blockSize); //setting ghost x in pixels
         ghost.setY(releaseLocation.getY() * blockSize); //setting ghost y in pixels
 
-        ghost.setSpeed((int) (Math.random() * Ghost.defaultSpeed) + 1); //ghost speed is randomly set upon release
+        ghost.setSpeed((int) (Math.random() * Ghost.defaultSpeed) + 2); //ghost speed is randomly set upon release
 
         //System.out.println("Spawning Point: " + releaseLocation.getX() + ", " + releaseLocation.getY());
     }

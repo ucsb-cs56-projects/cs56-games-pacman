@@ -56,7 +56,7 @@ public class Board extends JPanel implements ActionListener
     private GameType gt;
     private PacPlayer pacman, msPacman;
     private Ghost ghost1, ghost2;
-    private Character[] pacmen;
+    private PacPlayer[] pacmen;
     private ArrayList<Ghost> ghosts;
     private int numGhosts = 4, numBoardsCleared = 0;
     private int curSpeed = 3;
@@ -65,6 +65,7 @@ public class Board extends JPanel implements ActionListener
     private Timer timer;
     private Audio beginningAudio;
     private GhostHouse ghostHouse;
+    private DevToolGui devTools = null;
     
     /**
      * Constructor for Board object
@@ -129,6 +130,13 @@ public class Board extends JPanel implements ActionListener
                     numPills = grid.getPillNum();
                 }
             }
+
+            //If game starts in dev mode, update devTool info.
+            if (devTools != null) {
+                devTools.updatePacmanLabel(pacman);
+                devTools.updatePelletLabel();
+            }
+
             switch (gt)
             {
                 case SINGLEPLAYER:
@@ -391,6 +399,9 @@ public class Board extends JPanel implements ActionListener
      */
     public void detectCollision(ArrayList<Ghost> ghosts) {
 
+        if (devTools != null && devTools.isInvincible())
+            return;
+
         for (Character pacman : pacmen) {
             for (Ghost ghost : ghosts) {
 
@@ -446,19 +457,19 @@ public class Board extends JPanel implements ActionListener
         switch (gt)
         {
             case SINGLEPLAYER:
-                pacmen = new Character[1];
+                pacmen = new PacPlayer[1];
                 pacmen[0] = pacman;
                 pacman.reset();
                 break;
             case COOPERATIVE:
-                pacmen = new Character[2];
+                pacmen = new PacPlayer[2];
                 pacmen[0] = pacman;
                 pacmen[1] = msPacman;
                 pacman.reset();
                 msPacman.reset();
                 break;
             case VERSUS:
-                pacmen = new Character[1];
+                pacmen = new PacPlayer[1];
                 pacmen[0] = pacman;
                 pacman.reset();
                 break;
@@ -675,5 +686,188 @@ public class Board extends JPanel implements ActionListener
                     break;
             }
         }
+    }
+
+    public void startDevMode() {
+        devTools = new DevToolGui();
+    }
+
+    class DevToolGui {
+        private boolean invincible = false;
+        private JFrame devFrame;
+        private JPanel devPanel, levelPanel, respawnPanel, pacManPanel;
+        private JPanel ghostPanel, pacmanInfoPanel, pelletInfoPanel;
+        private JLabel pacmanLabel, pelletLabel;
+        private JButton nextLevel, respawnPacMan, respawnGhosts;
+        private JCheckBox invinciblePacMan, pacManHalfSpeed, pacManDoubleSpeed;
+        private JCheckBox edibleGhosts, ghostHalfSpeed, ghostDoubleSpeed;
+
+        public DevToolGui() {
+            initialize_levelPanel();
+            initialize_respawnPanel();
+            initialize_pacManPanel();
+            initialize_ghostPanel();
+            initialize_pacmanInfoPanel();
+            initialize_pelletInfoPanel();
+
+            devPanel = new JPanel();
+            devPanel.setLayout(new BoxLayout(devPanel, BoxLayout.Y_AXIS));
+            devPanel.add(levelPanel);
+            devPanel.add(respawnPanel);
+            devPanel.add(pacManPanel);
+            devPanel.add(ghostPanel);
+            devPanel.add(pacmanInfoPanel);
+            devPanel.add(pelletInfoPanel);
+
+            devFrame = new JFrame("Developer Tools");
+            devFrame.add(devPanel);
+            devFrame.setVisible(true);
+            devFrame.setLocationRelativeTo(null);
+            devFrame.pack();
+        }
+
+        private void initialize_levelPanel() {
+            nextLevel = new JButton("Next Level");
+            nextLevel.addActionListener( (e)-> {
+                score += SCORE_WIN;
+                numBoardsCleared++;
+                numGhosts = (numGhosts + 1) % MAX_GHOSTS;
+                curSpeed = (curSpeed + 1) % MAX_SPEED;
+                grid.levelInit(numBoardsCleared);
+                levelContinue();
+                //clearSelections();
+            });
+
+            levelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            levelPanel.add(new JLabel("Level: "));
+            levelPanel.add(nextLevel);
+        }
+
+        private void initialize_respawnPanel() {
+            respawnPacMan = new JButton("PacMan");
+            respawnPacMan.addActionListener( (e)->{
+                for (Character ch : pacmen)
+                    ch.resetPos();
+            });
+
+            respawnGhosts = new JButton("Ghosts");
+            respawnGhosts.addActionListener( (e)->{
+                ghostHouse.addGhosts(ghosts);
+            });
+
+            respawnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            respawnPanel.add(new JLabel("Respawn: "));
+            respawnPanel.add(respawnPacMan);
+            respawnPanel.add(respawnGhosts);
+        }
+
+        private void initialize_pacManPanel() {
+            invinciblePacMan = new JCheckBox("Invincible");
+            invinciblePacMan.addItemListener( (e)->{
+                invincible = (e.getStateChange() == java.awt.event.ItemEvent.SELECTED);
+            });
+
+            pacManHalfSpeed = new JCheckBox("1/2x Speed");
+            pacManHalfSpeed.addItemListener( (e)->{
+                for (PacPlayer player : pacmen) {
+                    if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)
+                        player.pacmanspeed /= 2;
+                    else
+                        player.pacmanspeed *= 2;
+                }
+            });
+
+            pacManDoubleSpeed = new JCheckBox("2x Speed");
+            pacManDoubleSpeed.addItemListener( (e)->{
+                for (PacPlayer player : pacmen) {
+                    if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)
+                        player.pacmanspeed *= 2;
+                    else
+                        player.pacmanspeed /= 2;
+                }
+            });
+
+            pacManPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            pacManPanel.add(new JLabel("PacMan: "));
+            pacManPanel.add(invinciblePacMan);
+            pacManPanel.add(pacManHalfSpeed);
+            pacManPanel.add(pacManDoubleSpeed);
+        }
+
+        private void initialize_ghostPanel() {
+            edibleGhosts = new JCheckBox("Edible");
+            edibleGhosts.addItemListener( (e)->{
+                for (Ghost ghost : ghosts) {
+                    if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
+                        ghost.edible = true;
+                        ghost.edibleTimer = 10000;
+                    }
+                    else {
+                        ghost.edible = false;
+                        ghost.edibleTimer = 0;
+                    }
+                }
+            });
+
+            ghostHalfSpeed = new JCheckBox("1/2x Speed");
+            ghostHalfSpeed.addItemListener( (e)->{
+                for (Ghost ghost : ghosts) {
+                    if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)
+                        ghost.speed /= 2;
+                    else
+                        ghost.speed *= 2;
+                }
+            });
+
+            ghostDoubleSpeed = new JCheckBox("2x Speed");
+            ghostDoubleSpeed.addItemListener( (e)->{
+                for (Ghost ghost : ghosts) {
+                    if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)
+                        ghost.speed *= 2;
+                    else
+                        ghost.speed /= 2;
+                }
+            });
+
+            ghostPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            ghostPanel.add(new JLabel("Ghosts: "));
+            ghostPanel.add(edibleGhosts);
+            ghostPanel.add(ghostHalfSpeed);
+            ghostPanel.add(ghostDoubleSpeed);
+        }
+
+        private void initialize_pacmanInfoPanel() {
+            pacmanInfoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            pacmanLabel = new JLabel("Pacman");
+            pacmanInfoPanel.add(pacmanLabel);
+        }
+
+        private void initialize_pelletInfoPanel() {
+            pelletInfoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            pelletLabel = new JLabel("Pellet");
+            pelletInfoPanel.add(pelletLabel);
+        }
+
+        /*private void clearSelections() {
+            invinciblePacMan.setSelected(false);
+            pacManHalfSpeed.setSelected(false);
+            pacManDoubleSpeed.setSelected(false);
+            edibleGhosts.setSelected(false);
+            ghostHalfSpeed.setSelected(false);
+            ghostDoubleSpeed.setSelected(false);
+        }*/
+
+        public void updatePacmanLabel(PacPlayer pacman) {
+            pacmanLabel.setText("Pacman X: " + pacman.x + ", Y: " + pacman.y + ", Speed: " + pacman.speed);
+        }
+
+        public void updatePelletLabel() {
+            pelletLabel.setText("Number of Pellets Left: " + grid.getPelletNum());
+        }
+
+        public boolean isInvincible() {
+            return invincible;
+        }
+
     }
 }

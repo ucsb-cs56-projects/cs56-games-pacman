@@ -30,7 +30,7 @@ public class PacPlayer extends Character {
 	public final static int MSPACMAN = 2;
 	private final int pacanimdelay = 2;
 	private final int pacmananimcount = 4;
-	private final int pacmanspeed = 4;
+	public int pacmanspeed = 4;
 	int pacanimcount = pacanimdelay;
 	int pacanimdir = 1;
 	int pacmananimpos = 0;
@@ -157,24 +157,24 @@ public class PacPlayer extends Character {
 			grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_PELLET);
 			playAudio(0);
 			Board.score += Board.SCORE_PELLET;
-			speed = 3;
+			speed = pacmanspeed - 1;
 		}
 		else if ((ch & GridData.GRID_CELL_FRUIT) != 0) {
 			//Toggles fruit bit
 			grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_FRUIT);
 			Board.score += Board.SCORE_FRUIT;
 			playAudio(1);
-			speed = 3;
+			speed = pacmanspeed - 1;
 		}
 		else if((ch & GridData.GRID_CELL_POWER_PILL) != 0) {
 			//Toggles pill bit
 			grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_POWER_PILL);
 			playAudio(1);
 			Board.score += Board.SCORE_POWER_PILL;
-			speed = 3;
+			speed = pacmanspeed - 1;
 		}
 		else
-			speed = 4;
+			speed = pacmanspeed;
 	}
 
 	/**
