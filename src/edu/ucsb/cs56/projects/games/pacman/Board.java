@@ -695,10 +695,16 @@ public class Board extends JPanel implements ActionListener
         }
     }
 
+    /**
+     * if the game is running in dev-mode then create a dev-tool GUI 
+     */
     public void startDevMode() {
         devTools = new DevToolGui();
     }
 
+    /**
+     * An inner class for representing the dev-tool GUI
+     */
     class DevToolGui {
         private boolean invincible = false;
         private JFrame devFrame;
@@ -709,6 +715,9 @@ public class Board extends JPanel implements ActionListener
         private JCheckBox invinciblePacMan, pacManHalfSpeed, pacManDoubleSpeed;
         private JCheckBox edibleGhosts, ghostHalfSpeed, ghostDoubleSpeed;
 
+	/**
+	 * Dev-tool constructor -initializes all the GUI components
+	 */
         public DevToolGui() {
             initialize_levelPanel();
             initialize_respawnPanel();
@@ -733,6 +742,9 @@ public class Board extends JPanel implements ActionListener
             devFrame.pack();
         }
 
+	/**
+	 * initializes the levelPane component of the GUI
+	 */
         private void initialize_levelPanel() {
             nextLevel = new JButton("Next Level");
             nextLevel.addActionListener( (e)-> {
@@ -751,6 +763,9 @@ public class Board extends JPanel implements ActionListener
             levelPanel.add(nextLevel);
         }
 
+	/**
+	 * initializes the respawnPanel component
+	 */
         private void initialize_respawnPanel() {
             respawnPacMan = new JButton("PacMan");
             respawnPacMan.addActionListener( (e)->{
@@ -770,7 +785,10 @@ public class Board extends JPanel implements ActionListener
             respawnPanel.add(respawnPacMan);
             respawnPanel.add(respawnGhosts);
         }
-
+	
+	/**
+	 * initializes the pacManPanel component
+	 */
         private void initialize_pacManPanel() {
             invinciblePacMan = new JCheckBox("Invincible");
             invinciblePacMan.addItemListener( (e)->{
@@ -806,7 +824,10 @@ public class Board extends JPanel implements ActionListener
             pacManPanel.add(pacManHalfSpeed);
             pacManPanel.add(pacManDoubleSpeed);
         }
-
+	
+	/**
+	 * initializes the ghostPanel component
+	 */
         private void initialize_ghostPanel() {
             edibleGhosts = new JCheckBox("Edible");
             edibleGhosts.addItemListener( (e)->{
@@ -852,18 +873,28 @@ public class Board extends JPanel implements ActionListener
             ghostPanel.add(ghostDoubleSpeed);
         }
 
+	/**
+	 * initializes the pacmanInfoPanel component
+	 */
         private void initialize_pacmanInfoPanel() {
             pacmanInfoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             pacmanLabel = new JLabel("Pacman");
             pacmanInfoPanel.add(pacmanLabel);
         }
-
+	
+	/**
+	 * initializes the pelletInfoPanel component
+	 */
         private void initialize_pelletInfoPanel() {
             pelletInfoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             pelletLabel = new JLabel("Pellet");
             pelletInfoPanel.add(pelletLabel);
         }
-
+	
+	/**
+	 * Resets GUI checkboxes to the unselected state
+	 * Used for resetting GUI upon entering next level
+	 */
         public void clearSelections() {
             invinciblePacMan.setSelected(false);
             pacManHalfSpeed.setSelected(false);
@@ -873,14 +904,27 @@ public class Board extends JPanel implements ActionListener
             ghostDoubleSpeed.setSelected(false);
         }
 
+	/**
+	 * Updates the JLabel component with pacman's coordinates and speed
+	 *
+	 * @param pacman the PacPlayer object to update with current coordinates/speed
+	 */
         public void updatePacmanLabel(PacPlayer pacman) {
             pacmanLabel.setText("Pacman X: " + pacman.x + ", Y: " + pacman.y + ", Speed: " + pacman.speed);
         }
 
+	/** Updates the JLabel component with current number of pellets in game
+	 *
+	 */
         public void updatePelletLabel() {
             pelletLabel.setText("Number of Pellets Left: " + grid.getPelletNum());
         }
 
+	/**
+	 * Method to determine if pacman is currently invincible
+	 *
+	 * @return invincible pacman's invincibility
+	 */
         public boolean isInvincible() {
             return invincible;
         }
