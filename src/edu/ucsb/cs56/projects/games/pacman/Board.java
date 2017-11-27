@@ -486,6 +486,11 @@ public class Board extends JPanel implements ActionListener
         numPills = grid.getPillNum();
         ghosts.clear();
 
+	//Reset the dev-tool GUI selections upon starting a new level if running in dev-mode
+	if(devTools != null){
+	    devTools.clearSelections();
+	}
+	
         //Ghost house is located in the center of map with width 3.
         this.ghostHouse = new GhostHouse(new Location(7,8) , this.GHOSTHOUSE_WIDTH, this.BLOCKSIZE);
         if(gt == GameType.VERSUS)
@@ -859,14 +864,14 @@ public class Board extends JPanel implements ActionListener
             pelletInfoPanel.add(pelletLabel);
         }
 
-        /*private void clearSelections() {
+        public void clearSelections() {
             invinciblePacMan.setSelected(false);
             pacManHalfSpeed.setSelected(false);
             pacManDoubleSpeed.setSelected(false);
             edibleGhosts.setSelected(false);
             ghostHalfSpeed.setSelected(false);
             ghostDoubleSpeed.setSelected(false);
-        }*/
+        }
 
         public void updatePacmanLabel(PacPlayer pacman) {
             pacmanLabel.setText("Pacman X: " + pacman.x + ", Y: " + pacman.y + ", Speed: " + pacman.speed);
