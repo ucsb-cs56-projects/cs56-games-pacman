@@ -148,7 +148,7 @@ public class Board extends JPanel implements ActionListener
                     }
                     grid.incrementFruit(numBoardsCleared);
                     detectCollision(ghosts);
-		    ghostHouse.update();
+                    ghostHouse.update();
                     break;
                 case COOPERATIVE:
                     if (msPacman.alive)
@@ -163,7 +163,7 @@ public class Board extends JPanel implements ActionListener
                     }
                     grid.incrementFruit(numBoardsCleared);
                     detectCollision(ghosts);
-		    ghostHouse.update();
+                    ghostHouse.update();
                     break;
                 case VERSUS:
                     for (Character ghost : ghosts)
@@ -182,7 +182,7 @@ public class Board extends JPanel implements ActionListener
                     }
                     grid.incrementFruit(numBoardsCleared);
                     detectCollision(ghosts);
-		    ghostHouse.update();
+                    ghostHouse.update();
                     break;
             }
             if (grid.checkMaze())
@@ -737,6 +737,7 @@ public class Board extends JPanel implements ActionListener
                 curSpeed = (curSpeed + 1) % MAX_SPEED;
                 grid.levelInit(numBoardsCleared);
                 levelContinue();
+                Board.this.requestFocus();
                 //clearSelections();
             });
 
@@ -750,11 +751,13 @@ public class Board extends JPanel implements ActionListener
             respawnPacMan.addActionListener( (e)->{
                 for (Character ch : pacmen)
                     ch.resetPos();
+                Board.this.requestFocus();
             });
 
             respawnGhosts = new JButton("Ghosts");
             respawnGhosts.addActionListener( (e)->{
                 ghostHouse.addGhosts(ghosts);
+                Board.this.requestFocus();
             });
 
             respawnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -767,6 +770,7 @@ public class Board extends JPanel implements ActionListener
             invinciblePacMan = new JCheckBox("Invincible");
             invinciblePacMan.addItemListener( (e)->{
                 invincible = (e.getStateChange() == java.awt.event.ItemEvent.SELECTED);
+                Board.this.requestFocus();
             });
 
             pacManHalfSpeed = new JCheckBox("1/2x Speed");
@@ -777,6 +781,7 @@ public class Board extends JPanel implements ActionListener
                     else
                         player.pacmanspeed *= 2;
                 }
+                Board.this.requestFocus();
             });
 
             pacManDoubleSpeed = new JCheckBox("2x Speed");
@@ -787,6 +792,7 @@ public class Board extends JPanel implements ActionListener
                     else
                         player.pacmanspeed /= 2;
                 }
+                Board.this.requestFocus();
             });
 
             pacManPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -809,6 +815,7 @@ public class Board extends JPanel implements ActionListener
                         ghost.edibleTimer = 0;
                     }
                 }
+                Board.this.requestFocus();
             });
 
             ghostHalfSpeed = new JCheckBox("1/2x Speed");
@@ -819,6 +826,7 @@ public class Board extends JPanel implements ActionListener
                     else
                         ghost.speed *= 2;
                 }
+                Board.this.requestFocus();
             });
 
             ghostDoubleSpeed = new JCheckBox("2x Speed");
@@ -829,6 +837,7 @@ public class Board extends JPanel implements ActionListener
                     else
                         ghost.speed /= 2;
                 }
+                Board.this.requestFocus();
             });
 
             ghostPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
