@@ -18,7 +18,10 @@ public class Audio {
 	private byte[] audioData;
 	private DataLine.Info audioInfo;
 	private Clip audioClip;
-
+       /**
+	*Constructor for Audio\
+	*
+	*/
 	public Audio(InputStream inputStream) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
 		AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(this.loadStream(inputStream));
 		this.audioFormat = audioInputStream.getFormat();
@@ -34,6 +37,7 @@ public class Audio {
 	*
 	*@param inputStream the stream used to get the sound bytes
 	*@return ByteArrayInputStream
+	*@throws IOException
 	*/
 	public ByteArrayInputStream loadStream(InputStream inputStream) throws IOException {
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -54,8 +58,6 @@ public class Audio {
         /**
 	 *Plays a sound clip once and will not replay until the clip has finished
 	 *
-	 *@throws UnsupportedAudioFileException
-	 *@throws LineUnavailableException
          */
 	public void play() throws UnsupportedAudioFileException, LineUnavailableException {
 		this.play(true);

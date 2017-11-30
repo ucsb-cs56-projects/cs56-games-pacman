@@ -16,14 +16,8 @@ public class Location{
     /**
      * Location constructor takes an x and y
      * integer to track location of object
-     * @constructor
      * @param x x-coordinate
      * @param y y-coordinate
-     *  Location constructor takes an x and y
-     *  integer to track location of object
-     *  @constructor
-     *  @param x x-coordinate
-     *  @param y y-coordinate
      */
     public Location(int x, int y){
 	this.x = x;

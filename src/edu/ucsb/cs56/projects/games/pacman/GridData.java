@@ -37,7 +37,7 @@ public class GridData implements Serializable {
         /**
 	 * A method to specify the grid's width
 	 *
-	 * @param width an integer that represents the desired width
+	 * @param grid_width an integer that represents the desired width
 	 */
 	public void setGridWidth(int grid_width) {
 		this.grid_width = grid_width;
