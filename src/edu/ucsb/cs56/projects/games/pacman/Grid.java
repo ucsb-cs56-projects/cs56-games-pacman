@@ -69,13 +69,9 @@ public class Grid
 	 * @return A boolean indicating whether or not the maze is finished
 	 */
 	public boolean checkMaze() {
-		for (int i = 0; i < Board.NUMBLOCKS; i++) {
-			for (int j = 0; j < Board.NUMBLOCKS; j++) {
-				if ((screenData[i][j] & (GridData.GRID_CELL_PELLET ^ GridData.GRID_CELL_POWER_PILL)) != 0)
-					return false;
-			}
-		}
-		return true;
+		int pellets = getItemNum(this.screenData, GridData.GRID_CELL_PELLET);
+		int pills = getItemNum(this.screenData, GridData.GRID_CELL_POWER_PILL);
+		return (pellets + pills == 0);
 	}
 
 	/**
@@ -84,14 +80,7 @@ public class Grid
 	 * @return An int indicating how many pellets are left
 	 */
 	public int getPelletNum() {
-		int numOfPellet = 0;
-		for (int i = 0; i < Board.NUMBLOCKS; i++) {
-			for (int j = 0; j < Board.NUMBLOCKS; j++) {
-				if ((screenData[i][j] & GridData.GRID_CELL_PELLET) != 0)
-					numOfPellet++;
-			}
-		}
-		return numOfPellet;
+		return getItemNum(this.screenData, GridData.GRID_CELL_PELLET);
 	}
 
 	/**
@@ -100,14 +89,7 @@ public class Grid
 	 * @return An int indicating how many pills are left
 	 */
 	public int getPillNum() {
-		int numOfPill = 0;
-                for (int i = 0; i < Board.NUMBLOCKS; i++) {
-                        for (int j = 0; j < Board.NUMBLOCKS; j++) {
-                                if ((screenData[i][j] & GridData.GRID_CELL_POWER_PILL) != 0)
-                                        numOfPill++;
-                        }
-                }
-                return numOfPill;	
+		return getItemNum(this.screenData, GridData.GRID_CELL_POWER_PILL);
 	}
 
 	/**
@@ -117,19 +99,27 @@ public class Grid
 	 * @return An int indicating how many pellets are left
 	 */
 	public int getPelletNumForMap(int numBoardsCleared) {
-		int numOfPellet = 0;
-		for (int i = 0; i < Board.NUMBLOCKS; i++) {
-			for (int j = 0; j < Board.NUMBLOCKS; j++) {
-				if((this.levelsData[numBoardsCleared % this.levelsData.length][i][j] & GridData.GRID_CELL_PELLET) != 0) {
-					numOfPellet++;
-				}
-			}
-		}
-		return numOfPellet;
+		return getItemNum(this.levelsData[numBoardsCleared % this.levelsData.length], GridData.GRID_CELL_PELLET);
 	}
 
 	/**
-	 * Initialize level
+	 * Count the number of items on the map
+	 * @param grid_type type of item (GridData constant)
+	 * @return the number of items on the map
+	 */
+	private int getItemNum(short[][] map, byte grid_type) {
+		int count = 0;
+		for (int i = 0; i < Board.NUMBLOCKS; i++) {
+			for (int j = 0; j < Board.NUMBLOCKS; j++) {
+				if ((map[i][j] & grid_type) != 0)
+					count++;
+			}
+		}
+		return count;
+	}
+
+	/**
+	 * Initialize level with data containing game object information
 	 * @param numBoardsCleared the number of levels that have been cleared
 	 */
 	public void levelInit(int numBoardsCleared) {
@@ -162,7 +152,9 @@ public class Grid
 	forever to find an open space.  That's why having this list of possible
 	spaces is the best way I can think of.
 	 */
-
+        /**
+	 * A method to set the x and y coordinates to a random number on the board
+	 */
 	public void randomBlock(){
 		this.x = (int) (Math.random() * Board.NUMBLOCKS);
 		this.y = (int) (Math.random() * Board.NUMBLOCKS);

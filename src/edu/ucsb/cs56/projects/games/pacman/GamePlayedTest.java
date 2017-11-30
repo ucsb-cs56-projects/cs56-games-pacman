@@ -11,11 +11,26 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Kateryna Fomenko
  * @author Deanna Hartsook
- * @version CS56, Winter 2014
+ * @author Wei Tung Chen
+ * @author Nicholas Duncan
+ * @version CS56, F17
  * @see GamePlayed
  */
 
 public class GamePlayedTest {
+
+	/**
+	 * Test case for GamePlayed constructor
+	 */
+	@Test
+	public void test_constructor() {
+		Date d = new Date();
+		GamePlayed g1 = new GamePlayed("Game", d, 20);
+		assertEquals("Game", g1.getName());
+		assertEquals(d, g1.getDate());
+		assertEquals(20, g1.getScore());
+	}
+
 	/**
 	 * Test case for getName() method of GamePlayed
 	 *

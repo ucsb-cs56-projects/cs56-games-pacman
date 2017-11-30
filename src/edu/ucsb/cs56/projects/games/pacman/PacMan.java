@@ -34,6 +34,10 @@ public class PacMan extends JFrame {
 		setLocationRelativeTo(null);
 		setResizable(false);
 		setVisible(true);
+
+		if(args.equals("dev")){
+		    b.startDevMode();
+		}
 	}
 
 	/**

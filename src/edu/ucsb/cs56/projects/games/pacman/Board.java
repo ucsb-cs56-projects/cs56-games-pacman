@@ -27,10 +27,11 @@ import java.util.Date;
  * @author Kekoa Sato
  * @author Wei Tung Chen
  * @author Nicholas Duncan
- * @version CS56 F16
+ * @version CS56 F17
  */
 public class Board extends JPanel implements ActionListener
 {
+    //enum that represents which gametype you're playing
     enum GameType {
         INTRO, HELP, SINGLEPLAYER, COOPERATIVE, VERSUS, LEADERBOARD
     }
@@ -38,10 +39,15 @@ public class Board extends JPanel implements ActionListener
     public static final int BLOCKSIZE = 24;
     public static final int NUMBLOCKS = 17;
     public static final int SCRSIZE = NUMBLOCKS * BLOCKSIZE;
+    public static final int SCORE_PELLET = 1;
+    public static final int SCORE_FRUIT = 10;
+    public static final int SCORE_POWER_PILL = 5;
+    public static final int SCORE_ENEMY = 40;
+    public static final int SCORE_WIN = 50;
+    public static final int GHOSTHOUSE_WIDTH = 3;
     
     private final int MAX_GHOSTS = 12;
     private final int MAX_SPEED = 6;
-    
     
     public static int score;
     private ScoreLoader sl = new ScoreLoader("highScores.txt");
@@ -51,7 +57,7 @@ public class Board extends JPanel implements ActionListener
     private GameType gt;
     private PacPlayer pacman, msPacman;
     private Ghost ghost1, ghost2;
-    private Character[] pacmen;
+    private PacPlayer[] pacmen;
     private ArrayList<Ghost> ghosts;
     private int numGhosts = 4, numBoardsCleared = 0;
     private int curSpeed = 3;
@@ -60,6 +66,7 @@ public class Board extends JPanel implements ActionListener
     private Timer timer;
     private Audio beginningAudio;
     private GhostHouse ghostHouse;
+    private DevToolGui devTools = null;
     
     /**
      * Constructor for Board object
@@ -98,8 +105,11 @@ public class Board extends JPanel implements ActionListener
     }
     
     /**
-    * Main game logic loop
-     *
+     *Main game logic loop
+     *Anything related to the updating of game objects and state occurs in this
+     *method. The game logic is updated based on which game mode is selected
+     *this also controls some scoring and level changing parts of the game
+     *(consider refactoring)
      * @param g2d a Graphics 2D object
      */
     public void playGame(Graphics2D g2d) {
@@ -121,6 +131,13 @@ public class Board extends JPanel implements ActionListener
                     numPills = grid.getPillNum();
                 }
             }
+
+            //If game starts in dev mode, update devTool info.
+            if (devTools != null) {
+                devTools.updatePacmanLabel(pacman);
+                devTools.updatePelletLabel();
+            }
+
             switch (gt)
             {
                 case SINGLEPLAYER:
@@ -131,7 +148,7 @@ public class Board extends JPanel implements ActionListener
                     }
                     grid.incrementFruit(numBoardsCleared);
                     detectCollision(ghosts);
-		    ghostHouse.update();
+                    ghostHouse.update();
                     break;
                 case COOPERATIVE:
                     if (msPacman.alive)
@@ -146,7 +163,7 @@ public class Board extends JPanel implements ActionListener
                     }
                     grid.incrementFruit(numBoardsCleared);
                     detectCollision(ghosts);
-		    ghostHouse.update();
+                    ghostHouse.update();
                     break;
                 case VERSUS:
                     for (Character ghost : ghosts)
@@ -165,12 +182,12 @@ public class Board extends JPanel implements ActionListener
                     }
                     grid.incrementFruit(numBoardsCleared);
                     detectCollision(ghosts);
-		    ghostHouse.update();
+                    ghostHouse.update();
                     break;
             }
             if (grid.checkMaze())
             {
-                score += 50;
+                score += SCORE_WIN;
                 numBoardsCleared++;
                 
                 numGhosts = (numGhosts + 1) % MAX_GHOSTS;
@@ -236,7 +253,8 @@ public class Board extends JPanel implements ActionListener
     }
     
     /**
-     * Shows help
+     * Shows help screen detailing game mode instructions,
+     * movement commands, and other game controls
      *
      * @param g a Graphics object
      */
@@ -298,8 +316,11 @@ public class Board extends JPanel implements ActionListener
     }
     
     /**
-     * Display the current score on the bottom right of the screen
-     *
+     * Display game information such as:
+     * the number of pellets left,
+     * the current score,
+     * the number of lives left for pacman and possibly Ms. Pacman
+     * (consider renaming as does more than just score)
      * @param g a Graphics object
      */
     public void drawScore(Graphics g)
@@ -325,7 +346,7 @@ public class Board extends JPanel implements ActionListener
     }
     
     /**
-     * Displays a list of scores on the bottom of the screen
+     * Displays a list of high scores on the bottom of the screen
      *
      * @param g a Graphics object
      */
@@ -373,34 +394,32 @@ public class Board extends JPanel implements ActionListener
     
     /**
      * Detects when ghosts and pacman collide
-     *
+     * Ghosts are sent back to the 'ghost house' (center of map)
+     * when pacman dies
      * @param ghosts An array of Ghost
      */
-    public void detectCollision(ArrayList<Ghost> ghosts)
-    {
-        for (Character pacman : pacmen)
-        {
-            for (Ghost ghost : ghosts)
-            {
-                if ((Math.abs(pacman.x - ghost.x) < 20 &&
-                     Math.abs(pacman.y - ghost.y) < 20) && ghost.edible == false) {
-                    pacman.death();
-		    //sends ghosts back to ghost house on pacman's death
-		    for (Ghost ghost1 : ghosts) {
-			ghost1.death();
-			ghostHouse.addGhost(ghost1);
-		    }
-		    //Resets time so ghosts will respawn on time
-		    ghostHouse.resetTimer();
-		    return;
-		}
-                
-                if ((Math.abs(pacman.x - ghost.x) < 20 &&
-                     Math.abs(pacman.y - ghost.y) < 20) && ghost.edible == true) {
-                    ghost.death();
-		    ghostHouse.addGhost(ghost);
-                    score+=40;
+    public void detectCollision(ArrayList<Ghost> ghosts) {
+
+        if (devTools != null && devTools.isInvincible())
+            return;
+
+        for (Character pacman : pacmen) {
+            for (Ghost ghost : ghosts) {
+
+                if ((Math.abs(pacman.x - ghost.x) < 20 && Math.abs(pacman.y - ghost.y) < 20)) {
+
+                    if (!ghost.edible) {
+                        pacman.death();
+                        ghostHouse.addGhosts(ghosts); //Reset ghosts back to ghost house
+                        ghostHouse.resetTimer(); //Resets time so ghosts will respawn on time
+                        return;
+                    } else {
+                        ghost.death();
+                        ghostHouse.addGhost(ghost);
+                        score += SCORE_ENEMY;
+                    }
                 }
+
             }
         }
     }
@@ -439,19 +458,19 @@ public class Board extends JPanel implements ActionListener
         switch (gt)
         {
             case SINGLEPLAYER:
-                pacmen = new Character[1];
+                pacmen = new PacPlayer[1];
                 pacmen[0] = pacman;
                 pacman.reset();
                 break;
             case COOPERATIVE:
-                pacmen = new Character[2];
+                pacmen = new PacPlayer[2];
                 pacmen[0] = pacman;
                 pacmen[1] = msPacman;
                 pacman.reset();
                 msPacman.reset();
                 break;
             case VERSUS:
-                pacmen = new Character[1];
+                pacmen = new PacPlayer[1];
                 pacmen[0] = pacman;
                 pacman.reset();
                 break;
@@ -465,10 +484,15 @@ public class Board extends JPanel implements ActionListener
     {
         numPellet = grid.getPelletNum() + grid.getPillNum();
         numPills = grid.getPillNum();
-	ghosts.clear();
-	//ghost house is located in the center of each map its width is currently 3
-	//as the number of ghosts is 4. Can be adjusted for different level designs
-	this.ghostHouse = new GhostHouse(new Location(7,8) , this.numGhosts - 1, this.BLOCKSIZE);
+        ghosts.clear();
+
+	//Reset the dev-tool GUI selections upon starting a new level if running in dev-mode
+	if(devTools != null){
+	    devTools.clearSelections();
+	}
+	
+        //Ghost house is located in the center of map with width 3.
+        this.ghostHouse = new GhostHouse(new Location(7,8) , this.GHOSTHOUSE_WIDTH, this.BLOCKSIZE);
         if(gt == GameType.VERSUS)
         {
             ghosts.add(ghost1);
@@ -478,13 +502,14 @@ public class Board extends JPanel implements ActionListener
         {
             for (int i = 0; i < numGhosts; i++)
             {
-		//first ghost will get set outside, other ghosts get set inside ghost house
-		if(i == 0){
-		    ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + i) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
-		}else{
-		    ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + (i-1)) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
-		}
-		    ghostHouse.addGhost(ghosts.get(i));
+                ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + i % ghostHouse.getWidth()) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
+                //first ghost will get set outside, other ghosts get set inside ghost house
+                // if(i == 0){
+                //     ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + i) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
+                // }else{
+                //     ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + (i-1)) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
+                // }
+                ghostHouse.addGhost(ghosts.get(i));
             }
         }
         switch (gt)
@@ -644,7 +669,11 @@ public class Board extends JPanel implements ActionListener
                 }
             }
         }
-        
+	/**
+	 * Handles the release of a key by a player
+	 *
+	 * @param e holds information about the key pressed
+	 */
         public void keyReleased(KeyEvent e) {
             int key = e.getKeyCode();
             
@@ -664,5 +693,241 @@ public class Board extends JPanel implements ActionListener
                     break;
             }
         }
+    }
+
+    /**
+     * if the game is running in dev-mode then create a dev-tool GUI 
+     */
+    public void startDevMode() {
+        devTools = new DevToolGui();
+    }
+
+    /**
+     * An inner class for representing the dev-tool GUI
+     */
+    class DevToolGui {
+        private boolean invincible = false;
+        private JFrame devFrame;
+        private JPanel devPanel, levelPanel, respawnPanel, pacManPanel;
+        private JPanel ghostPanel, pacmanInfoPanel, pelletInfoPanel;
+        private JLabel pacmanLabel, pelletLabel;
+        private JButton nextLevel, respawnPacMan, respawnGhosts;
+        private JCheckBox invinciblePacMan, pacManHalfSpeed, pacManDoubleSpeed;
+        private JCheckBox edibleGhosts, ghostHalfSpeed, ghostDoubleSpeed;
+
+	/**
+	 * Dev-tool constructor -initializes all the GUI components
+	 */
+        public DevToolGui() {
+            initialize_levelPanel();
+            initialize_respawnPanel();
+            initialize_pacManPanel();
+            initialize_ghostPanel();
+            initialize_pacmanInfoPanel();
+            initialize_pelletInfoPanel();
+
+            devPanel = new JPanel();
+            devPanel.setLayout(new BoxLayout(devPanel, BoxLayout.Y_AXIS));
+            devPanel.add(levelPanel);
+            devPanel.add(respawnPanel);
+            devPanel.add(pacManPanel);
+            devPanel.add(ghostPanel);
+            devPanel.add(pacmanInfoPanel);
+            devPanel.add(pelletInfoPanel);
+
+            devFrame = new JFrame("Developer Tools");
+            devFrame.add(devPanel);
+            devFrame.setVisible(true);
+            devFrame.setLocationRelativeTo(null);
+            devFrame.pack();
+        }
+
+	/**
+	 * initializes the levelPane component of the GUI
+	 */
+        private void initialize_levelPanel() {
+            nextLevel = new JButton("Next Level");
+            nextLevel.addActionListener( (e)-> {
+                score += SCORE_WIN;
+                numBoardsCleared++;
+                numGhosts = (numGhosts + 1) % MAX_GHOSTS;
+                curSpeed = (curSpeed + 1) % MAX_SPEED;
+                grid.levelInit(numBoardsCleared);
+                levelContinue();
+                Board.this.requestFocus();
+                //clearSelections();
+            });
+
+            levelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            levelPanel.add(new JLabel("Level: "));
+            levelPanel.add(nextLevel);
+        }
+
+	/**
+	 * initializes the respawnPanel component
+	 */
+        private void initialize_respawnPanel() {
+            respawnPacMan = new JButton("PacMan");
+            respawnPacMan.addActionListener( (e)->{
+                for (Character ch : pacmen)
+                    ch.resetPos();
+                Board.this.requestFocus();
+            });
+
+            respawnGhosts = new JButton("Ghosts");
+            respawnGhosts.addActionListener( (e)->{
+                ghostHouse.addGhosts(ghosts);
+                Board.this.requestFocus();
+            });
+
+            respawnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            respawnPanel.add(new JLabel("Respawn: "));
+            respawnPanel.add(respawnPacMan);
+            respawnPanel.add(respawnGhosts);
+        }
+	
+	/**
+	 * initializes the pacManPanel component
+	 */
+        private void initialize_pacManPanel() {
+            invinciblePacMan = new JCheckBox("Invincible");
+            invinciblePacMan.addItemListener( (e)->{
+                invincible = (e.getStateChange() == java.awt.event.ItemEvent.SELECTED);
+                Board.this.requestFocus();
+            });
+
+            pacManHalfSpeed = new JCheckBox("1/2x Speed");
+            pacManHalfSpeed.addItemListener( (e)->{
+                for (PacPlayer player : pacmen) {
+                    if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)
+                        player.pacmanspeed /= 2;
+                    else
+                        player.pacmanspeed *= 2;
+                }
+                Board.this.requestFocus();
+            });
+
+            pacManDoubleSpeed = new JCheckBox("2x Speed");
+            pacManDoubleSpeed.addItemListener( (e)->{
+                for (PacPlayer player : pacmen) {
+                    if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)
+                        player.pacmanspeed *= 2;
+                    else
+                        player.pacmanspeed /= 2;
+                }
+                Board.this.requestFocus();
+            });
+
+            pacManPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            pacManPanel.add(new JLabel("PacMan: "));
+            pacManPanel.add(invinciblePacMan);
+            pacManPanel.add(pacManHalfSpeed);
+            pacManPanel.add(pacManDoubleSpeed);
+        }
+	
+	/**
+	 * initializes the ghostPanel component
+	 */
+        private void initialize_ghostPanel() {
+            edibleGhosts = new JCheckBox("Edible");
+            edibleGhosts.addItemListener( (e)->{
+                for (Ghost ghost : ghosts) {
+                    if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
+                        ghost.edible = true;
+                        ghost.edibleTimer = 10000;
+                    }
+                    else {
+                        ghost.edible = false;
+                        ghost.edibleTimer = 0;
+                    }
+                }
+                Board.this.requestFocus();
+            });
+
+            ghostHalfSpeed = new JCheckBox("1/2x Speed");
+            ghostHalfSpeed.addItemListener( (e)->{
+                for (Ghost ghost : ghosts) {
+                    if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)
+                        ghost.speed /= 2;
+                    else
+                        ghost.speed *= 2;
+                }
+                Board.this.requestFocus();
+            });
+
+            ghostDoubleSpeed = new JCheckBox("2x Speed");
+            ghostDoubleSpeed.addItemListener( (e)->{
+                for (Ghost ghost : ghosts) {
+                    if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)
+                        ghost.speed *= 2;
+                    else
+                        ghost.speed /= 2;
+                }
+                Board.this.requestFocus();
+            });
+
+            ghostPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            ghostPanel.add(new JLabel("Ghosts: "));
+            ghostPanel.add(edibleGhosts);
+            ghostPanel.add(ghostHalfSpeed);
+            ghostPanel.add(ghostDoubleSpeed);
+        }
+
+	/**
+	 * initializes the pacmanInfoPanel component
+	 */
+        private void initialize_pacmanInfoPanel() {
+            pacmanInfoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            pacmanLabel = new JLabel("Pacman");
+            pacmanInfoPanel.add(pacmanLabel);
+        }
+	
+	/**
+	 * initializes the pelletInfoPanel component
+	 */
+        private void initialize_pelletInfoPanel() {
+            pelletInfoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            pelletLabel = new JLabel("Pellet");
+            pelletInfoPanel.add(pelletLabel);
+        }
+	
+	/**
+	 * Resets GUI checkboxes to the unselected state
+	 * Used for resetting GUI upon entering next level
+	 */
+        public void clearSelections() {
+            invinciblePacMan.setSelected(false);
+            pacManHalfSpeed.setSelected(false);
+            pacManDoubleSpeed.setSelected(false);
+            edibleGhosts.setSelected(false);
+            ghostHalfSpeed.setSelected(false);
+            ghostDoubleSpeed.setSelected(false);
+        }
+
+	/**
+	 * Updates the JLabel component with pacman's coordinates and speed
+	 *
+	 * @param pacman the PacPlayer object to update with current coordinates/speed
+	 */
+        public void updatePacmanLabel(PacPlayer pacman) {
+            pacmanLabel.setText("Pacman X: " + pacman.x + ", Y: " + pacman.y + ", Speed: " + pacman.speed);
+        }
+
+	/** Updates the JLabel component with current number of pellets in game
+	 *
+	 */
+        public void updatePelletLabel() {
+            pelletLabel.setText("Number of Pellets Left: " + grid.getPelletNum());
+        }
+
+	/**
+	 * Method to determine if pacman is currently invincible
+	 *
+	 * @return invincible pacman's invincibility
+	 */
+        public boolean isInvincible() {
+            return invincible;
+        }
+
     }
 }

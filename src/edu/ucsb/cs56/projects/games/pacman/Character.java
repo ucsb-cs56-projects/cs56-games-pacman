@@ -10,7 +10,9 @@ import java.awt.*;
  * @author Dario Castellanos Anaya
  * @author Daniel Ly
  * @author Kelvin Yang
- * @version CS56, W15
+ * @author Nicholas Duncan
+ * @author Wei Tung Chen
+ * @version CS56, F17
  */
 public abstract class Character
 {
@@ -30,12 +32,7 @@ public abstract class Character
 	 * @param y the starting y coordinate of pacman
 	 */
 	public Character(int x, int y) {
-		startX = x;
-		startY = y;
-		playerNum = 1;
-		deathTimer = PacPlayer.PACMAN;
-		alive = true;
-		reset();
+		this(x, y, 1);
 	}
 
 	/**
@@ -49,8 +46,6 @@ public abstract class Character
 		startX = x;
 		startY = y;
 		this.playerNum = playerNum;
-		deathTimer = 0;
-		alive = true;
 		reset();
 	}
 
@@ -137,23 +132,54 @@ public abstract class Character
 		x = x + speed * dx;
 		y = y + speed * dy;
 
-		if (x % Board.BLOCKSIZE == 0 && y % Board.BLOCKSIZE == 0)
-		{
+		if (x % Board.BLOCKSIZE == 0 && y % Board.BLOCKSIZE == 0) {
 			x = ((x / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 			y = ((y / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 		}
 	}
-        //sets x-coordinate
+        /**
+         *sets the x-coordiante of the character on the screen
+         */
         public void setX(int x){
 	    this.x = x;
         }
-        //sets y-coordinate
+        /**
+	 *sets the y-coordinate of the character on the screen
+	 */
         public void setY(int y){
 	    this.y = y;
         }
-    
+        /**
+	 *sets the speed of the character
+	 */
         public void setSpeed(int speed){
 	    this.speed = speed;
         }
+
+
+	/**
+	 * Check if the direction has no wall and moveable
+	 * @param dx x-direction move
+	 * @param dy y-direction move
+	 * @param grid grid data
+	 * @return true if the direction is moveable
+	 */
+	public static boolean moveable(int dx, int dy, short grid) {
+		boolean moveable = false;
+
+		if (Direction.goingLeft(dx, dy))
+			moveable = (grid & GridData.GRID_CELL_BORDER_LEFT) == 0;
+
+		else if (Direction.goingRight(dx, dy))
+			moveable = (grid & GridData.GRID_CELL_BORDER_RIGHT) == 0;
+
+		else if (Direction.goingUp(dx, dy))
+			moveable = (grid & GridData.GRID_CELL_BORDER_TOP) == 0;
+
+		else if (Direction.goingDown(dx, dy))
+			moveable = (grid & GridData.GRID_CELL_BORDER_BOTTOM) == 0;
+
+		return moveable;
+	}
 
 }

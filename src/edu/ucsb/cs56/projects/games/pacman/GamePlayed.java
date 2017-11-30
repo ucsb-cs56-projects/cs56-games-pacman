@@ -32,7 +32,7 @@ public class GamePlayed implements Serializable, Comparable<GamePlayed> {
 	}
 
 	/**
-	 * Overriden version of toString() method for GamePlayed Class
+	 * Overridden version of toString() method for GamePlayed Class
 	 *
 	 * @return String returns string print out a the GamePlayed object
 	 */
@@ -46,7 +46,7 @@ public class GamePlayed implements Serializable, Comparable<GamePlayed> {
 	}
 
 	/**
-	 * Overriden version of equals() method for GamePlayed Class
+	 * Overridden version of equals() method for GamePlayed Class
 	 *
 	 * @return boolean - represents whether the two GamePlayed Objects are equal or false
 	 */

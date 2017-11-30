@@ -10,22 +10,27 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 /**
- * Player controlled pacman character.
+ * A class to represent the player controlled pacman character.
  *
  * @author Dario Castellanos
  * @author Daniel Ly
  * @author Kelvin Yang
  * @author Joseph Kompella
  * @author Kekoa Sato
- * @version CS56 F16
+ * @author Nicholas Duncan
+ * @author Wei Tung Chen
+ * @version CS56 F17
  */
 public class PacPlayer extends Character {
+
+	public final static String PATH_IMAGE_PACMAN = "assets/pacman/";
+	public final static String PATH_IMAGE_MSPACMAN = "assets/mspacman/";
+	public final static String PATH_AUDIO = "assets/audio/";
 	public final static int PACMAN = 1;
 	public final static int MSPACMAN = 2;
-
 	private final int pacanimdelay = 2;
 	private final int pacmananimcount = 4;
-	private final int pacmanspeed = 4;
+	public int pacmanspeed = 4;
 	int pacanimcount = pacanimdelay;
 	int pacanimdir = 1;
 	int pacmananimpos = 0;
@@ -46,21 +51,15 @@ public class PacPlayer extends Character {
 	 * @param y the starting y coordinate of pacman
 	 */
 	public PacPlayer(int x, int y) {
-		super(x, y);
-		speed = pacmanspeed;
-		lives = 3;
-		direction = 3;
-		assetImagePath = "assets/pacman/";
-		assetAudioPath = "assets/audio/";
-		loadImages();
-		loadAudio();
+		this(x, y, PACMAN, null);
 	}
 
 	/**
-	 * Constructor for PacPlayer class
+	 * Constructor for PacPlayer class for use
+	 * when multiple players are playing the game
 	 *
-	 * @param x         the starting x coordinate of pacman
-	 * @param y         the starting y coordinate of pacman
+	 * @param x         the starting x-coordinate of pacman
+	 * @param y         the starting y-coordinate of pacman
 	 * @param playerNum int representing who the player is controlling
 	 * @param grid      the grid in which PacPlayer is part of.
 	 */
@@ -69,20 +68,28 @@ public class PacPlayer extends Character {
 		speed = pacmanspeed;
 		this.grid = grid;
 		lives = 3;
-		direction = 3;
-		if (playerNum == PACMAN) assetImagePath = "assets/pacman/";
-		else if (playerNum == MSPACMAN) assetImagePath = "assets/mspacman/";
-		assetAudioPath = "assets/audio/";
+		direction = Direction.RIGHT;
+		if (playerNum == PACMAN) 
+			assetImagePath = PATH_IMAGE_PACMAN;
+		else if (playerNum == MSPACMAN) 
+			assetImagePath = PATH_IMAGE_MSPACMAN;
+		assetAudioPath = PATH_AUDIO;
 		loadImages();
 		loadAudio();
 	}
-
+ 
+  /**
+	 * Resets the player's position
+	 */
 	public void resetPos()
-	{
-		super.resetPos();
-		direction = 3;
+  {
+  	super.resetPos();
+		direction = Direction.RIGHT;
 	}
-
+        /**
+	 * Handles PacMan's death by taking away lives,
+	 * resetting the death timer, and resetting position
+	 */
 	public void death() {
 		if (deathTimer <= 0) {
 			lives--;
@@ -117,58 +124,21 @@ public class PacPlayer extends Character {
 			x = ((x / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 			y = ((y / Board.BLOCKSIZE + Board.NUMBLOCKS) % Board.NUMBLOCKS) * Board.BLOCKSIZE;
 
+			//Consume special item on current grid
 			ch = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
+			consumeGridItem(ch);
 
-			//if pellet, eat and increase score
-			if ((ch & 16) != 0) {
-				//Toggles pellet bit
-				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 16);
-				playAudio(0);
-				Board.score++;
-				speed = 3;
-			}
-			//if fruit, eat and increase score
-			else if ((ch & 32) != 0) {
-				//Toggles fruit bit
-				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 32);
-				Board.score+=10;
-				playAudio(1);
-				speed = 3;
-			}
-			else if((ch & 64) != 0) {
-				//Toggles pill bit
-				grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ 64);
-				playAudio(1);
-				Board.score+=5;
-				speed = 3;
-			}
-			else
-				speed = 4;
-
-			//passes key commands to movement
+			//Passes key commands to movement
 			if(reqdx != 0 || reqdy != 0) {
-				if (!((reqdx == -1 && reqdy == 0 && (ch & 1) != 0) ||
-						(reqdx == 1 && reqdy == 0 && (ch & 4) != 0) ||
-						(reqdx == 0 && reqdy == -1 && (ch & 2) != 0) ||
-						(reqdx == 0 && reqdy == 1 && (ch & 8) != 0))) {
+				if ( Character.moveable(reqdx, reqdy, ch) ) {
 					dx = reqdx;
 					dy = reqdy;
-					if(reqdx == -1 && reqdy == 0 && (ch & 1) == 0)
-						direction = 1;
-					if(reqdx == 0 && reqdy == -1 && (ch & 2) == 0)
-                                                direction = 2;
-					if(reqdx == 1 && reqdy == 0 && (ch & 4) == 0)
-                                                direction = 3;
-					if(reqdx == 0 && reqdy == 1 && (ch & 8) == 0)
-                                                direction = 4;
+					direction = Direction.getDirection(dx, dy);
 				}
 			}
 
-			// Check for standstill, stop movement if hit wall
-			if ((dx == -1 && dy == 0 && (ch & 1) != 0) ||
-					(dx == 1 && dy == 0 && (ch & 4) != 0) ||
-					(dx == 0 && dy == -1 && (ch & 2) != 0) ||
-					(dx == 0 && dy == 1 && (ch & 8) != 0)) {
+			//Check for standstill, stop movement if hit wall
+			if ( !Character.moveable(dx, dy, ch) ) {
 				dx = 0;
 				dy = 0;
 			}
@@ -176,29 +146,61 @@ public class PacPlayer extends Character {
 		move();
 	}
 
+	/*
+	 * Consume special items on a specific grid and increase score.
+	 * @param ch grid data
+	 */
+	private void consumeGridItem(short ch) {
+
+		if ((ch & GridData.GRID_CELL_PELLET) != 0) {
+			//Toggles pellet bit
+			grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_PELLET);
+			playAudio(0);
+			Board.score += Board.SCORE_PELLET;
+			speed = pacmanspeed - 1;
+		}
+		else if ((ch & GridData.GRID_CELL_FRUIT) != 0) {
+			//Toggles fruit bit
+			grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_FRUIT);
+			Board.score += Board.SCORE_FRUIT;
+			playAudio(1);
+			speed = pacmanspeed - 1;
+		}
+		else if((ch & GridData.GRID_CELL_POWER_PILL) != 0) {
+			//Toggles pill bit
+			grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE] = (short) (ch ^ GridData.GRID_CELL_POWER_PILL);
+			playAudio(1);
+			Board.score += Board.SCORE_POWER_PILL;
+			speed = pacmanspeed - 1;
+		}
+		else
+			speed = pacmanspeed;
+	}
+
 	/**
 	 * Calls the appropriate draw method for the direction Pacman is facing
 	 *
-	 * @param g2d    a Graphics2D object
-	 * @param canvas A Jcomponent object to be drawn on
+	 * @param g2d    a Graphics2D object for drawing the pacman sprite
+	 * @param canvas The component that the sprite is drawn on
 	 */
 	public void draw(Graphics2D g2d, JComponent canvas) {
 		if (deathTimer % 5 > 3) return; // Flicker while invincibile
 		doAnim();
-		if (direction == 1)
+		if (direction == Direction.LEFT)
 			g2d.drawImage(pacmanLeft[pacmananimpos], x + 4, y + 4, canvas);
-		else if (direction == 2)
+		else if (direction == Direction.UP)
 			g2d.drawImage(pacmanUp[pacmananimpos], x + 4, y + 4, canvas);
-		else if (direction == 4)
+		else if (direction == Direction.DOWN)
 			g2d.drawImage(pacmanDown[pacmananimpos], x + 4, y + 4, canvas);
 		else 
 			g2d.drawImage(pacmanRight[pacmananimpos], x + 4, y + 4, canvas);
 	}
 
 	/**
-	 * Moves character's current position with the board's collision
+	 * Moves character's current position while detecting for collision
+	 * within the board
 	 *
-	 * @param grid The Grid to be used for collision
+	 * @param grid The Grid to be used for collision detection
 	 */
 	@Override
 	public void moveAI(Grid grid, Character[] c) {
@@ -268,6 +270,12 @@ public class PacPlayer extends Character {
 		}
 	}
 
+
+        /**
+	 * Handles the release of a key by the player
+	 *
+	 * @param key int representing the key that was pressed
+	 */ 
 	@Override
 	public void keyReleased(int key) {
 		move(this.grid);

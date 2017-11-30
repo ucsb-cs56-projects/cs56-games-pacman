@@ -13,7 +13,9 @@ import java.awt.*;
  * heuristic to be admissable.
  *
  * @author Kelvin Yang
- * @version CS56, W15
+ * @author Nicholas Duncan
+ * @author Wei Tung Chen
+ * @version CS56, F17
  */
 public class Node extends Point implements Comparable<Node>
 {
@@ -80,10 +82,10 @@ public class Node extends Point implements Comparable<Node>
 		if(Math.abs(dx + dy) != 1)
 		    throw new IllegalArgumentException("Cannot set direction " + dx + ", " + dy + ".");
 
-		if(dx == -1) dir = 1;       //left
-		else if(dy == -1) dir = 2;  //up
-		else if(dx == 1) dir = 3;   //right
-		else if(dy == 1) dir = 4;   //down
+		if(dx == -1) dir = Direction.LEFT;       //left
+		else if(dy == -1) dir = Direction.UP;  //up
+		else if(dx == 1) dir = Direction.RIGHT;   //right
+		else if(dy == 1) dir = Direction.DOWN;   //down
 	    }catch(IllegalArgumentException ex){
 		System.out.println("Cannot set direction error");
 	    }

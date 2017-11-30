@@ -18,7 +18,10 @@ public class Audio {
 	private byte[] audioData;
 	private DataLine.Info audioInfo;
 	private Clip audioClip;
-
+       /**
+	*Constructor for Audio\
+	*
+	*/
 	public Audio(InputStream inputStream) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
 		AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(this.loadStream(inputStream));
 		this.audioFormat = audioInputStream.getFormat();
@@ -29,7 +32,13 @@ public class Audio {
 		this.audioClip = (Clip) AudioSystem.getLine(this.audioInfo);
 		this.audioClip.open(this.audioFormat, this.audioData, 0, this.audioSize);
 	}
-
+       /**
+	*Gets the sound bytes from the stream
+	*
+	*@param inputStream the stream used to get the sound bytes
+	*@return ByteArrayInputStream
+	*@throws IOException
+	*/
 	public ByteArrayInputStream loadStream(InputStream inputStream) throws IOException {
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		byte buffer[] = new byte[1024];
@@ -46,12 +55,20 @@ public class Audio {
 		return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
 	}
 
-	// By default, play will only allow an instance of the audio clip to be played
-	// once at any given moment and will not replay until after the clip has finished.
+        /**
+	 *Plays a sound clip once and will not replay until the clip has finished
+	 *
+         */
 	public void play() throws UnsupportedAudioFileException, LineUnavailableException {
 		this.play(true);
 	}
-
+        /**
+	 *Plays a sound clip once and will not replay until the clip has finished
+	 *
+	 *@param playOnlyOnce boolean that dictates whether the sound should replay
+	 *@throws UnsupportedAudioFileException
+	 *@throws LineUnavailableException
+         */
 	public void play(boolean playOnlyOnce) throws UnsupportedAudioFileException, LineUnavailableException {
 		if(playOnlyOnce && this.audioClip.isRunning()) return;
 		this.audioClip.setMicrosecondPosition(0);
