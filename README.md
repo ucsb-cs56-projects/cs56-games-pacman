@@ -26,6 +26,7 @@ Project History
 **How to Run**
 * For normal running (serialized file saved as "pacmanLeaderboard.ser"): ``ant run``.
 * To set the serialized file, use command line arguments: ``ant run-args -Darg0=filename``.
+![Image of Project Layout](https://github.com/UCSB-CS56-Projects/cs56-games-pacman/blob/master/Project-Layout.png)
 
 **W16 Final Remarks** <br>
 As of W16, there is now a level editor for the game. There is still work to do to allow loading of new levels outside of the five levels contained in ``/assets/levels``. Also, the ghosts still need additional work for movement. Additionally, a substantial rewrite could be undertaken to provide better support for player movement.
