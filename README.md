@@ -32,3 +32,6 @@ As of W16, there is now a level editor for the game. There is still work to do t
 
 **F16 Final Remarks** <br>
 As of F16, we have added another AI personality for the pink ghost, added multiple leaderboards for the different game modes, improved pacman's movement, improved versus mode so that it is now playable on laptops, and added "power pills" so that ghosts can now be eaten. We recommend that the easiest way to understand the code is to read the classes to get an idea of how they all interact with each other. Specifially, Board.java, PacPlayer.java, Ghost.java, and Character.java are ones we recommend to read up on.
+
+**F17 Final Remakes** <br>
+For F17 we added several features that may be helpful for the next programmers: the dev-tool (accessed with ant run-dev is a tool that allows you, as a developer, to test out many of the game functions such as respawning enemies, going to the next level, making pacman invincible, etc. to aid in testing. Along the same line we have added unit tests and extended the javadoc documentation to almost every method in the project. We have also added a "GhostHouse" so that ghosts spawning is controlled and orderly manner. Some quick tips: start with the javadoc. It includes information on most of the projects various methods and is a great way to get a quick grasp of the projects overall framework. 
