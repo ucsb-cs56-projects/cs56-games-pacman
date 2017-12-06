@@ -6,16 +6,6 @@ Pac-Man game, starting with code from http://zetcode.com/tutorials/javagamestuto
 
 ![Screenshot Of Pacman Main Menu](http://i.imgur.com/TODmNes.png)
 
-
-Project History
-===============
-```
-(ianvernon) Pac-Man game, starting with code from http://zetcode.com/tutorials/javagamestutorial/pacman/, and improving.
- W14 | bkiefer13 4pm | katfom, dmhartsook
- W15 | mliou 4pm | 2yangk23, jinzhu1993 
- W16 | hannavigil 5pm | ryantse, beserchris
-```
-
 **Documentation**
 * PacMan.java contains the `main` function and is the JFrame that displays the game.
 * Game controls are documented in the help menu of the game.
@@ -30,6 +20,16 @@ Project History
 * To set the serialized file, use command line arguments: ``ant run-args -Darg0=filename``.
 * To run level editor, use `ant run-editor`.
 * Developer mode can be run using `ant run-dev`.
+
+
+Project History
+===============
+```
+(ianvernon) Pac-Man game, starting with code from http://zetcode.com/tutorials/javagamestutorial/pacman/, and improving.
+ W14 | bkiefer13 4pm | katfom, dmhartsook
+ W15 | mliou 4pm | 2yangk23, jinzhu1993 
+ W16 | hannavigil 5pm | ryantse, beserchris
+```
 
 **W16 Final Remarks** <br>
 As of W16, there is now a level editor for the game. There is still work to do to allow loading of new levels outside of the five levels contained in ``/assets/levels``. Also, the ghosts still need additional work for movement. Additionally, a substantial rewrite could be undertaken to provide better support for player movement.
