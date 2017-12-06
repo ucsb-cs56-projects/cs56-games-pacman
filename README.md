@@ -22,13 +22,14 @@ Project History
 * Most of the basic game functionality (start game, end game, collision detection, etc.) is in Board.java, which is the main JPanel where the game is displayed.
 * The layout of game levels are stored in serialized GridData files located in ``/assets/levels/``.
 * Levels are editable by running the PacMan level editor that can be invoked with ``ant run-editor``.
-* Developer mode can be run using `ant run-dev`
 
 ![Image of Project Layout](https://github.com/UCSB-CS56-Projects/cs56-games-pacman/blob/master/Project-Layout.png)
 
 **How to Run**
 * For normal running (serialized file saved as "pacmanLeaderboard.ser"): ``ant run``.
 * To set the serialized file, use command line arguments: ``ant run-args -Darg0=filename``.
+* To run level editor, use `ant run-editor`.
+* Developer mode can be run using `ant run-dev`.
 
 **W16 Final Remarks** <br>
 As of W16, there is now a level editor for the game. There is still work to do to allow loading of new levels outside of the five levels contained in ``/assets/levels``. Also, the ghosts still need additional work for movement. Additionally, a substantial rewrite could be undertaken to provide better support for player movement.
