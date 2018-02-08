@@ -1,6 +1,6 @@
 Name: 
-### Areg Nersisyan, github:aregluss
-### Vicki Chen, github: vickiic
+# Areg Nersisyan, github:aregluss
+# Vicki Chen, github: vickiic
 
 a. This is a remake of the Pac-Man game in which the user avoids "ghosts" and moves around to eat pellets and gain points.
 
