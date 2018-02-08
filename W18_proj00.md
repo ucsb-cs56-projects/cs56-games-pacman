@@ -1,4 +1,4 @@
-#### Name: Areg Nersisyan, github:aregluss
+Name: Areg Nersisyan, github:aregluss
 #### Vicki Chen, github: vickiic
 
 a. This is a remake of the Pac-Man game in which the user avoids "ghosts" and moves around to eat pellets and gain points.
@@ -15,7 +15,7 @@ c.
 
 d. As of now, the game can only be played if the user has all the necessary files. 
 * As a developer, we could make this into a web app and that way anyone with the URL could go and play it. This will definitely increase the number of people who would play it. 
-* As a player, I should be able to play is a 2 player vs. mode since the current versus mode is meant to be played by three players(2 ghosts and 1 packman)
+* As a player, I should be able to play is a 2 player vs. mode since the current versus mode is meant to be played by three players(2 ghosts and 1 pacman)
 * As a Ghost player,  I should be able to control one ghost and uses a different key in order to change the behavior of the 2nd ghost, which is controlled by the AI. 
 * As a developer, changing the size of the UI would also improve the player's experience with the game and is worth spending the time to add customization to the UI.
 
@@ -41,3 +41,5 @@ i.The current code is very well organized. The diagram presents the relationship
 * LeaderBoardGUI.java: contains implementation of the leaderboard/user interface. Shows score at the end of the game and the points a player received.  Draws information from Leaderboard.java which provides the logic behind the leaderboard and game info from Gameplayed.java
 
 j.
+* implementing test to test the ghost’s attributes and the movements of the characters in the game would be helpful in fixing certain lag issues.
+
