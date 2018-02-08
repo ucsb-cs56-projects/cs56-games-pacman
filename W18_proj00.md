@@ -34,5 +34,10 @@ g.
 h. 
 * One issue involves correcting the timing of the pacman and ghost when it disappears off screen and enters through the other side.
 * Another issue is to add attributes to make the ghost characters run away from pac-man once it gets bigger. Theres also a slight lag while the user is trying to turn in the maze.
-i.
+
+i.The current code is very well organized. The diagram presents the relationships between the classes clearly. The methods within these files are also clear. There are three .java files that make up the main classes and contain subclasses in each:
+* Pacman.java: Driver file which contains most of the gameplay and creates the PacMan object that sets up the game. This class contains the main function and is the JFrame that displays the game
+* Board.java: Contains all of the logic used during gameplay. Attributes such as movements of different objects are located in this file as well as music. This class extends Panel and gets added to the PacMan JFrame as a component. This class draws data from Grid.java which provides the map layout along with methods to load level data and spawn in random fruits. Grid.java obtains data from GridData.java which includes information of grid size and other grid data. This class also receives data from Ghost.java and PacPlayer.java which are both actors in the game. These files contain methods on movements of Ghost and Pacman characters. The board class also obtains information from a audio class which allows sound effects to take place during gameplay.
+* LeaderBoardGUI.java: contains implementation of the leaderboard/user interface. Shows score at the end of the game and the points a player received.  Draws information from Leaderboard.java which provides the logic behind the leaderboard and game info from Gameplayed.java
+
 j.
