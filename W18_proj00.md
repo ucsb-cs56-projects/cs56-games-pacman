@@ -11,7 +11,7 @@ b.
 
 c. 
 * The software runs smoothly upon start. The user is presented with a menu and options to choose game mode by corresponding key.
-* During gameplay, the player can move Pac-man with up-down-left-right arrow keys.A score is also used to keep track of the points each player can receive
+* During gameplay, the player can move Pac-man with up-down-left-right arrow keys. A score is also used to keep track of the points each player can receive
 
 d. As of now, the game can only be played if the user has all the necessary files. 
 * As a developer, we could make this into a web app and that way anyone with the URL could go and play it. This will definitely increase the number of people who would play it. 
