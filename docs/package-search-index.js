@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"edu.ucsb.cs56.projects.games.pacman"},{"l":"edu.ucsb.cs56.projects.games.pacman.editor"}]
