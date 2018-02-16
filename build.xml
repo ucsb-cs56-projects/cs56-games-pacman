@@ -75,6 +75,6 @@
 
 	<target name="clean" description="Delete unnecessary files and directories.">
 		<delete dir="build" failonerror="false" verbose="true" />
-		<delete dir="docs/javadoc" failonerror="false" verbose="true" />
+		<delete dir="docs" failonerror="false" verbose="true" />
 	</target>
 </project>
