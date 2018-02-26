@@ -131,7 +131,10 @@ public class Board extends JPanel implements ActionListener
                 pacman.move(grid);
                 pacman.draw(g2d, this);
                 if(grid.getPillNum() != numPills) {
-                    for(Ghost g : ghosts) {
+                    for (Ghost g : ghosts) {
+                        if(g.edible == false)
+                            g.speed /=2;
+
                         g.edible = true;
                         g.edibleTimer = 200;
                     }
