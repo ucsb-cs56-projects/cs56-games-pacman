@@ -273,47 +273,13 @@ public class PacPlayer extends Character {
 
         /**
 	 * Handles the release of a key by the player
-	 *
+	 * Functionality has been removed for having smoother gameplay
+	 * Releasing key no longer undoes current direction move command
 	 * @param key int representing the key that was pressed
 	 */ 
 	@Override
 	public void keyReleased(int key) {
-		move(this.grid);
-		if (playerNum == PACMAN) {
-			switch (key) {
-				case KeyEvent.VK_LEFT:
-					reqdx = 0;
-					break;
-				case KeyEvent.VK_RIGHT:
-					reqdx = 0;
-					break;
-				case KeyEvent.VK_UP:
-					reqdy = 0;
-					break;
-				case KeyEvent.VK_DOWN:
-					reqdy = 0;
-					break;
-				default:
-					break;
-			}
-		} else if (playerNum == MSPACMAN) {
-			switch (key) {
-				case KeyEvent.VK_A:
-					reqdx = 0;
-					break;
-				case KeyEvent.VK_D:
-					reqdx = 0;
-					break;
-				case KeyEvent.VK_W:
-					reqdy = 0;
-					break;
-				case KeyEvent.VK_S:
-					reqdy = 0;
-					break;
-				default:
-					break;
-			}
-		}
+
 	}
 
 	/**
