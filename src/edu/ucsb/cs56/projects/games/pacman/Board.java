@@ -126,7 +126,6 @@ public class Board extends JPanel implements ActionListener
                 if(grid.getPillNum() != numPills) {
                     for(Ghost g : ghosts) {
                         g.edible = true;
-                        g.speed /= 2;
                         g.edibleTimer = 200;
                     }
                     numPills = grid.getPillNum();
