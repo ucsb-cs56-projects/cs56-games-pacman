@@ -30,9 +30,9 @@ public class Ghost extends Character {
 	public static final int TYPE_PINK = 1;
 	public static final int GHOST1 = 1;
 	public static final int GHOST2 = 2;
-    	public static int defaultSpeed = 2;
+	public static int defaultSpeed = 2;
 
-    	private Image ghost;
+	private Image ghost;
 	private Image scared_ghost;
 	private Image scared_ghost2;
 	private Grid grid;
@@ -40,23 +40,23 @@ public class Ghost extends Character {
 	public int prev_speed;
 	public int edibleTimer;
 	public int type;
-    
-       /**
-	* Ghost class constructor for singleplayer
-	* @param x x-position of ghost
-	* @param y y-position of ghost
-	* @param speed the ghost's initial movement speed
-	* @param type the type of ghost
-	*/
+
+	/**
+	 * Ghost class constructor for singleplayer
+	 * @param x x-position of ghost
+	 * @param y y-position of ghost
+	 * @param speed the ghost's initial movement speed
+	 * @param type the type of ghost
+	 */
 	public Ghost(int x, int y, int speed, int type) {
 		this(x, y, speed, type, 0, null);
 	}
 
-        /**
+	/**
 	 * Ghost class constructor for multiplayer
 	 * @param x x-position
 	 * @param y y-position
-	 * @param speed initial 
+	 * @param speed initial
 	 * @param playerNum a number to indicate which player is controlling this ghost
 	 * @param grid the grid used to determine movement/collision
 	 */
@@ -74,7 +74,7 @@ public class Ghost extends Character {
 		edible = false;
 		prev_speed = speed;
 		edibleTimer = 1;
-    }
+	}
 
 	/**
 	 * Handles character's death
@@ -87,6 +87,7 @@ public class Ghost extends Character {
 		y = startY;
 		edible = false;
 		edibleTimer = 0;
+
 	}
 
 	/**
@@ -100,6 +101,7 @@ public class Ghost extends Character {
 		y = newY;
 		edible = false;
 		edibleTimer = 0;
+		this.speed = defaultSpeed;
 	}
 
 	/**
@@ -143,8 +145,8 @@ public class Ghost extends Character {
 				ghost = ImageIO.read(getClass().getResource(assetImagePath + ghostImage));
 
 			scared_ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostblue.png"));
-			scared_ghost2 = ImageIO.read(getClass().getResource(assetImagePath + "ghostblue2.png"));
-		
+    	scared_ghost2 = ImageIO.read(getClass().getResource(assetImagePath + "ghostblue2.png"));
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -266,7 +268,7 @@ public class Ghost extends Character {
 	public void move(Grid grid) {
 		short ch;
 		if(edible) {
-			edibleTimer--;	
+			edibleTimer--;
 			if(edibleTimer <= 0)
 				death(x,y);
 		}
@@ -326,15 +328,16 @@ public class Ghost extends Character {
 		if(c.length == 0) //Nothing to chase.  Should never happen
 			return;
 		if(edible) {
-			edibleTimer--;	
+			edibleTimer--;
 			if(edibleTimer <= 0)
-				death(x,y);	
+				death(x,y);
+
 			moveRandom(grid);
 		}
 		else {
 			int[][] coord = new int[c.length][2];
 			int count = 0;
-	
+
 			for(Character p : c) {
 				double distance = 0;
 				if (type == TYPE_RED) {
@@ -349,7 +352,7 @@ public class Ghost extends Character {
 						aheadX = p.y - 4;
 					else if (pacman.direction == Direction.RIGHT)
 						aheadX = p.x + 4;
-					else 
+					else
 						aheadY= p.y + 4;
 
 					if(aheadX > 16)
@@ -362,13 +365,14 @@ public class Ghost extends Character {
 						aheadY = 0;
 					distance = Math.sqrt(Math.pow(this.x - aheadX, 2.0) + Math.pow(this.y - aheadY, 2.0));
 				}
+
 				if(p.alive && distance < 150.0) { // && Math.random() < 0.6)
 					coord[count][0] = p.x;
 					coord[count][1] = p.y;
 					count++;
 				}
 			}
-	
+
 			if(count > 0 && hasChoice(grid)) {
 
 				Node bestDir = pathFind(grid, coord[0][0] / Board.BLOCKSIZE, coord[0][1] / Board.BLOCKSIZE);
@@ -380,7 +384,7 @@ public class Ghost extends Character {
 					if (tempDir.distance.value < bestDir.distance.value) //If new path is shorter
 						bestDir = tempDir;
 				}
-	
+
 				if (bestDir.x - this.x / Board.BLOCKSIZE == 0 && bestDir.y - this.y / Board.BLOCKSIZE == 0) //ghost on pacman
 					moveRandom(grid);
 				else {
@@ -472,9 +476,9 @@ public class Ghost extends Character {
 
 			//randomly pick an available move
 			if (list.size() > 0) {
-			    int rand = (int) (Math.random() * list.size());
-			    this.dx = list.get(rand).x;
-			    this.dy = list.get(rand).y;
+				int rand = (int) (Math.random() * list.size());
+				this.dx = list.get(rand).x;
+				this.dy = list.get(rand).y;
 			}
 		}
 	}
@@ -508,13 +512,13 @@ public class Ghost extends Character {
 			int block = grid.screenData[y / Board.BLOCKSIZE][x / Board.BLOCKSIZE];
 
 			int count = 0;
-			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_LEFT) == 0 && !Direction.goingRight(dx, dy)) 
+			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_LEFT) == 0 && !Direction.goingRight(dx, dy))
 				count += 1;
-			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_TOP) == 0 && !Direction.goingDown(dx, dy)) 
+			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_TOP) == 0 && !Direction.goingDown(dx, dy))
 				count += 1;
-			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_RIGHT) == 0 && !Direction.goingLeft(dx, dy)) 
+			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_RIGHT) == 0 && !Direction.goingLeft(dx, dy))
 				count += 1;
-			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_BOTTOM) == 0 && !Direction.goingUp(dx, dy)) 
+			if (count <= 1 && (block & GridData.GRID_CELL_BORDER_BOTTOM) == 0 && !Direction.goingUp(dx, dy))
 				count += 1;
 
 			if (count > 1)
