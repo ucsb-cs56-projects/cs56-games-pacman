@@ -34,6 +34,7 @@ public class Ghost extends Character {
 
 	private Image ghost;
 	private Image scared_ghost;
+	private Image scared_ghost2;
 	private Grid grid;
 	public boolean edible;
 	public int prev_speed;
@@ -113,7 +114,15 @@ public class Ghost extends Character {
 	public void draw(Graphics2D g, JComponent canvas) {
 		int offset = 4;
 		if(edible)
-			g.drawImage(scared_ghost, x + offset, y + offset, canvas);
+			if(edibleTimer < 30)
+			{
+				if (edibleTimer % 2 == 1)
+					g.drawImage(scared_ghost, x + offset, y + offset, canvas);
+				else
+					g.drawImage(scared_ghost2, x + offset, y + offset, canvas);
+			}
+			else
+				g.drawImage(scared_ghost, x + offset, y + offset, canvas);
 		else
 			g.drawImage(ghost, x + offset, y + offset, canvas);
 	}
@@ -136,6 +145,7 @@ public class Ghost extends Character {
 				ghost = ImageIO.read(getClass().getResource(assetImagePath + ghostImage));
 
 			scared_ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostblue.png"));
+    	scared_ghost2 = ImageIO.read(getClass().getResource(assetImagePath + "ghostblue2.png"));
 
 		} catch (IOException e) {
 			e.printStackTrace();
