@@ -52,22 +52,23 @@ public class Board extends JPanel implements ActionListener
     public static int score;
     private ScoreLoader sl = new ScoreLoader("highScores.txt");
     private LeaderboardGUI leaderBoardGui = new LeaderboardGUI();
-    private Grid grid;
+    public Grid grid;
     private Font smallFont = new Font("Helvetica", Font.BOLD, 14);
     private GameType gt;
     private PacPlayer pacman, msPacman;
-    private Ghost ghost1, ghost2;
+    private Ghost ghost1, ghost2, ghost3, ghost4;
     private PacPlayer[] pacmen;
     private ArrayList<Ghost> ghosts;
     private int numGhosts = 4, numBoardsCleared = 0;
     private int curSpeed = 3;
-    private int numPellet;
+    public int numPellet;
     private int numPills;
     private Timer timer;
     private Audio beginningAudio;
     private Audio gameoverAudio;
     private GhostHouse ghostHouse;
     private DevToolGui devTools = null;
+
 
     /**
      * Constructor for Board object
@@ -79,6 +80,11 @@ public class Board extends JPanel implements ActionListener
         msPacman = new PacPlayer(7 * BLOCKSIZE, 11 * BLOCKSIZE, PacPlayer.MSPACMAN, grid);
         ghost1 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 3, Ghost.GHOST1, grid);
         ghost2 = new Ghost(9 * BLOCKSIZE, 7 * BLOCKSIZE, 3, Ghost.GHOST2, grid);
+        //ghost3 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 3, Ghost.TYPE_BLUE, grid);
+        //ghost4 = new Ghost(8 * BLOCKSIZE, 7 * BLOCKSIZE, 3, Ghost.TYPE_ORANGE, grid);
+
+
+
         setFocusable(true);
 
         setBackground(Color.black);
@@ -118,11 +124,17 @@ public class Board extends JPanel implements ActionListener
      * @param g2d a Graphics 2D object
      */
     public void playGame(Graphics2D g2d) {
-        if (!checkAlive())
-        {
-//add animation
-
-            gameOver();
+        if (!checkAlive()) {
+            //pacman.animateTimer = 40;
+            for (PacPlayer player : pacmen) {
+                // why is timer not being started
+                // if (pacman.animateTimer > 5)
+                //  pacman.animateTimer--;
+                System.out.println(pacman.animateTimer);
+                pacman.draw(g2d, this);
+                if (pacman.animateTimer <= 0)
+                    gameOver();
+            }
         }
         else
         {
@@ -429,7 +441,7 @@ public class Board extends JPanel implements ActionListener
                         ghostHouse.resetTimer(); //Resets time so ghosts will respawn on time
                         return;
                     } else {
-                        ghost.death();
+                        ghost.death(); //change to pacman during invincibility
                         ghostHouse.addGhost(ghost);
                         score += SCORE_ENEMY;
                     }
@@ -512,12 +524,13 @@ public class Board extends JPanel implements ActionListener
         {
             ghosts.add(ghost1);
             ghosts.add(ghost2);
+
         }
         else
         {
             for (int i = 0; i < numGhosts; i++)
             {
-                ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + i % ghostHouse.getWidth()) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
+                ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + i % ghostHouse.getWidth()) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i%4));
                 //first ghost will get set outside, other ghosts get set inside ghost house
                 // if(i == 0){
                 //     ghosts.add(new Ghost((ghostHouse.getTopLeft().getX() + i) * BLOCKSIZE, ghostHouse.getTopLeft().getY() * BLOCKSIZE, 0, i % 2));
