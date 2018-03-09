@@ -83,6 +83,7 @@ public class LeaderboardGUI {
 		this.panel.setBackground(new Color(224, 224, 224));
 		this.panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		this.frame.setVisible(false);
+
 	}
 
 	/**
@@ -130,6 +131,7 @@ public class LeaderboardGUI {
 		this.leaderBoardVersus.load();
 		this.submitListener = new submitBtnListener(score, d, type);
 		this.submitBtn.addActionListener(this.submitListener);
+		frame.getRootPane().setDefaultButton(submitBtn);
 		this.submitBtn.setAlignmentX(this.submitBtn.CENTER_ALIGNMENT);
 		this.frame.setVisible(true);
 		this.frame.revalidate();
