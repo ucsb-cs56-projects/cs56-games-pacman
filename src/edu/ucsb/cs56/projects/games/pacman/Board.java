@@ -128,11 +128,12 @@ public class Board extends JPanel implements ActionListener
             //pacman.animateTimer = 40;
             for (PacPlayer player : pacmen) {
                 // why is timer not being started
-                // if (pacman.animateTimer > 5)
-                //  pacman.animateTimer--;
-                System.out.println(pacman.animateTimer);
+                 if (pacman.getAnimateTimer() > 0)
+                      pacman.decrementAnimateTimer();
+
+                System.out.println(pacman.getAnimateTimer());
                 pacman.draw(g2d, this);
-                if (pacman.animateTimer <= 0)
+                if (pacman.getAnimateTimer() <= 0)
                     gameOver();
             }
         }

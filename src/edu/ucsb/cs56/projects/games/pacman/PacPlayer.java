@@ -36,7 +36,7 @@ public class PacPlayer extends Character {
 	int pacanimcount = pacanimdelay;
 	int pacanimdir = 1;
 	int pacmananimpos = 0;
-	public int animateTimer;
+	private int animateTimer = 40;
 
 	// need these so that when pacman collides with wall and stops moving
 	// he keeps facing wall instead of facing default position
@@ -102,9 +102,7 @@ public class PacPlayer extends Character {
 		}
 		if (lives <= 0) {
 			alive = false;
-			int animateTimer = 40;
-			if(animateTimer > 3)
-				animateTimer--;
+			//animateTimer = 40;
 		}
 	}
 
@@ -235,6 +233,24 @@ public class PacPlayer extends Character {
 				pacanimdir = -pacanimdir;
 		}
 	}
+
+	/**
+	 *
+	 * @return Integer identfiying death animation timer
+	 */
+	public int getAnimateTimer()
+	{
+		return animateTimer;
+	}
+
+	/**
+	 * Decrements death animation timer
+	 */
+	public void decrementAnimateTimer()
+	{
+		animateTimer--;
+	}
+
 
 	/**
 	 * Handles key presses for game controls
@@ -371,4 +387,6 @@ public class PacPlayer extends Character {
 	public Image getLifeImage() {
 		return pacmanRight[3];
 	}
+
+
 }
