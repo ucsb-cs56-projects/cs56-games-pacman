@@ -125,16 +125,12 @@ public class Board extends JPanel implements ActionListener
      */
     public void playGame(Graphics2D g2d) {
         if (!checkAlive()) {
-            //pacman.animateTimer = 40;
             for (PacPlayer player : pacmen) {
-                // why is timer not being started
                  if (pacman.getAnimateTimer() > 0)
                       pacman.decrementAnimateTimer();
-
-                System.out.println(pacman.getAnimateTimer());
-                pacman.draw(g2d, this);
-                if (pacman.getAnimateTimer() <= 0)
-                    gameOver();
+                 pacman.draw(g2d, this);
+                 if (pacman.getAnimateTimer() <= 0)
+                     gameOver();
             }
         }
         else
