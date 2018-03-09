@@ -7,6 +7,7 @@ Pac-Man game, starting with code from http://zetcode.com/tutorials/javagamestuto
 ![Screenshot Of Pacman Main Menu](http://i.imgur.com/TODmNes.png)
 
 **Documentation**
+* Current version of javadocs at: https://aregluss.github.io/cs56-games-pacman/
 * PacMan.java contains the `main` function and is the JFrame that displays the game.
 * Game controls are documented in the help menu of the game.
 * Most of the basic game functionality (start game, end game, collision detection, etc.) is in Board.java, which is the main JPanel where the game is displayed.
