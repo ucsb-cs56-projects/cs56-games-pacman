@@ -3,13 +3,17 @@ package edu.ucsb.cs56.projects.games.pacman;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Date;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-//~ import java.awt.Color;
+
+import java.awt.Color;
 
 
 /**
@@ -26,6 +30,7 @@ public class LeaderboardGUI {
 	private JFrame frame;
 	private JPanel panel = new JPanel();
 	private JTextField field = new JTextField(20);
+
 	private JButton submitBtn = new JButton("Submit");
 	private JLabel heading = new JLabel();
 	private JLabel playerScoresHeading = new JLabel();
@@ -105,8 +110,12 @@ public class LeaderboardGUI {
 		//add spacer
 		this.panel.add(Box.createRigidArea(new Dimension(0, 10)));
 		this.field.setText("Your Name Here");
-		this.field.setMaximumSize(this.field.getPreferredSize());
+        this.field.setMaximumSize(this.field.getPreferredSize());
 		this.panel.add(this.field);
+		this.field.requestFocus();
+		field.selectAll();
+        field.setSelectionColor(Color.YELLOW);
+
 		//add spacer
 		this.panel.add(Box.createRigidArea(new Dimension(0, 10)));
 		this.panel.add(this.submitBtn);
@@ -125,7 +134,9 @@ public class LeaderboardGUI {
 		this.frame.setVisible(true);
 		this.frame.revalidate();
 		this.frame.repaint();
+
 	}
+
 
 	/**
 	 * Add GamePlayed to leaderboard and display the highest scores
