@@ -28,8 +28,11 @@ public class Ghost extends Character {
 	public static final String IMAGE_PATH = "assets/";
 	public static final int TYPE_RED = 0;
 	public static final int TYPE_PINK = 1;
+	public static final int TYPE_BLUE = 2;
+	public static final int TYPE_ORANGE = 3;
 	public static final int GHOST1 = 1;
 	public static final int GHOST2 = 2;
+
 	public static int defaultSpeed = 2;
 
 	private Image ghost;
@@ -138,14 +141,17 @@ public class Ghost extends Character {
 
 			if (type == TYPE_RED || playerNum == GHOST1)
 				ghostImage = "ghostred.png";
-			else
+			else if(type == TYPE_PINK || playerNum == GHOST2)
 				ghostImage = "ghostpink.png";
-
+			else if(type == TYPE_ORANGE)
+				ghostImage = "ghostorange.png";
+			else if(type == TYPE_BLUE)
+				ghostImage = "ghostinky.png";
 			if (!ghostImage.isEmpty())
 				ghost = ImageIO.read(getClass().getResource(assetImagePath + ghostImage));
 
 			scared_ghost = ImageIO.read(getClass().getResource(assetImagePath + "ghostblue.png"));
-    	scared_ghost2 = ImageIO.read(getClass().getResource(assetImagePath + "ghostblue2.png"));
+			scared_ghost2 = ImageIO.read(getClass().getResource(assetImagePath + "ghostblue2.png"));
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -363,6 +369,63 @@ public class Ghost extends Character {
 						aheadY = 16;
 					else if (aheadY < 0)
 						aheadY = 0;
+					distance = Math.sqrt(Math.pow(this.x - aheadX, 2.0) + Math.pow(this.y - aheadY, 2.0));
+				}
+				else if (type == TYPE_ORANGE) {
+					distance = Math.sqrt(Math.pow(this.x - p.x, 2.0) + Math.pow(this.y - p.y, 2.0));
+					if(distance>8.0){
+						int aheadX = p.x;
+						int aheadY = p.y;
+						PacPlayer pacman = (PacPlayer)p;
+						if (pacman.direction == Direction.LEFT)
+							aheadX = p.x - 4;
+						else if (pacman.direction == Direction.UP)
+							aheadX = p.y - 4;
+						else if (pacman.direction == Direction.RIGHT)
+							aheadX = p.x + 4;
+						else
+							aheadY= p.y + 4;
+
+						if(aheadX > 16)
+							aheadX = 16;
+						else if(aheadX < 0)
+							aheadX = 0;
+						if(aheadY > 16)
+							aheadY = 16;
+						else if (aheadY < 0)
+							aheadY = 0;
+						distance = Math.sqrt(Math.pow(this.x - aheadX, 2.0) + Math.pow(this.y - aheadY, 2.0));
+					}
+					else
+						distance = Math.sqrt(Math.pow(this.x - p.x, 2.0) + Math.pow(this.y - p.y, 2.0));
+				}
+				else if (type == TYPE_BLUE) {
+					int aheadX = p.x;
+					int aheadY = p.y;
+					//get red ghosts location
+					//blinky = grid.get(TYPE_RED);
+					PacPlayer pacman = (PacPlayer) p;
+					if (pacman.direction == Direction.LEFT)
+						aheadX = p.x - 2;
+					else if (pacman.direction == Direction.UP)
+						aheadX = p.y - 2;
+					else if (pacman.direction == Direction.RIGHT)
+						aheadX = p.x + 2;
+					else
+						aheadY = p.y + 2;
+
+					if (aheadX > 18)
+						aheadX = 18;
+					else if (aheadX < 0)
+						aheadX = 0;
+					if (aheadY > 18)
+						aheadY = 18;
+					else if (aheadY < 0)
+						aheadY = 0;
+					//int vectorX = (aheadX - blinky.x)*2;
+					//int vectorY = (aheadY - blinky.y)*2;
+
+					//	distance = Math.sqrt(Math.pow(this.x - vectorX, 2.0) + Math.pow(this.y - vectorY, 2.0));
 					distance = Math.sqrt(Math.pow(this.x - aheadX, 2.0) + Math.pow(this.y - aheadY, 2.0));
 				}
 
