@@ -66,6 +66,7 @@ public class Board extends JPanel implements ActionListener
     private Timer timer;
     private Audio beginningAudio;
     private Audio gameoverAudio;
+    private Audio dyingAudio;
     private GhostHouse ghostHouse;
     private DevToolGui devTools = null;
 
@@ -103,6 +104,11 @@ public class Board extends JPanel implements ActionListener
         } catch (Exception e) {
             e.printStackTrace();
         }
+        try {
+            this.dyingAudio = new Audio(getClass().getResourceAsStream("assets/audio/dying.wav"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -128,7 +134,12 @@ public class Board extends JPanel implements ActionListener
             for (PacPlayer player : pacmen) {
                  if (pacman.getAnimateTimer() > 0)
                       pacman.decrementAnimateTimer();
-                 pacman.draw(g2d, this);
+                 pacman.dying(g2d, this);
+                try {
+                    this.dyingAudio.play();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                  if (pacman.getAnimateTimer() <= 0)
                      gameOver();
             }
