@@ -32,6 +32,7 @@ public class Ghost extends Character {
 	public static final int TYPE_ORANGE = 3;
 	public static final int GHOST1 = 1;
 	public static final int GHOST2 = 2;
+	public int blinky_x, blinky_y;
 
 	public static int defaultSpeed = 2;
 
@@ -348,6 +349,8 @@ public class Ghost extends Character {
 				double distance = 0;
 				if (type == TYPE_RED) {
 					distance = Math.sqrt(Math.pow(this.x - p.x, 2.0) + Math.pow(this.y - p.y, 2.0));
+					blinky_x = this.x;
+					blinky_y = this.y;
 				} else if (type == TYPE_PINK) {
 					int aheadX = p.x;
 					int aheadY = p.y;
@@ -403,7 +406,6 @@ public class Ghost extends Character {
 					int aheadX = p.x;
 					int aheadY = p.y;
 					//get red ghosts location
-					//blinky = grid.get(TYPE_RED);
 					PacPlayer pacman = (PacPlayer) p;
 					if (pacman.direction == Direction.LEFT)
 						aheadX = p.x - 2;
@@ -414,19 +416,19 @@ public class Ghost extends Character {
 					else
 						aheadY = p.y + 2;
 
-					if (aheadX > 18)
-						aheadX = 18;
+					if (aheadX > 16)
+						aheadX = 16;
 					else if (aheadX < 0)
 						aheadX = 0;
-					if (aheadY > 18)
-						aheadY = 18;
+					if (aheadY > 16)
+						aheadY = 16;
 					else if (aheadY < 0)
 						aheadY = 0;
-					//int vectorX = (aheadX - blinky.x)*2;
-					//int vectorY = (aheadY - blinky.y)*2;
+					int vectorX = (aheadX - blinky_x)*2;
+					int vectorY = (aheadY - blinky_y)*2;
 
-					//	distance = Math.sqrt(Math.pow(this.x - vectorX, 2.0) + Math.pow(this.y - vectorY, 2.0));
-					distance = Math.sqrt(Math.pow(this.x - aheadX, 2.0) + Math.pow(this.y - aheadY, 2.0));
+					distance = Math.sqrt(Math.pow(this.x - vectorX, 2.0) + Math.pow(this.y - vectorY, 2.0));
+					//distance = Math.sqrt(Math.pow(this.x - aheadX, 2.0) + Math.pow(this.y - aheadY, 2.0));
 				}
 
 				if(p.alive && distance < 150.0) { // && Math.random() < 0.6)
