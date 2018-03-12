@@ -376,29 +376,10 @@ public class Ghost extends Character {
 				}
 				else if (type == TYPE_ORANGE) {
 					distance = Math.sqrt(Math.pow(this.x - p.x, 2.0) + Math.pow(this.y - p.y, 2.0));
-					if(distance>8.0){
-						int aheadX = p.x;
-						int aheadY = p.y;
-						PacPlayer pacman = (PacPlayer)p;
-						if (pacman.direction == Direction.LEFT)
-							aheadX = p.x - 4;
-						else if (pacman.direction == Direction.UP)
-							aheadX = p.y - 4;
-						else if (pacman.direction == Direction.RIGHT)
-							aheadX = p.x + 4;
-						else
-							aheadY= p.y + 4;
-
-						if(aheadX > 16)
-							aheadX = 16;
-						else if(aheadX < 0)
-							aheadX = 0;
-						if(aheadY > 16)
-							aheadY = 16;
-						else if (aheadY < 0)
-							aheadY = 0;
-						distance = Math.sqrt(Math.pow(this.x - aheadX, 2.0) + Math.pow(this.y - aheadY, 2.0));
-					}
+					if(distance<8.0){
+							if(Math.random() < 0.5)
+								moveRandom(grid);
+						}
 					else
 						distance = Math.sqrt(Math.pow(this.x - p.x, 2.0) + Math.pow(this.y - p.y, 2.0));
 				}
