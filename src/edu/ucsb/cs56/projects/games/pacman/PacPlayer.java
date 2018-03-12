@@ -8,7 +8,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.lang.Math;
 import java.awt.geom.AffineTransform;
+import java.awt.Graphics2D;
+
 
 
 /**
@@ -46,6 +49,9 @@ public class PacPlayer extends Character {
 	private Audio[] pacmanAudio;
 	private String assetAudioPath;
 	private Grid grid;
+	private Image dying_1;
+	private Image dying_2;
+
 
 	/**
 	 * Constructor for PacPlayer class
@@ -200,23 +206,23 @@ public class PacPlayer extends Character {
 		else
 			g2d.drawImage(pacmanRight[pacmananimpos], x + 4, y + 4, canvas);
 
-	}
+		}
 
 	public void dying(Graphics2D g2d, JComponent canvas) {
-		if (animateTimer %5 > 3){
-			g2d.rotate(Math.toRadians(90));
-			//draw shape/image (will be rotated)
-			return;
+		if(animateTimer > 0){
+			if(animateTimer % 3 == 1)
+				g2d.drawImage(dying_1, x + 4, y + 4, canvas);
+			else
+				g2d.drawImage(dying_2, x + 4, y + 4, canvas);
 		}
 	}
 
-
-	/**
-	 * Moves character's current position while detecting for collision
-	 * within the board
-	 *
-	 * @param grid The Grid to be used for collision detection
-	 */
+		/**
+         * Moves character's current position while detecting for collision
+         * within the board
+         *
+         * @param grid The Grid to be used for collision detection
+         */
 	@Override
 	public void moveAI(Grid grid, Character[] c) {
 	}
@@ -343,6 +349,9 @@ public class PacPlayer extends Character {
 			pacmanRight[1] = ImageIO.read(getClass().getResource(assetImagePath + "right1.png"));
 			pacmanRight[2] = ImageIO.read(getClass().getResource(assetImagePath + "right2.png"));
 			pacmanRight[3] = ImageIO.read(getClass().getResource(assetImagePath + "right3.png"));
+			dying_1 = ImageIO.read(getClass().getResource(assetImagePath + "dying.png"));
+			dying_2 = ImageIO.read(getClass().getResource(assetImagePath + "right1.png"));
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
