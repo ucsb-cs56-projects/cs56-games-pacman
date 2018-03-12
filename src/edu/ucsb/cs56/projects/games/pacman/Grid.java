@@ -34,7 +34,7 @@ public class Grid
 	 */
 	public Grid() {
 		screenData = new short[Board.NUMBLOCKS][Board.NUMBLOCKS];
-		mazeColor = new Color(5, 100, 5);
+		mazeColor = new Color(16, 52, 166);
 		dotColor = new Color(192, 192, 0);
 		fruitColor = new Color(255,0,0);
 

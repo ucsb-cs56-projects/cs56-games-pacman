@@ -250,7 +250,7 @@ public class PacPlayer extends Character {
 	}
 
 	/**
-	 * Decrements death animation timer
+	 *
 	 */
 	public void decrementAnimateTimer()
 	{

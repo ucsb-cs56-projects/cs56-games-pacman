@@ -62,6 +62,7 @@ public class Board extends JPanel implements ActionListener
     private ArrayList<Ghost> ghosts;
     private int numGhosts = 4, numBoardsCleared = 0;
     private int curSpeed = 3;
+    private boolean enableLevelSelect = false;
     public int numPellet;
     private int numPills;
     private Timer timer;
@@ -133,17 +134,20 @@ public class Board extends JPanel implements ActionListener
     public void playGame(Graphics2D g2d) {
         if (!checkAlive()) {
             for (PacPlayer player : pacmen) {
-                 if (pacman.getAnimateTimer() > 0)
-                      pacman.decrementAnimateTimer();
-                 pacman.dying(g2d, this);
-                try {
-                    this.dyingAudio.play();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                 if (pacman.getAnimateTimer() <= 0)
-                     gameOver();
-            }
+
+               if (pacman.getAnimateTimer() > 0)
+                    pacman.decrementAnimateTimer();
+               pacman.dying(g2d, this);
+               try {
+                  this.dyingAudio.play();
+               } catch (Exception e) {
+                  e.printStackTrace();
+               }
+
+               if (pacman.getAnimateTimer() <= 0)
+                   gameOver();
+
+               }
         }
         else
         {
@@ -203,7 +207,7 @@ public class Board extends JPanel implements ActionListener
                         ghost.draw(g2d, this);
                     }
 
-                    if (score >= numPellet)
+                    if (score >= 5)
                     {
                         score = 0;
                         numBoardsCleared++;
@@ -220,6 +224,9 @@ public class Board extends JPanel implements ActionListener
             {
                 score += SCORE_WIN;
                 numBoardsCleared++;
+
+                if(numBoardsCleared > 0)
+                    enableLevelSelect = true;
 
                 numGhosts = (numGhosts + 1) % MAX_GHOSTS;
                 curSpeed = (curSpeed + 1) % MAX_SPEED;
@@ -320,6 +327,12 @@ public class Board extends JPanel implements ActionListener
         g.drawString("P - Pause Game", bx + 210, by + 40);
         g.drawString("M - Mute Game", bx + 210, by + 60);
 
+        if(enableLevelSelect)
+            g.drawString("L - Level Select (Press 1,2,3)", bx + 210, by + 80);
+        else
+            g.drawString("L - Level Select (Blocked)", bx + 210, by + 80);
+
+
         g.drawString("Pacman:", bx + 10, by + 110);
         g.drawString("Up Arrow - Move Up", bx + 30, by + 130);
         g.drawString("Left Arrow - Move Left", bx + 30, by + 150);
@@ -418,12 +431,16 @@ public class Board extends JPanel implements ActionListener
                 sl.writeScore(score);
         }
         Date d = new Date();
-        if(gt == GameType.SINGLEPLAYER)
+        if (gt == GameType.SINGLEPLAYER) {
+            leaderBoardGui.setVictoryStatus(enableLevelSelect);
             leaderBoardGui.showEndGameScreen(this.score, d, 1);
-        else if(gt == GameType.COOPERATIVE)
+        } else if (gt == GameType.COOPERATIVE) {
+            leaderBoardGui.setVictoryStatus(enableLevelSelect);
             leaderBoardGui.showEndGameScreen(this.score, d, 2);
-        else if(gt == GameType.VERSUS)
+        } else if (gt == GameType.VERSUS) {
+            leaderBoardGui.setVictoryStatus(enableLevelSelect);
             leaderBoardGui.showEndGameScreen(this.score, d, 3);
+        }
         gt = GameType.INTRO;
         numBoardsCleared = 0;
         grid.levelInit(0);
@@ -645,20 +662,40 @@ public class Board extends JPanel implements ActionListener
                         gt = GameType.SINGLEPLAYER;
                         gameInit();
                         break;
+
                     case KeyEvent.VK_D:
                         gt = GameType.COOPERATIVE;
                         gameInit();
                         break;
+
                     case KeyEvent.VK_F:
                         gt = GameType.VERSUS;
                         gameInit();
                         break;
+
                     case KeyEvent.VK_H:
                         gt = GameType.HELP;
                         break;
+                        
+                   case KeyEvent.VK_1:
+                        if(enableLevelSelect == true)
+                            numBoardsCleared = 0;
+                        break;
+
+                    case KeyEvent.VK_2:
+                        if(enableLevelSelect == true)
+                            numBoardsCleared = 1;
+                        break;
+
+                    case KeyEvent.VK_3:
+                        if(enableLevelSelect == true)
+                            numBoardsCleared = 2 ;
+                        break;
+                        
                     case KeyEvent.VK_M:
                         sound = !sound;
                         break;
+
                 }
             }
             else if(gt == GameType.HELP)

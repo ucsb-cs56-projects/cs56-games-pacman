@@ -27,6 +27,7 @@ import java.awt.Color;
 public class LeaderboardGUI {
 	private static submitBtnListener submitListener;
 	private JLabel gameOver = new JLabel();
+	private JLabel winScreen = new JLabel();
 	private JFrame frame;
 	private JPanel panel = new JPanel();
 	private JTextField field = new JTextField(20);
@@ -50,11 +51,18 @@ public class LeaderboardGUI {
 	private singBtnListener SingleListener;
 	private coopBtnListener CoopListener;
 	private versBtnListener VersusListener;
+	private boolean victoryStatus;
 
 	private int WIDTH = 380;
 	private int HEIGHT = 420;
 	private int displayNum = 1;
 	private String name = "";
+
+
+	public void setVictoryStatus(boolean status){
+		victoryStatus = status;
+	}
+
 	/**
 	 * Constructor for LeaderboardGui--initializes the JComponents of leaderboardgui
 	 */
@@ -74,11 +82,18 @@ public class LeaderboardGUI {
 		this.frame.setLocationRelativeTo(null);
 		this.frame.setVisible(true);
 
-		//add GameOver label
+
+		this.winScreen.setText("You Win!");
 		this.gameOver.setText("Game Over!");
+
+		this.winScreen.setFont(new Font("Serif", Font.PLAIN, 45));
+		this.winScreen.setForeground(Color.black);
+		this.winScreen.setAlignmentX(this.winScreen.CENTER_ALIGNMENT);
+
 		this.gameOver.setFont(new Font("Serif", Font.PLAIN, 45));
 		this.gameOver.setForeground(Color.black);
 		this.gameOver.setAlignmentX(this.gameOver.CENTER_ALIGNMENT);
+
 
 		this.panel.setBackground(new Color(224, 224, 224));
 		this.panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -104,7 +119,10 @@ public class LeaderboardGUI {
 
 		//add spacer
 		this.panel.add(Box.createRigidArea(new Dimension(0, 15)));
-		this.panel.add(this.gameOver);
+		if(victoryStatus)
+			this.panel.add(this.winScreen);
+		else
+			this.panel.add(this.gameOver);
 		//add spacer
 		this.panel.add(Box.createRigidArea(new Dimension(0, 10)));
 		this.panel.add(this.scoreLabel);
