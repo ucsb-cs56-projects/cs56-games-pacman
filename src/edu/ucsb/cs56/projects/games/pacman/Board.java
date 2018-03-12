@@ -50,6 +50,7 @@ public class Board extends JPanel implements ActionListener
     private final int MAX_SPEED = 6;
 
     public static int score;
+    public static boolean sound = true;
     private ScoreLoader sl = new ScoreLoader("highScores.txt");
     private LeaderboardGUI leaderBoardGui = new LeaderboardGUI();
     public Grid grid;
@@ -317,6 +318,7 @@ public class Board extends JPanel implements ActionListener
         g.drawString("F - Start Versus", bx + 10, by + 60);
         g.drawString("Esc - Quit Game", bx + 210, by + 20);
         g.drawString("P - Pause Game", bx + 210, by + 40);
+        g.drawString("M - Mute Game", bx + 210, by + 60);
 
         g.drawString("Pacman:", bx + 10, by + 110);
         g.drawString("Up Arrow - Move Up", bx + 30, by + 130);
@@ -654,6 +656,9 @@ public class Board extends JPanel implements ActionListener
                     case KeyEvent.VK_H:
                         gt = GameType.HELP;
                         break;
+                    case KeyEvent.VK_M:
+                        sound = !sound;
+                        break;
                 }
             }
             else if(gt == GameType.HELP)
@@ -685,6 +690,7 @@ public class Board extends JPanel implements ActionListener
 
                 switch(key)
                 {
+
                     case KeyEvent.VK_PAUSE:case KeyEvent.VK_P:
                     if (timer.isRunning())
                     {
@@ -694,6 +700,7 @@ public class Board extends JPanel implements ActionListener
                     else
                         timer.start();
                     break;
+
                     case KeyEvent.VK_ESCAPE:
                         if(timer.isRunning())
                         {
@@ -702,6 +709,11 @@ public class Board extends JPanel implements ActionListener
                             grid.levelInit(0);
                         }
                         break;
+
+                    case KeyEvent.VK_M:
+                        sound = !sound;
+                        break;
+
                 }
             }
         }
