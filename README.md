@@ -5,6 +5,7 @@ Pac-Man game, starting with code from http://zetcode.com/tutorials/javagamestuto
 
 
 <img src="https://github.com/Aregluss/cs56-games-pacman/blob/proj03/startScreen.png" height="400" width="400">
+<img src="https://github.com/Aregluss/cs56-games-pacman/blob/proj03/Ghosts.png">
 
 **Documentation**
 * Current version of javadocs at: https://aregluss.github.io/cs56-games-pacman/
