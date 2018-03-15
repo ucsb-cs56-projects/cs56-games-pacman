@@ -4,7 +4,7 @@ cs56-games-pacman
 Pac-Man game, starting with code from http://zetcode.com/tutorials/javagamestutorial/pacman/, and improving. Ghosts currently randomly move around the board. Once the player has lost all the lives, the leaderboard will be shown and the player can enter his/her name. The leaderboard will display the top three high scores of all time and for that player.
 
 
-![Screenshot Of Pacman Main Menu](http://i.imgur.com/TODmNes.png)
+![Screenshot Of Pacman Main Menu](https://github.com/Aregluss/cs56-games-pacman/blob/proj03/startScreen.png)
 
 **Documentation**
 * Current version of javadocs at: https://aregluss.github.io/cs56-games-pacman/
