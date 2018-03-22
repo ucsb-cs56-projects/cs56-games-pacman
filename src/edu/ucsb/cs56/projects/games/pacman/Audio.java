@@ -18,7 +18,7 @@ public class Audio {
 	private byte[] audioData;
 	private DataLine.Info audioInfo;
 	private Clip audioClip;
-       /**
+	/**
 	*Constructor for Audio\
 	*
 	*/
@@ -60,7 +60,8 @@ public class Audio {
 	 *
          */
 	public void play() throws UnsupportedAudioFileException, LineUnavailableException {
-		this.play(true);
+		if(Board.sound == true)
+			this.play(true);
 	}
         /**
 	 *Plays a sound clip once and will not replay until the clip has finished
@@ -70,8 +71,11 @@ public class Audio {
 	 *@throws LineUnavailableException
          */
 	public void play(boolean playOnlyOnce) throws UnsupportedAudioFileException, LineUnavailableException {
-		if(playOnlyOnce && this.audioClip.isRunning()) return;
-		this.audioClip.setMicrosecondPosition(0);
-		this.audioClip.start();
+		if(Board.sound == true) {
+			if(playOnlyOnce && this.audioClip.isRunning()) return;
+			this.audioClip.setMicrosecondPosition(0);
+			this.audioClip.start();
+		}
 	}
+
 }

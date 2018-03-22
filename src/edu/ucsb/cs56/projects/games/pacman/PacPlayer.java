@@ -8,6 +8,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.lang.Math;
+import java.awt.geom.AffineTransform;
+import java.awt.Graphics2D;
+
+
 
 /**
  * A class to represent the player controlled pacman character.
@@ -34,15 +39,19 @@ public class PacPlayer extends Character {
 	int pacanimcount = pacanimdelay;
 	int pacanimdir = 1;
 	int pacmananimpos = 0;
+	private int animateTimer = 40;
 
 	// need these so that when pacman collides with wall and stops moving
 	// he keeps facing wall instead of facing default position
-	public int direction;	
+	public int direction;
 
 	private Image[] pacmanUp, pacmanDown, pacmanLeft, pacmanRight;
 	private Audio[] pacmanAudio;
 	private String assetAudioPath;
 	private Grid grid;
+	private Image dying_1;
+	private Image dying_2;
+
 
 	/**
 	 * Constructor for PacPlayer class
@@ -67,26 +76,27 @@ public class PacPlayer extends Character {
 		super(x, y, playerNum);
 		speed = pacmanspeed;
 		this.grid = grid;
+		int animateTimer =500;
 		lives = 3;
 		direction = Direction.RIGHT;
-		if (playerNum == PACMAN) 
+		if (playerNum == PACMAN)
 			assetImagePath = PATH_IMAGE_PACMAN;
-		else if (playerNum == MSPACMAN) 
+		else if (playerNum == MSPACMAN)
 			assetImagePath = PATH_IMAGE_MSPACMAN;
 		assetAudioPath = PATH_AUDIO;
 		loadImages();
 		loadAudio();
 	}
- 
-  /**
+
+	/**
 	 * Resets the player's position
 	 */
 	public void resetPos()
-  {
-  	super.resetPos();
+	{
+		super.resetPos();
 		direction = Direction.RIGHT;
 	}
-        /**
+	/**
 	 * Handles PacMan's death by taking away lives,
 	 * resetting the death timer, and resetting position
 	 */
@@ -98,6 +108,7 @@ public class PacPlayer extends Character {
 		}
 		if (lives <= 0) {
 			alive = false;
+			//animateTimer = 40;
 		}
 	}
 
@@ -117,7 +128,7 @@ public class PacPlayer extends Character {
 			if(dx != 0 || dy != 0)
 				direction = ((direction + 1) % 4) + 1;
 		}
-	
+
 		if (x % Board.BLOCKSIZE == 0 && y % Board.BLOCKSIZE == 0) {
 
 			//Tunnel effect
@@ -184,7 +195,7 @@ public class PacPlayer extends Character {
 	 * @param canvas The component that the sprite is drawn on
 	 */
 	public void draw(Graphics2D g2d, JComponent canvas) {
-		if (deathTimer % 5 > 3) return; // Flicker while invincibile
+		if (deathTimer % 5 > 3) return; // Flicker while invincible
 		doAnim();
 		if (direction == Direction.LEFT)
 			g2d.drawImage(pacmanLeft[pacmananimpos], x + 4, y + 4, canvas);
@@ -192,16 +203,26 @@ public class PacPlayer extends Character {
 			g2d.drawImage(pacmanUp[pacmananimpos], x + 4, y + 4, canvas);
 		else if (direction == Direction.DOWN)
 			g2d.drawImage(pacmanDown[pacmananimpos], x + 4, y + 4, canvas);
-		else 
+		else
 			g2d.drawImage(pacmanRight[pacmananimpos], x + 4, y + 4, canvas);
+
+		}
+
+	public void dying(Graphics2D g2d, JComponent canvas) {
+		if(animateTimer > 0){
+			if(animateTimer % 3 == 1)
+				g2d.drawImage(dying_1, x + 4, y + 4, canvas);
+			else
+				g2d.drawImage(dying_2, x + 4, y + 4, canvas);
+		}
 	}
 
-	/**
-	 * Moves character's current position while detecting for collision
-	 * within the board
-	 *
-	 * @param grid The Grid to be used for collision detection
-	 */
+		/**
+         * Moves character's current position while detecting for collision
+         * within the board
+         *
+         * @param grid The Grid to be used for collision detection
+         */
 	@Override
 	public void moveAI(Grid grid, Character[] c) {
 	}
@@ -218,6 +239,24 @@ public class PacPlayer extends Character {
 				pacanimdir = -pacanimdir;
 		}
 	}
+
+	/**
+	 *
+	 * @return Integer identfiying death animation timer
+	 */
+	public int getAnimateTimer()
+	{
+		return animateTimer;
+	}
+
+	/**
+	 *
+	 */
+	public void decrementAnimateTimer()
+	{
+		animateTimer--;
+	}
+
 
 	/**
 	 * Handles key presses for game controls
@@ -271,12 +310,12 @@ public class PacPlayer extends Character {
 	}
 
 
-        /**
+	/**
 	 * Handles the release of a key by the player
 	 * Functionality has been removed for having smoother gameplay
 	 * Releasing key no longer undoes current direction move command
 	 * @param key int representing the key that was pressed
-	 */ 
+	 */
 	@Override
 	public void keyReleased(int key) {
 
@@ -310,6 +349,9 @@ public class PacPlayer extends Character {
 			pacmanRight[1] = ImageIO.read(getClass().getResource(assetImagePath + "right1.png"));
 			pacmanRight[2] = ImageIO.read(getClass().getResource(assetImagePath + "right2.png"));
 			pacmanRight[3] = ImageIO.read(getClass().getResource(assetImagePath + "right3.png"));
+			dying_1 = ImageIO.read(getClass().getResource(assetImagePath + "dying.png"));
+			dying_2 = ImageIO.read(getClass().getResource(assetImagePath + "right1.png"));
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -354,4 +396,6 @@ public class PacPlayer extends Character {
 	public Image getLifeImage() {
 		return pacmanRight[3];
 	}
+
+
 }
