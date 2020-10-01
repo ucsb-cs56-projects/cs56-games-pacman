@@ -1,5 +1,5 @@
-cs56-games-pacman
-=================
+cs56-games-pacman : An Amazing Project
+=======================================
 
 Pac-Man game, starting with code from http://zetcode.com/tutorials/javagamestutorial/pacman/, and improving. Ghosts currently randomly move around the board. Once the player has lost all the lives, the leaderboard will be shown and the player can enter his/her name. The leaderboard will display the top three high scores of all time and for that player.
 
